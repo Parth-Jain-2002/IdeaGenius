@@ -1,0 +1,10 @@
+{
+    "name": "IdeaGenius",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "browser_action": {
+      "default_popup": "index.html",
+      "default_title": "IdeaGenius"
+    },
+    "description": "IdeaGenius is a chrome extension that helps you generate ideas for your next project."
+  }
