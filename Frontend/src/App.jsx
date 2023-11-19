@@ -4,8 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Signup from './components/auth/Signup'
 import ForgotPassword from './components/auth/ForgotPassword'
 import AuthProvider from './contexts/AuthContext'
-import LandingPage from './components/LandingPage'
-
+import Dashboard from './components/Dashboard'
 
 export default function App() {
   return (
@@ -13,7 +12,7 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

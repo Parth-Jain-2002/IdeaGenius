@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {useAuth} from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import imagem from "../../assets/images/FamilyTreeLogo.jpg"
+import imagem from "../../assets/images/IdeaGenLogo.png"
 
 function ForgotPassword() {
     const { resetPassword } = useAuth()
