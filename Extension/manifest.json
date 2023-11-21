@@ -2,6 +2,9 @@
     "name": "IdeaGenius",
     "version": "0.0.1",
     "manifest_version": 2,
+    "permissions": [
+      "http://localhost:3000/login/"
+    ],
     "browser_action": {
       "default_popup": "index.html",
       "default_title": "IdeaGenius"

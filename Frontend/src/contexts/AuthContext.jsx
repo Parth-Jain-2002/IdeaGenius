@@ -24,11 +24,15 @@ export default function AuthProvider({children}) {
     }
 
     function login(email, password) {
-        return auth.signInWithEmailAndPassword(email, password)
+        return auth.signInWithEmailAndPassword(email, password).then(()=>{
+            localStorage.setItem("ideagen_logged_in",true)
+        })
     }
 
     function logout(){
-        return auth.signOut()
+        return auth.signOut().then(()=>{
+            localStorage.setItem("ideagen_logged_in",false)
+        })
     }
 
     function resetPassword(email) {
