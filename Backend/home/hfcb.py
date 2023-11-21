@@ -6,7 +6,10 @@ import os
 load_dotenv()
 
 class HuggingFaceChatBot:
-    def __init__(self, email, password, cookie_path_dir="./cookies_snapshot"):
+    def __init__(self, cookie_path_dir="./cookies_snapshot"):
+        email = os.getenv("EMAIL")
+        password = os.getenv("PASSWORD")
+
         if os.path.exists(cookie_path_dir):
             self.sign_in = Login(email, None)
             self.cookies = self.sign_in.loadCookiesFromDir(cookie_path_dir)
@@ -46,17 +49,15 @@ class HuggingFaceChatBot:
         conversation_info = self.chatbot.get_conversation_list()
         return conversation_info
 
-# Example usage:
-# Initialize the chatbot
-email = os.getenv("EMAIL")
-password = os.getenv("PASSWORD")
-chatbot_instance = HuggingFaceChatBot(email, password)
+# # Example usage:
+# # Initialize the chatbot
+# chatbot_instance = HuggingFaceChatBot()
 
-# # Query the chatbot
-# query_text = "Hello, chatbot!"
-# result = chatbot_instance.query(query_text)
-# print(result)  # or print(result.text) or print(result["text"])
+# # # Query the chatbot
+# # query_text = "Hello, chatbot!"
+# # result = chatbot_instance.query(query_text)
+# # print(result)  # or print(result.text) or print(result["text"])
 
-# Get conversation info
-conversation_info = chatbot_instance.get_conversation_list()
-print(conversation_info)  # or print(conversation_info.text) or print(conversation_info["text"])
+# # Get conversation info
+# conversation_info = chatbot_instance.get_conversation_list()
+# print(conversation_info)  # or print(conversation_info.text) or print(conversation_info["text"])

@@ -3,11 +3,30 @@
     "version": "0.0.1",
     "manifest_version": 2,
     "permissions": [
-      "http://localhost:3000/login/"
+      "activeTab",
+      "tabs",
+      "storage",
+      "alarms",
+      "webNavigation",
+      "contextMenus",
+      "notifications",
+      "identity",
+      "cookies",
+      "<all_urls>"
     ],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
     "browser_action": {
       "default_popup": "index.html",
       "default_title": "IdeaGenius"
     },
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": ["content.js"]
+      }
+    ],
     "description": "IdeaGenius is a chrome extension that helps you generate ideas for your next project."
   }
