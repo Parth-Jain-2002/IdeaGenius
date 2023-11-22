@@ -11,6 +11,7 @@ from .hfcb import HuggingFaceChatBot as HFCB
 from youtube_transcript_api import YouTubeTranscriptApi
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
+from langchain.text_splitter import CharacterTextSplitter
 
 chatbot_instance = HFCB()
 
@@ -83,6 +84,10 @@ def deep_dive(request):
     return JsonResponse(response)
 
 def scrape(url):
+    # if the url contains youtube, then call other function
+    if 'youtube' in url:
+        return scrape_youtube(url)
+
     # scrape the url and return the text
     html = requests.get(url).text
     doc = Document(html)
@@ -94,3 +99,61 @@ def scrape(url):
 
     return summary
 
+def scrape_youtube(url, transcript=True):
+    # get the video id from the url
+    yt_url = url.split('=')[1]
+
+    # TODO: Afterwards use Whisper to get the transcript
+    # Step 1: Get the transcript
+    text_yt = []
+    text_list = []
+    all_text = ""
+    transcript_list = YouTubeTranscriptApi.list_transcripts(yt_url)
+    transcript_en = None
+    last_language = ""
+    for transcript in transcript_list:
+        if transcript.language_code == 'en':
+            transcript_en = transcript
+            break
+        else:
+            last_language = transcript.language_code
+    if transcript_en is None:   
+        transcript_en = transcript_list.find_transcript([last_language])
+        transcript_en = transcript_en.translate('en')
+
+    text = transcript_en.fetch()
+    text_yt.append(text)
+
+    for i in range(len(text_yt)):
+        for j in range(len(text_yt[i])):
+            text_list.append(text_yt[i][j]['text'])
+            all_text += text_yt[i][j]['text'] + " "
+    
+    if transcript:
+        return all_text
+
+    # Step 2: Create a vectorstore from the transcript
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(text_list)
+    # Select embeddings
+    embeddings = st.session_state['hf']
+    # Create a vectorstore from documents
+    random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    db = Chroma.from_documents(texts, embeddings, persist_directory="./chroma_db_" + random_str)
+
+    # Step 3: Create retriever interface
+    # save vectorstore
+    db.persist()
+    #create .zip file of directory to download
+    shutil.make_archive("./chroma_db_" + random_str, 'zip', "./chroma_db_" + random_str)
+        
+
+    # Step 4: Creating a QA chain
+    # Create retriever interface
+    retriever = db.as_retriever()
+    # Create QA chain
+    qa = RetrievalQA.from_chain_type(llm=st.session_state['LLM'], chain_type='stuff', retriever=retriever, return_source_documents=True)
+    return qa
+
+if __name__ == '__main__':
+    print(scrape('https://www.youtube.com/watch?v=9NhEBVPlJs4'))
