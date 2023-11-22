@@ -8,6 +8,10 @@ import json
 
 from .hfcb import HuggingFaceChatBot as HFCB
 
+from youtube_transcript_api import YouTubeTranscriptApi
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+
 chatbot_instance = HFCB()
 
 @csrf_exempt
