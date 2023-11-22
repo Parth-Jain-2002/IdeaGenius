@@ -3,6 +3,8 @@ import time
 from typing import Any, List, Mapping, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
 from dotenv import load_dotenv
 from hugchat.login import Login
 
@@ -154,5 +156,9 @@ class HuggingChat(LLM):
         return self.avg_response_time
 
 if __name__ == "__main__":
-    llm = HuggingChat(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"))
-    print(llm("Hello, how are you?"))
+    llm = HuggingChat(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
+    prompt = PromptTemplate.from_template("Summarize this for me: {text}")
+
+    chain = LLMChain(llm=llm, prompt=prompt)
+    output = chain.run("The quick brown fox jumps over the lazy dog.")
+    print(output)

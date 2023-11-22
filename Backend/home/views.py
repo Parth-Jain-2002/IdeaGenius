@@ -5,15 +5,18 @@ import requests
 from readability import Document
 import re
 import json
+import os
+import pdfplumber
+import docx2txt
 
-from .hfcb import HuggingFaceChatBot as HFCB
+from .hfcb_lang import HuggingChat as HCA
 
 from youtube_transcript_api import YouTubeTranscriptApi
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain.text_splitter import CharacterTextSplitter
 
-chatbot_instance = HFCB()
+llm = HCA(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
 
 @csrf_exempt
 # Create your views here.
@@ -44,7 +47,7 @@ def summarize(request):
 
     # summarize the text
     query_to_ask = "Here is the article text. Summarize this in 5 ordered list points: " + summary
-    ai_summary = chatbot_instance.query(query_to_ask)
+    ai_summary = llm(query_to_ask)
     
     response = {'response': str(ai_summary)}
     return JsonResponse(response)
@@ -61,7 +64,7 @@ def insights(request):
 
     # actionable insights from the text
     query_to_ask = "Here is the article text. What are the main actionable insights from this article in 5 ordered list points? " + summary
-    ai_insights = chatbot_instance.query(query_to_ask)
+    ai_insights = llm(query_to_ask)
     
     response = {'response': str(ai_insights)}
     return JsonResponse(response)
@@ -78,7 +81,7 @@ def deep_dive(request):
 
     # deep dive into the text
     query_to_ask = "Here is the article text. Deep dive into this article. " + summary
-    ai_deep_dive = chatbot_instance.query(query_to_ask)
+    ai_deep_dive = llm(query_to_ask)
     
     response = {'response': str(ai_deep_dive)}
     return JsonResponse(response)
@@ -155,5 +158,38 @@ def scrape_youtube(url, transcript=True):
     qa = RetrievalQA.from_chain_type(llm=st.session_state['LLM'], chain_type='stuff', retriever=retriever, return_source_documents=True)
     return qa
 
-if __name__ == '__main__':
-    print(scrape('https://www.youtube.com/watch?v=9NhEBVPlJs4'))
+@csrf_exempt
+def test(request):
+    # Get the PDF file from the request
+    doc = request.FILES
+    upload_pdf = doc.get('upload_pdf', None)
+    print(upload_pdf)
+
+    response = summarize_document([upload_pdf])
+    return JsonResponse({'response': response})
+
+
+def summarize_document(document):
+    # document can be pdf, docx, txt, etc.
+    documents = []
+
+    print(document[0].content_type)
+
+    # Step 1: Get the text from the document                
+    for upload_pdf in document:
+        if upload_pdf.content_type == 'text/plain':
+            documents += [upload_pdf.read().decode()]
+        elif upload_pdf.content_type == 'application/pdf':
+            with pdfplumber.open(upload_pdf) as pdf:
+                documents += [page.extract_text() for page in pdf.pages]
+        elif upload_pdf.content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            text = docx2txt.process(upload_pdf)
+            documents += [text]
+
+    # Step 2: Summarize the text
+    query_to_ask = "Here is the article text. Summarize this: " + documents[0]
+    ai_summary = llm(query_to_ask)
+
+    # TODO: Create a vectorstore from the document and then create a QA chain
+    return ai_summary
+    
