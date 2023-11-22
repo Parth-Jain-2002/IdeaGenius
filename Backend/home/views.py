@@ -13,8 +13,12 @@ from .hfcb_lang import HuggingChat as HCA
 
 from youtube_transcript_api import YouTubeTranscriptApi
 from langchain.vectorstores import Chroma
-from langchain.chains import RetrievalQA
+from langchain.chains import RetrievalQA, LLMChain
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.prompts import PromptTemplate
+
+from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
+from PIL import Image
 
 llm = HCA(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
 
@@ -161,12 +165,15 @@ def scrape_youtube(url, transcript=True):
 @csrf_exempt
 def test(request):
     # Get the PDF file from the request
-    doc = request.FILES
-    upload_pdf = doc.get('upload_pdf', None)
-    print(upload_pdf)
+    doc = request.FILES.getlist('image')
+    question = request.POST.get('question')
 
-    response = summarize_document([upload_pdf])
-    return JsonResponse({'response': response})
+    print(question)
+
+    image = Image.open(doc[0])
+    response = visual_answering_data(image, question)
+    print(response)
+    return JsonResponse({'response':response})
 
 
 def summarize_document(document):
@@ -187,9 +194,29 @@ def summarize_document(document):
             documents += [text]
 
     # Step 2: Summarize the text
-    query_to_ask = "Here is the article text. Summarize this: " + documents[0]
+    query_to_ask = "Here is the document text. Summarize this in 5 ordered list points: " + documents[0]
     ai_summary = llm(query_to_ask)
 
     # TODO: Create a vectorstore from the document and then create a QA chain
     return ai_summary
     
+def visual_answering_data(image, question):
+    response = visual_summary(image)
+
+    prompt = PromptTemplate.from_template("Here is the data from the image: {image_data}. The question is: {question}")
+
+    chain = LLMChain(llm=llm, prompt=prompt)
+    answer_to_query = chain({"question": question, "image_data": response})
+    return answer_to_query
+
+def visual_summary(image):
+    processor = Pix2StructProcessor.from_pretrained('google/deplot')
+    model = Pix2StructForConditionalGeneration.from_pretrained('google/deplot')
+
+    inputs = processor(images=image, text="Generate underlying data table of the figure below:", return_tensors="pt")
+    predictions = model.generate(**inputs, max_new_tokens=512)
+
+    response = processor.decode(predictions[0], skip_special_tokens=True)
+    print(response)
+    return response
+
