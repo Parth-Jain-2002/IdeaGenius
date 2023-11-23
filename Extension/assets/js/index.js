@@ -7,10 +7,26 @@ if (localStorage.getItem("ideagen_logged_in") == "true") {
 }
 
 let research = document.getElementById("research-bank");
+let summary = document.getElementById("summary");
+let insights = document.getElementById("insights");
+let deep_dive = document.getElementById("deep-dive");
 
-// research.addEventListener("click", function() {
-//   // Send the active tab url to the server
-//   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//     console.log(tabs)
-//   });
-// })
+research.addEventListener("click", function() {
+  // Send a message to the background script
+  chrome.runtime.sendMessage({message: "clicked_research_bank"});
+})
+
+summary.addEventListener("click", function() {
+  // Send a message to the background script
+  chrome.runtime.sendMessage({message: "clicked_summary"});
+})
+
+insights.addEventListener("click", function() {
+  // Send a message to the background script
+  chrome.runtime.sendMessage({message: "clicked_insights"});
+})
+
+deep_dive.addEventListener("click", function() {
+  // Send a message to the background script
+  chrome.runtime.sendMessage({message: "clicked_deep_dive"});
+})

@@ -24,8 +24,9 @@ export default function AuthProvider({children}) {
     }
 
     function login(email, password) {
-        return auth.signInWithEmailAndPassword(email, password).then(()=>{
+        return auth.signInWithEmailAndPassword(email, password).then((user)=>{
             localStorage.setItem("ideagen_logged_in",true)
+            localStorage.setItem("ideagen_user_id",user.user.uid)
         })
     }
 
