@@ -27,5 +27,6 @@
         ]
       }
     ],
-    "description": "IdeaGenius is a chrome extension that helps you generate ideas for your next project."
+    "description": "IdeaGenius is a chrome extension that helps you generate ideas for your next project.",
+    "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
   }

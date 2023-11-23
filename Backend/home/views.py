@@ -220,3 +220,13 @@ def visual_summary(image):
     print(response)
     return response
 
+@csrf_exempt
+def url_test(request):
+    # get the request url from request header
+    url = request.headers.get('url', None)
+    user_id = request.headers.get('user_id', None)
+    action = request.headers.get('action', None)
+    print("Url: ", url)
+    print("User ID: ", user_id)
+    print("Action: ", action)
+    return JsonResponse({'response':'test'})
