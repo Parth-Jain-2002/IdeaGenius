@@ -7,10 +7,9 @@
 //     }
 // })
 
-url_pattern = "http://localhost:5173/*"
 current_url = window.location.href;
 
-if(current_url.match(url_pattern)) {
+if(current_url.includes("localhost:5173")) {
     console.log("Matched: " + current_url);
     if (localStorage.getItem("ideagen_logged_in") == "true") {
         // Open a new tab with the login page

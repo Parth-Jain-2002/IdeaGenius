@@ -2,21 +2,31 @@ let recent_url = "";
 let user_id = "";
 
 // Check if the user is logged in or not, if not redirect to login page
-if(user_id == "") {
-    chrome.tabs.create({
-        url: "http://localhost:5173/login"
-    });
-}
+chrome.storage.sync.get(['user_id'], function(result) {
+    user_id = result.user_id;
+    console.log('Value currently is ' + user_id);
+    if (user_id == "" || user_id == undefined) {
+        chrome.tabs.create({
+            url: "http://localhost:5173/login"
+        });
+    }
+});
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if( request.message === "user_logged_in" ) {
         user_id = request.user_id;
         console.log(user_id);
+        chrome.storage.sync.set({user_id: user_id}, function() {
+            console.log("User id is set to " + user_id);
+        });
     }
     else if( request.message === "user_not_logged_in" ) {
-        chrome.tabs.create({
-            url: "http://localhost:5173/login"
-        });
+        console.log("User not logged in")
+        if(recent_url != "http://localhost:5173/login" && recent_url!= "http://localhost:5173/register" && recent_url.includes("localhost:5173")) {
+            chrome.tabs.create({
+                url: "http://localhost:5173/login"
+            });
+        }
     }
 })
 

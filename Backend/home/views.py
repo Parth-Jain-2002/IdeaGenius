@@ -20,6 +20,8 @@ from langchain.prompts import PromptTemplate
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
+from .models import UserAction
+
 llm = HCA(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
 
 @csrf_exempt
@@ -229,4 +231,8 @@ def url_test(request):
     print("Url: ", url)
     print("User ID: ", userid)
     print("Action: ", action)
+
+    # Save the url, userid, and action in the django database
+    UserAction.objects.create(url=url, userid=userid, action=action)
+
     return JsonResponse({'response':'test'})
