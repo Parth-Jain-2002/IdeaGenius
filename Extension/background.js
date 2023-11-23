@@ -1,4 +1,25 @@
 let recent_url = "";
+let user_id = "";
+
+// Check if the user is logged in or not, if not redirect to login page
+if(user_id == "") {
+    chrome.tabs.create({
+        url: "http://localhost:5173/login"
+    });
+}
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if( request.message === "user_logged_in" ) {
+        user_id = request.user_id;
+        console.log(user_id);
+    }
+    else if( request.message === "user_not_logged_in" ) {
+        chrome.tabs.create({
+            url: "http://localhost:5173/login"
+        });
+    }
+})
+
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status == 'complete') {
         recent_url = tab.url;
@@ -14,7 +35,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 
 // Get the message from the content script
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if( request.message === "clicked_research_bank" || request.message === "clicked_summarize" || request.message === "clicked_insights" || request.message === "clicked_deep_dive" ) {
+    if( request.message === "clicked_research_bank" || request.message === "clicked_summary" || request.message === "clicked_insights" || request.message === "clicked_deep_dive" ) {
         console.log("Clicked research bank")
         console.log(user_id)
         // Get request with url and user id to the server
@@ -23,8 +44,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             headers: {
                 "Content-Type": "application/json",
                 "url": recent_url,
-                "user_id": request.user_id,
-                "action": request.message
+                "action": request.message,
+                "userid": user_id
             }
         })
     }

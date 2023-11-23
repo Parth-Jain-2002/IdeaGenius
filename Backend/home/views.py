@@ -224,9 +224,9 @@ def visual_summary(image):
 def url_test(request):
     # get the request url from request header
     url = request.headers.get('url', None)
-    user_id = request.headers.get('user_id', None)
+    userid = request.headers.get('userid', None)
     action = request.headers.get('action', None)
     print("Url: ", url)
-    print("User ID: ", user_id)
+    print("User ID: ", userid)
     print("Action: ", action)
     return JsonResponse({'response':'test'})

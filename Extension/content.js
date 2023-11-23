@@ -6,3 +6,20 @@
 //         //sendResponse({message: "success", url: window.location.href});
 //     }
 // })
+
+url_pattern = "http://localhost:5173/*"
+current_url = window.location.href;
+
+if(current_url.match(url_pattern)) {
+    console.log("Matched: " + current_url);
+    if (localStorage.getItem("ideagen_logged_in") == "true") {
+        // Open a new tab with the login page
+        chrome.runtime.sendMessage({message: "user_logged_in", user_id: localStorage.getItem("ideagen_user_id")});
+    }
+    else {
+        if(current_url != "http://localhost:5173/login" && current_url!= "http://localhost:5173/register") chrome.runtime.sendMessage({message: "user_not_logged_in"});
+    }
+}
+
+
+
