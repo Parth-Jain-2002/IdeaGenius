@@ -2,9 +2,28 @@ import imagem from "../assets/images/IdeaGenLogo.png"
 import ResearchCard from "./ResearchCard"
 import { useAuth } from "../contexts/AuthContext"
 import Collapsible from "./Collapsible"
+import axios from "axios"
+import { useEffect, useState } from "react"
 
 export default function ResearchBank() {
     const {userInfo} = useAuth()
+    const [threads, setThreads] = useState([])
+
+    useEffect(() => {
+        console.log(userInfo.id)
+        axios.get(`http://localhost:8000/get_threads`,{
+            params:{
+                userid: userInfo.id
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            console.log(response.data.data)
+            setThreads(response.data.data)
+        }, (error) => {
+            console.log(error)
+        })
+    },[])
 
   return (
     <section className="grid h-screen grid-cols-5">
@@ -62,32 +81,18 @@ export default function ResearchBank() {
         <section className="space-y-4">
           <h2 className="text-xl font-bold">Research Bank</h2>
           <div className="grid grid-cols-3 gap-4">
-            <ResearchCard imgSrc="https://picsum.photos/id/201/200/200" title="Research 1" url="https://www.google.com" />
-            <ResearchCard imgSrc="https://picsum.photos/id/102/200/200" title="Research 1" url="https://www.google.com" />
-            <ResearchCard imgSrc="https://picsum.photos/id/31/200/200" title="Research 1" url="https://www.google.com" />
+            {threads.map((thread) => (
+                <ResearchCard
+                    imgSrc={thread.imgsrc}
+                    title={thread.title}
+                    url={thread.url}
+                    chatid={thread.chatid}
+                />
+            ))}
             </div>
         </section>
       </main>
     </section>
-  )
-}
-
-function IconChevronright(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
   )
 }
 

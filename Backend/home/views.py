@@ -20,7 +20,7 @@ from langchain.prompts import PromptTemplate
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
-from .models import UserAction, Chat, User
+from .models import UserAction, Chat, User, Thread
 
 llm = HCA(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
 
@@ -237,6 +237,38 @@ def get_chat(request):
     return JsonResponse({'data':response})
 
 @csrf_exempt
+def get_threads(request):
+    userid = request.GET['userid']
+    threads = Thread.objects.filter(userid=userid)
+    
+    # convert the chats to json
+    response = []
+    for thread in threads:
+        response.append({'title':thread.title, 'imgsrc':thread.imgsrc, 'url':thread.url, 'chatid':thread.chatid})
+
+    return JsonResponse({'data':response})
+
+def create_thread(url, userid):
+    # get the title and image from the url
+    html = requests.get(url).text
+    doc = Document(html)
+    title = doc.title()
+    
+    summary = doc.summary()
+    # If in summary, there is an image, then use that image
+    imgsrc = ""
+    
+    img_match = re.search(r'<img.+?src="(.+?)".*?>', summary)
+    if img_match:
+        imgsrc = img_match.group(1)
+    else:
+        imgsrc = "https://www.lisedunetwork.com/wp-content/uploads/2014/02/Types-of-Information.jpg"
+
+    # create a thread in the database
+    thread = Thread.objects.create(userid=userid, title=title, imgsrc=imgsrc, url=url)
+    return thread.chatid
+    
+@csrf_exempt
 def url_test(request):
     # get the request url from request header
     url = request.headers.get('url', None)
@@ -249,7 +281,12 @@ def url_test(request):
     # Save the url, userid, and action in the django database
     UserAction.objects.create(url=url, userid=userid, action=action)
 
+    # Chat Thread creation
+    chatid = create_thread(url, userid)
+    print(chatid)
+
+    # Perform the task, chat message
     response = perform_task(url, action)
-    Chat.objects.create(userid=userid, message=action, response=response)
+    Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
 
     return JsonResponse({'response':'test'})

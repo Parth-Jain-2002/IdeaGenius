@@ -20,7 +20,7 @@ export default function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/research" element={<ResearchBank/>} />
-            <Route path="/chat" element={<ChatInterface/>} />
+            <Route path="/chat/:chatid" element={<ChatInterface/>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

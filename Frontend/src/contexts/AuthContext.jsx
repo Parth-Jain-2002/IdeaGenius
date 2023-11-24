@@ -42,15 +42,21 @@ export default function AuthProvider({children}) {
         const user_id = user.uid
         const user_email = user.email
 
-        await axios.get(`http://localhost:8000/user/${user_id}`).then((response) => {
-            console.log(response)
-            setUserInfo({
-                email: user_email,
-                name: response.data.name,
-                id: user_id
-            })
-        }, (error) => {
-            console.log(error)
+        // await axios.get(`http://localhost:8000/user/${user_id}`).then((response) => {
+        //     console.log(response)
+        //     setUserInfo({
+        //         email: user_email,
+        //         name: response.data.name,
+        //         id: user_id
+        //     })
+        // }, (error) => {
+        //     console.log(error)
+        // })
+
+        setUserInfo({
+            email: user_email,
+            name: "Test",
+            id: user_id
         })
 
         return userCredential

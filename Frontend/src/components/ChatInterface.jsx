@@ -2,10 +2,12 @@ import Collapsible from "./Collapsible"
 import imagem from "../assets/images/IdeaGenLogo.png"
 import { useAuth } from "../contexts/AuthContext"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router"
 import axios from "axios"
 
 export default function ChatInterface() {
-    const chatId = "d8a27216-be1e-48f7-9c94-e7fc648edf5e"
+    // Get chat id from url
+    const {chatid} = useParams()
     const {userInfo} = useAuth()
     const [chats, setChats] = useState([])
 
@@ -22,7 +24,7 @@ export default function ChatInterface() {
         ])
         axios.get(`http://localhost:8000/get_chat`,{
             params:{
-                chat_id: chatId
+                chat_id: chatid
             }
         }
         ).then((response) => {

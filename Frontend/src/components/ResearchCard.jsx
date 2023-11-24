@@ -21,7 +21,7 @@ function IconResearch(props) {
     )
   }
 
-const ResearchCard = ({ imgSrc, title, url }) => {
+const ResearchCard = ({ imgSrc, title, url, chatid }) => {
   return (
     <div className="relative p-4 rounded-lg shadow-lg bg-white">
       <img
@@ -41,7 +41,9 @@ const ResearchCard = ({ imgSrc, title, url }) => {
       </Link>
       <div className="absolute bottom-3 right-3">
         {/* Use a suitable Tailwind CSS icon here */}
+        <Link to={`../chat/${chatid}`}>
         <IconResearch className="w-5 h-5" />
+        </Link>
       </div>
     </div>
   );
