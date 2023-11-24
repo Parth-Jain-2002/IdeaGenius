@@ -224,6 +224,17 @@ def get_chats(request):
 
     return JsonResponse({'chats':chats_json})
 
+@csrf_exempt
+def get_chat(request):
+    chatid = request.GET['chat_id']
+    chats = Chat.objects.filter(chatid=chatid)
+    
+    # convert the chats to json
+    response = []
+    for chat in chats:
+        response.append({'message':chat.message, 'response':chat.response})
+
+    return JsonResponse({'data':response})
 
 @csrf_exempt
 def url_test(request):

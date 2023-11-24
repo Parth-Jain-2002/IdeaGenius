@@ -1,9 +1,38 @@
 import Collapsible from "./Collapsible" 
 import imagem from "../assets/images/IdeaGenLogo.png"
 import { useAuth } from "../contexts/AuthContext"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 export default function ChatInterface() {
+    const chatId = "d8a27216-be1e-48f7-9c94-e7fc648edf5e"
     const {userInfo} = useAuth()
+    const [chats, setChats] = useState([])
+
+    useEffect(() => {
+        setChats([
+            {
+                message: "Hello",
+                response: "Hi"
+            },
+            {
+                message: "How are you?",
+                response: "Good"
+            },
+        ])
+        axios.get(`http://localhost:8000/get_chat`,{
+            params:{
+                chat_id: chatId
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            setChats(response.data.data)
+        }, (error) => {
+            console.log(error)
+        })
+    },[])
+
   return (
     <section className="grid h-screen grid-cols-5">
       <aside className="flex flex-col items-center justify-between p-4 bg-[#efefef] dark:bg-zinc-900 border-r">
@@ -71,24 +100,28 @@ export default function ChatInterface() {
                 width="30"
               />
             </div>
-            <div className="flex items-start mb-4">
-              <div className="flex-none">
-                {/* <Avatar className="rounded-full" size="icon" /> */}
-              </div>
-              <div className="ml-4 flex-grow">
-                <div className="text-sm text-gray-500">AI</div>
-                <div className="bg-gray-200 dark:bg-zinc-700 rounded-md p-2 mt-1">Message from AI</div>
-              </div>
-            </div>
-            <div className="flex items-start mb-4">
-              <div className="ml-auto flex-none">
-                {/* <Avatar className="rounded-full" size="icon" /> */}
-              </div>
-              <div className="mr-4 flex-grow text-right">
-                <div className="text-sm text-gray-500">User</div>
-                <div className="bg-blue-200 dark:bg-blue-900 rounded-md p-2 mt-1">Message from User</div>
-              </div>
-            </div>
+            {chats? chats.map((chat, index) => (
+            <>
+                <div className="flex items-start mb-4">
+                <div className="flex-none">
+                    {/* <Avatar className="rounded-full" size="icon" /> */}
+                </div>
+                <div className="ml-4 flex-grow">
+                    <div className="text-sm text-gray-500">User</div>
+                    <div className="bg-gray-200 dark:bg-zinc-700 rounded-md p-2 mt-1">{chat.message}</div>
+                </div>
+                </div>
+                <div className="flex items-start mb-4">
+                <div className="ml-auto flex-none">
+                    {/* <Avatar className="rounded-full" size="icon" /> */}
+                </div>
+                <div className="mr-4 flex-grow text-right">
+                    <div className="text-sm text-gray-500">AI</div>
+                    <div className="bg-blue-200 dark:bg-blue-900 rounded-md p-2 mt-1">{chat.response}</div>
+                </div>
+                </div>
+            </>
+            )) : ""}
           </div>
           <div className="mt-4 flex items-center space-x-2">
           <div className="flex w-full">
