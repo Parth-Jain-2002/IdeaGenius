@@ -237,6 +237,16 @@ def get_chat(request):
     return JsonResponse({'data':response})
 
 @csrf_exempt
+def get_thread(request):
+    chatid = request.GET['chat_id']
+    thread = Thread.objects.get(chatid=chatid)
+    
+    # convert the chats to json
+    response = {'title':thread.title, 'imgsrc':thread.imgsrc, 'url':thread.url, 'chatid':thread.chatid}
+
+    return JsonResponse(response)
+
+@csrf_exempt
 def get_threads(request):
     userid = request.GET['userid']
     threads = Thread.objects.filter(userid=userid)

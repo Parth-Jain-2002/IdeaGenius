@@ -10,6 +10,7 @@ export default function ChatInterface() {
     const {chatid} = useParams()
     const {userInfo} = useAuth()
     const [chats, setChats] = useState([])
+    const [chatInfo, setChatInfo] = useState({})
 
     useEffect(() => {
         setChats([
@@ -30,6 +31,18 @@ export default function ChatInterface() {
         ).then((response) => {
             console.log(response)
             setChats(response.data.data)
+        }, (error) => {
+            console.log(error)
+        })
+
+        axios.get(`http://localhost:8000/get_thread`,{
+            params:{
+                chat_id: chatid
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            setChatInfo(response.data)
         }, (error) => {
             console.log(error)
         })
@@ -86,20 +99,20 @@ export default function ChatInterface() {
         <section className="flex flex-col space-y-4 h-full">
           <div className="overflow-auto p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md flex-grow">
             <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
-              <div className="flex items-center space-x-2">
-                <h3 className="text-lg font-semibold">Title</h3>
-                <span className="text-sm text-gray-500">URL</span>
+              <div className="items-center">
+                <h3 className="text-lg font-semibold ml-4">{chatInfo.title}</h3>
+                <span className="text-sm text-gray-500 ml-4">{chatInfo.url}</span>
               </div>
               <img
                 alt="Icon"
-                className="rounded"
-                height="30"
-                src="/placeholder.svg"
+                className="rounded-lg mr-2"
+                height="80"
+                src={chatInfo.imgsrc}
                 style={{
                   aspectRatio: "30/30",
                   objectFit: "cover",
                 }}
-                width="30"
+                width="80"
               />
             </div>
             {chats? chats.map((chat, index) => (
