@@ -10,25 +10,50 @@ export function useAuth() {
 
 export default function AuthProvider({children}) {
     const [currentUser, setCurrentUser] = useState()
+    const [userInfo, setUserInfo] = useState({})
     const [loading, setLoading] = useState(true)
 
-    function signup(email, password,username) {
-        return auth.createUserWithEmailAndPassword(email, password).then(
-            (user)=>{
-                db.collection("Client").doc(user.user.uid).set({
-                    email: email,
-                    name: username,
-                })
-            }              
-        )
+    async function signup(email, password, username) {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password)
+        const user = userCredential.user
+        const user_id = user.uid
+        const user_email = user.email
+        await axios.post('http://localhost:8000/user/new', {
+            _id: user_id,
+            email: user_email,
+            name: username
+        }).then((response) => {
+            console.log(response)
+        }, (error) => {
+            console.log(error)
+        })
+
+        setUserInfo({
+            email: user_email,
+            name: username,
+            id: user_id
+        })
+        return userCredential
     }
 
-    function login(email, password) {
-        return auth.signInWithEmailAndPassword(email, password).then((user)=>{
-            console.log(user.user.uid)
-            localStorage.setItem("ideagen_logged_in",true)
-            localStorage.setItem("ideagen_user_id",user.user.uid)
+    async function login(email, password) {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password)
+        const user = userCredential.user
+        const user_id = user.uid
+        const user_email = user.email
+
+        await axios.get(`http://localhost:8000/user/${user_id}`).then((response) => {
+            console.log(response)
+            setUserInfo({
+                email: user_email,
+                name: response.data.name,
+                id: user_id
+            })
+        }, (error) => {
+            console.log(error)
         })
+
+        return userCredential
     }
 
     function logout(){
@@ -60,6 +85,7 @@ export default function AuthProvider({children}) {
 
     const value = {
         currentUser,
+        userInfo,
         signup,
         login,
         logout,

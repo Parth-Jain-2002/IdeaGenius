@@ -20,7 +20,7 @@ from langchain.prompts import PromptTemplate
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
-from .models import UserAction
+from .models import UserAction, Chat, User
 
 llm = HCA(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
 
@@ -41,13 +41,7 @@ def ai_response(request):
     response['message'] = 'This is the ai_response page'
     return JsonResponse(response)
 
-@csrf_exempt
-def summarize(request):
-    # get the request url from request body
-    data = json.loads(request.body.decode('utf-8'))
-    url = data.get('url', None)
-    print(url)
-
+def summarize(url):
     # scrape the url
     summary = scrape(url)
 
@@ -55,16 +49,9 @@ def summarize(request):
     query_to_ask = "Here is the article text. Summarize this in 5 ordered list points: " + summary
     ai_summary = llm(query_to_ask)
     
-    response = {'response': str(ai_summary)}
-    return JsonResponse(response)
+    return ai_summary
 
-@csrf_exempt
-def insights(request):
-    # get the request url from request body
-    data = json.loads(request.body.decode('utf-8'))
-    url = data.get('url', None)
-    print(url)
-
+def insights(url):
     # scrape the url
     summary = scrape(url)
 
@@ -72,16 +59,9 @@ def insights(request):
     query_to_ask = "Here is the article text. What are the main actionable insights from this article in 5 ordered list points? " + summary
     ai_insights = llm(query_to_ask)
     
-    response = {'response': str(ai_insights)}
-    return JsonResponse(response)
+    return ai_insights
 
-@csrf_exempt
-def deep_dive(request):
-    # get the request url from request body
-    data = json.loads(request.body.decode('utf-8'))
-    url = data.get('url', None)
-    print(url)
-
+def deep_dive(url):
     # scrape the url
     summary = scrape(url)
 
@@ -89,8 +69,7 @@ def deep_dive(request):
     query_to_ask = "Here is the article text. Deep dive into this article. " + summary
     ai_deep_dive = llm(query_to_ask)
     
-    response = {'response': str(ai_deep_dive)}
-    return JsonResponse(response)
+    return ai_deep_dive
 
 def scrape(url):
     # if the url contains youtube, then call other function
@@ -222,6 +201,30 @@ def visual_summary(image):
     print(response)
     return response
 
+def perform_task(url, action):
+    if action == 'clicked_summary':
+        return summarize(url)
+    elif action == 'clicked_insights':
+        return insights(url)
+    elif action == 'clicked_deep_dive':
+        return deep_dive(url)
+    else:
+        return "No action found"
+
+@csrf_exempt
+def get_chats(request):
+    # get the chats from the database
+    userid = request.headers.get('userid', None)
+    chats = Chat.objects.filter(userid=userid)
+    
+    # convert the chats to json
+    chats_json = []
+    for chat in chats:
+        chats_json.append({'message':chat.message, 'response':chat.response, 'timestamp':chat.timestamp, 'chatid':chat.chatid})
+
+    return JsonResponse({'chats':chats_json})
+
+
 @csrf_exempt
 def url_test(request):
     # get the request url from request header
@@ -234,5 +237,8 @@ def url_test(request):
 
     # Save the url, userid, and action in the django database
     UserAction.objects.create(url=url, userid=userid, action=action)
+
+    response = perform_task(url, action)
+    Chat.objects.create(userid=userid, message=action, response=response)
 
     return JsonResponse({'response':'test'})
