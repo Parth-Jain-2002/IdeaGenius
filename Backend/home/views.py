@@ -220,7 +220,7 @@ def get_chats(request):
     # convert the chats to json
     chats_json = []
     for chat in chats:
-        chats_json.append({'message':chat.message, 'response':chat.response, 'timestamp':chat.timestamp, 'chatid':chat.chatid})
+        chats_json.append({'message':chat.message, 'response':chat.response, 'timestamp':chat.timestamp, 'url':chat.url, 'vectorstore_path':chat.vectorstore_path})
 
     return JsonResponse({'chats':chats_json})
 

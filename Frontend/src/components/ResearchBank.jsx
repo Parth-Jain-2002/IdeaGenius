@@ -1,6 +1,7 @@
 import imagem from "../assets/images/IdeaGenLogo.png"
 import ResearchCard from "./ResearchCard"
 import { useAuth } from "../contexts/AuthContext"
+import Collapsible from "./Collapsible"
 
 export default function ResearchBank() {
     const {userInfo} = useAuth()
@@ -24,57 +25,8 @@ export default function ResearchBank() {
         </div>
         <div className="space-y-4 text-center">
           <h2 className="text-lg font-semibold border-b">My Ideas</h2>
-          <div className="collapsible">
-                <div className="collapsible-trigger flex items-center w-full">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="h-5 w-5 transform transition-transform duration-200 [&[data-state=open]>svg]:rotate-90 mr-2"
-                    >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
-                    />
-                    </svg>
-                    Idea 1
-                </div>
-                <div className="collapsible-content">
-                    <ul className="list-disc list-inside space-y-1">
-                    <li>Document 1</li>
-                    <li>Document 2</li>
-                    </ul>
-                </div>
-                </div>
-
-                <div className="collapsible">
-                <div className="collapsible-trigger flex items-center w-full">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="h-5 w-5 transform transition-transform duration-200 [&[data-state=open]>svg]:rotate-90 mr-2"
-                    >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
-                    />
-                    </svg>
-                    Idea 2
-                </div>
-                <div className="collapsible-content">
-                    <ul className="list-disc list-inside space-y-1">
-                    <li>Document 1</li>
-                    <li>Document 2</li>
-                    </ul>
-                </div>
-                </div>
+          <Collapsible title="Idea 1" data={['Document 1', 'Document 2']} />
+          <Collapsible title="Idea 2" data={['Document 1', 'Document 2']} />
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />
