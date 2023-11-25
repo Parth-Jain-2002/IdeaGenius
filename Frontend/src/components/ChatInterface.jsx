@@ -11,6 +11,7 @@ export default function ChatInterface() {
     const message = useRef()
     const [chats, setChats] = useState([])
     const [chatInfo, setChatInfo] = useState({})
+    const [loading, setLoading] = useState(false)
 
     const formatResponse = (text, containerRef) => {
         const result = [];
@@ -48,6 +49,7 @@ export default function ChatInterface() {
     };
 
     const handleChat = () => {
+        setLoading(true)
         console.log("Sending message")
         console.log(message.current.value)
         axios.post(`http://localhost:8000/chat_interface`,{
@@ -61,10 +63,19 @@ export default function ChatInterface() {
                 response: response.data.response
             }])
             message.current.value = ""
+            setLoading(false)
         }, (error) => {
             console.log(error)
+            setLoading(false)
         })
     }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleChat();
+        }
+    };
         
     useEffect(() => {
         setChats([
@@ -207,9 +218,12 @@ export default function ChatInterface() {
                 placeholder="Enter your message"
                 type="text"
                 ref={message}
+                onKeyPress={handleKeyPress}
             />
-            <button className="p-2 rounded-full bg-gray-300 dark:bg-gray-700" onClick={()=>handleChat()}>
-                <IconArrowup className="h-5 w-5" />
+            <button className="p-2 rounded-full bg-gray-300 dark:bg-gray-700" onClick={()=>handleChat()} disabled={loading}>
+                {loading ? (
+                    <div className="w-5 h-5 border-t-2 border-black border-solid rounded-full animate-spin"></div>
+                ): <IconArrowup className="h-5 w-5" />}
             </button>
             </div>
           </div>
