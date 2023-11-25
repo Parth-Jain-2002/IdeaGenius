@@ -1,19 +1,17 @@
 import imagem from "../assets/images/IdeaGenLogo.png"
 import ResearchCard from "./ResearchCard"
-import { useAuth } from "../contexts/AuthContext"
 import Collapsible from "./Collapsible"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
 export default function ResearchBank() {
-    const {userInfo} = useAuth()
     const [threads, setThreads] = useState([])
 
     useEffect(() => {
-        console.log(userInfo.id)
+        //console.log(localStorage.getItem("ideagen_user_id"))
         axios.get(`http://localhost:8000/get_threads`,{
             params:{
-                userid: userInfo.id
+                userid: localStorage.getItem("ideagen_user_id")
             }
         }
         ).then((response) => {
@@ -60,6 +58,7 @@ export default function ResearchBank() {
             type="text"
         />
           <div className="flex items-center space-x-2">
+          <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
             <svg
                 className=" h-6 w-6 text-gray-600 dark:text-gray-300"
                 fill="none"
@@ -75,7 +74,6 @@ export default function ResearchBank() {
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
             </svg>
-            <span className="text-lg">{userInfo? userInfo.name : ""}</span>
           </div>
         </section>
         <section className="space-y-4">

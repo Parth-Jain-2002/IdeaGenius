@@ -1,17 +1,71 @@
 import Collapsible from "./Collapsible" 
 import imagem from "../assets/images/IdeaGenLogo.png"
-import { useAuth } from "../contexts/AuthContext"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router"
 import axios from "axios"
 
 export default function ChatInterface() {
     // Get chat id from url
     const {chatid} = useParams()
-    const {userInfo} = useAuth()
+    const containerRef = useRef()
+    const message = useRef()
     const [chats, setChats] = useState([])
     const [chatInfo, setChatInfo] = useState({})
 
+    const formatResponse = (text, containerRef) => {
+        const result = [];
+        let count = 0;
+        const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 9.5) : 70;
+
+        console.log(maxCount)
+    
+        for (let i = 0; i < text.length; i++) {
+            result.push(text[i]);
+            count++;
+    
+            if(text[i] === '\n') {
+                count = 0;
+            }
+
+            if(count === 1 && text[i] === ' ') {
+                result.pop();
+            }
+
+            // Check if the next word is going to exceed the maxCount
+            let temp = text.slice(i+1).split(' ')[0]
+            if (count + temp.length > maxCount) {
+                result.push('\n');
+                count = 0;
+            }
+    
+            if (count === maxCount && text[i] !== '\n') {
+                result.push('\n');
+                count = 0;
+            }
+        }
+    
+        return result.join('');
+    };
+
+    const handleChat = () => {
+        console.log("Sending message")
+        console.log(message.current.value)
+        axios.post(`http://localhost:8000/chat_interface`,{
+            chat_id: chatid,
+            message: message.current.value
+        }
+        ).then((response) => {
+            console.log(response)
+            setChats([...chats,{
+                message: message.current.value,
+                response: response.data.response
+            }])
+            message.current.value = ""
+        }, (error) => {
+            console.log(error)
+        })
+    }
+        
     useEffect(() => {
         setChats([
             {
@@ -93,59 +147,68 @@ export default function ChatInterface() {
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
             </svg>
-            <span className="text-lg">{userInfo? userInfo.name : ""}</span>
+            <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
           </div>
         </section>
-        <section className="flex flex-col space-y-4 h-full">
-          <div className="overflow-auto p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md flex-grow">
-            <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
-              <div className="items-center">
-                <h3 className="text-lg font-semibold ml-4">{chatInfo.title}</h3>
-                <span className="text-sm text-gray-500 ml-4">{chatInfo.url}</span>
-              </div>
-              <img
-                alt="Icon"
-                className="rounded-lg mr-2"
-                height="80"
-                src={chatInfo.imgsrc}
-                style={{
-                  aspectRatio: "30/30",
-                  objectFit: "cover",
-                }}
-                width="80"
-              />
+        <section className="flex flex-col space-y-4 h-full overflow-y-auto">
+            <div className="overflow-y-auto p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md flex-grow">
+                <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
+                    <div className="items-center">
+                        <h3 className="text-lg font-semibold ml-4">{chatInfo.title}</h3>
+                        <span className="text-sm text-gray-500 ml-4">{chatInfo.url}</span>
+                    </div>
+                    <img
+                        alt="Icon"
+                        className="rounded-lg mr-2"
+                        height="80"
+                        src={chatInfo.imgsrc}
+                        style={{
+                            aspectRatio: "30/30",
+                            objectFit: "cover",
+                        }}
+                        width="80"
+                    />
+                </div>
+                {chats ? (
+                    chats.map((chat, index) => (
+                        <>
+                            <div className="flex items-start mb-4">
+                                <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
+                                <div className="ml-2 mr-2 flex-grow">
+                                    <div className="text-sm text-gray-500">User</div>
+                                    <div className="bg-gray-200 dark:bg-zinc-700 rounded-md px-5 py-3 mt-1">{chat.message}</div>
+                                </div>
+                            </div>
+                            <div className="flex items-start mb-4">
+                                <div className="ml-auto flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
+                                <div className="ml-2 mr-2 flex-grow">
+                                    <div className="text-sm text-gray-500">AI</div>
+                                    <div
+                                        className="bg-blue-200 dark:bg-blue-900 rounded-md px-5 py-3 mt-1"
+                                        ref={containerRef}
+                                        style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
+                                    >
+                                        <pre dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    ))
+                ) : (
+                    ""
+                )}
             </div>
-            {chats? chats.map((chat, index) => (
-            <>
-                <div className="flex items-start mb-4">
-                <div className="flex-none">
-                    {/* <Avatar className="rounded-full" size="icon" /> */}
-                </div>
-                <div className="ml-4 flex-grow">
-                    <div className="text-sm text-gray-500">User</div>
-                    <div className="bg-gray-200 dark:bg-zinc-700 rounded-md p-2 mt-1">{chat.message}</div>
-                </div>
-                </div>
-                <div className="flex items-start mb-4">
-                <div className="ml-auto flex-none">
-                    {/* <Avatar className="rounded-full" size="icon" /> */}
-                </div>
-                <div className="mr-4 flex-grow text-right">
-                    <div className="text-sm text-gray-500">AI</div>
-                    <div className="bg-blue-200 dark:bg-blue-900 rounded-md p-2 mt-1">{chat.response}</div>
-                </div>
-                </div>
-            </>
-            )) : ""}
-          </div>
+        </section>
+        <section className="flex flex-col space-y-4">
           <div className="mt-4 flex items-center space-x-2">
           <div className="flex w-full">
             <input
                 className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef]"
                 placeholder="Enter your message"
                 type="text"
+                ref={message}
             />
-            <button className="p-2 rounded-full bg-gray-300 dark:bg-gray-700">
+            <button className="p-2 rounded-full bg-gray-300 dark:bg-gray-700" onClick={()=>handleChat()}>
                 <IconArrowup className="h-5 w-5" />
             </button>
             </div>

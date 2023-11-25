@@ -53,11 +53,10 @@ export default function AuthProvider({children}) {
         //     console.log(error)
         // })
 
-        setUserInfo({
-            email: user_email,
-            name: "Test",
-            id: user_id
-        })
+        localStorage.setItem("ideagen_logged_in",true)
+        localStorage.setItem("ideagen_user_id",user_id)
+        localStorage.setItem("ideagen_user_email",user_email)
+        localStorage.setItem("ideagen_user_name","Test")
 
         return userCredential
     }
@@ -65,6 +64,9 @@ export default function AuthProvider({children}) {
     function logout(){
         return auth.signOut().then(()=>{
             localStorage.setItem("ideagen_logged_in",false)
+            localStorage.setItem("ideagen_user_id","")
+            localStorage.setItem("ideagen_user_email","")
+            localStorage.setItem("ideagen_user_name","")
         })
     }
 
