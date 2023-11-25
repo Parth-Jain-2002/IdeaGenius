@@ -161,8 +161,8 @@ export default function ChatInterface() {
             <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
           </div>
         </section>
-        <section className="flex flex-col space-y-4 h-full overflow-y-auto">
-            <div className="overflow-y-auto p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md flex-grow">
+        <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh]">
+            <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
                     <div className="items-center">
                         <h3 className="text-lg font-semibold ml-4">{chatInfo.title}</h3>
