@@ -11,4 +11,5 @@ urlpatterns = [
     path('get_chat',views.get_chat, name='get_chat'),
     path('get_threads',views.get_threads, name='get_threads'),
     path('get_thread',views.get_thread, name='get_thread'),
+    path('chat_interface',views.chat_interface, name='chat_interface'),
 ]

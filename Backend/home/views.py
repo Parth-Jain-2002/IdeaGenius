@@ -300,3 +300,25 @@ def url_test(request):
     Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
 
     return JsonResponse({'response':'test'})
+
+@csrf_exempt
+def chat_interface(request):
+    data = json.loads(request.body.decode('utf-8'))
+    print(data)
+    message = data['message']
+    chatid = data['chat_id']
+
+    # Get the last chat from the database according to timestamp
+    chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
+
+    # Prompt
+    prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
+
+    # Get the response from the model
+    response = llm(prompt)
+
+    # Save the chat in the database
+    Chat.objects.create(userid=chat.userid, message=message, response=response, chatid=chatid)
+
+    return JsonResponse({'response':response})
+
