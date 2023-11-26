@@ -57,6 +57,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 "action": request.message,
                 "userid": user_id
             }
+        }).then(()=>{
+            chrome.tabs.create({
+                url: "http://localhost:5173/research"
+            });
         })
     }
 });
