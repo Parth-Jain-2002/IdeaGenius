@@ -55,13 +55,15 @@ class HuggingChat(LLM):
             raise ValueError("email, psw, or cookie_path is required.")
         
         try:
-            if self.email and self.psw:
+            if not os.path.exists(self.cookie_path):
                 # Create a ChatBot using email and psw
                 start_time = time.time()
                 sign = Login(self.email, self.psw)
                 cookies = sign.login()
                 end_time = time.time()
                 if self.log : print(f"\n[LOG] Login successfull in {round(end_time - start_time)} seconds")
+
+                sign.saveCookiesToDir(self.cookie_path)
             else:
                 # Create a ChatBot using cookie_path
                 sign_in = Login(self.email, None)

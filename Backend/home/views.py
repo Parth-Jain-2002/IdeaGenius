@@ -22,7 +22,7 @@ from PIL import Image
 
 from .models import UserAction, Chat, User, Thread
 
-llm = HCA(email=os.getenv("EMAIL"), cookie_path="./cookies_snapshot")
+llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 
 @csrf_exempt
 # Create your views here.
