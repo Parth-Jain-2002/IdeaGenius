@@ -16,6 +16,8 @@ from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA, LLMChain
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.prompts import PromptTemplate
+from langchain.vectorstores import Chroma
+from langchain.embeddings import HuggingFaceHubEmbeddings
 
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
@@ -23,6 +25,7 @@ from PIL import Image
 from .models import UserAction, Chat, User, Thread
 
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
+embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
 
 @csrf_exempt
 # Create your views here.
@@ -41,35 +44,99 @@ def ai_response(request):
     response['message'] = 'This is the ai_response page'
     return JsonResponse(response)
 
-def summarize(url):
+def summarize(url, chatid):
     # scrape the url
     summary = scrape(url)
+    text_array = []
+
+    # Split the summary into chunks of 100 words
+    words = summary.split()
+    for i in range(0, len(words), 200):
+        text_array.append(" ".join(words[i:i+200]))
+
+    print(text_array)
+
+    # Split the text into chunks of 1000 characters
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(text_array)
+    print(texts)
+    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
+
+    # save vectorstore
+    db.persist()
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
 
     # summarize the text
-    query_to_ask = "Here is the article text. Summarize this in 5 ordered list points: " + summary
-    ai_summary = llm(query_to_ask)
+    query_to_ask = "Summarize this in 5 ordered list points"
+    ai_summary = qa({"query": query_to_ask})
     
-    return ai_summary
+    print(ai_summary)
+    return ai_summary['result']
 
-def insights(url):
+def insights(url,chat_id):
     # scrape the url
     summary = scrape(url)
+    text_array = []
+
+    # Split the summary into chunks of 100 words
+    words = summary.split()
+    for i in range(0, len(words), 200):
+        text_array.append(" ".join(words[i:i+200]))
+
+    print(text_array)
+
+    # Split the text into chunks of 1000 characters
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(text_array)
+    print(texts)
+    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
+
+    # save vectorstore
+    db.persist()
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
 
     # actionable insights from the text
-    query_to_ask = "Here is the article text. What are the main actionable insights from this article in 5 ordered list points? " + summary
-    ai_insights = llm(query_to_ask)
+    query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
+    ai_insights = qa({"query": query_to_ask})
     
-    return ai_insights
+    return ai_insights['result']
 
-def deep_dive(url):
+def deep_dive(url,chat_id):
     # scrape the url
     summary = scrape(url)
+    text_array = []
+
+    # Split the summary into chunks of 100 words
+    words = summary.split()
+    for i in range(0, len(words), 200):
+        text_array.append(" ".join(words[i:i+200]))
+
+    print(text_array)
+
+    # Split the text into chunks of 1000 characters
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(text_array)
+    print(texts)
+    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
+
+    # save vectorstore
+    db.persist()
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
 
     # deep dive into the text
-    query_to_ask = "Here is the article text. Deep dive into this article. " + summary
-    ai_deep_dive = llm(query_to_ask)
+    query_to_ask = "Deep dive into this article in 5 ordered list points"
+    ai_deep_dive = qa({"query": query_to_ask})
     
-    return ai_deep_dive
+    return ai_deep_dive['result']
 
 def scrape(url):
     # if the url contains youtube, then call other function
@@ -119,29 +186,6 @@ def scrape_youtube(url, transcript=True):
     
     if transcript:
         return all_text
-
-    # Step 2: Create a vectorstore from the transcript
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.create_documents(text_list)
-    # Select embeddings
-    embeddings = st.session_state['hf']
-    # Create a vectorstore from documents
-    random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-    db = Chroma.from_documents(texts, embeddings, persist_directory="./chroma_db_" + random_str)
-
-    # Step 3: Create retriever interface
-    # save vectorstore
-    db.persist()
-    #create .zip file of directory to download
-    shutil.make_archive("./chroma_db_" + random_str, 'zip', "./chroma_db_" + random_str)
-        
-
-    # Step 4: Creating a QA chain
-    # Create retriever interface
-    retriever = db.as_retriever()
-    # Create QA chain
-    qa = RetrievalQA.from_chain_type(llm=st.session_state['LLM'], chain_type='stuff', retriever=retriever, return_source_documents=True)
-    return qa
 
 @csrf_exempt
 def test(request):
@@ -201,13 +245,13 @@ def visual_summary(image):
     print(response)
     return response
 
-def perform_task(url, action):
+def perform_task(url, action, chatid):
     if action == 'clicked_summary':
-        return summarize(url)
+        return summarize(url, chatid)
     elif action == 'clicked_insights':
-        return insights(url)
+        return insights(url, chatid)
     elif action == 'clicked_deep_dive':
-        return deep_dive(url)
+        return deep_dive(url, chatid)
     else:
         return "No action found"
 
@@ -276,7 +320,14 @@ def create_thread(url, userid):
 
     # create a thread in the database
     thread = Thread.objects.create(userid=userid, title=title, imgsrc=imgsrc, url=url)
-    return thread.chatid
+    chatid = thread.chatid
+    vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
+    thread.vectorstore_path = vectorstore_path
+
+    # Update the vectorstore path in the database
+    thread.save()
+
+    return chatid
     
 @csrf_exempt
 def url_test(request):
@@ -296,7 +347,7 @@ def url_test(request):
     print(chatid)
 
     # Perform the task, chat message
-    response = perform_task(url, action)
+    response = perform_task(url, action,chatid)
     Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
 
     return JsonResponse({'response':'test'})
@@ -314,8 +365,28 @@ def chat_interface(request):
     # Prompt
     prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
 
-    # Get the response from the model
-    response = llm(prompt)
+    # Use the vectorstore from the thread
+    thread = Thread.objects.get(chatid=chatid)
+    vectorstore_path = thread.vectorstore_path
+    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+    response = qa({"query": prompt})
+    print(response)
+    response = response['result']
+
+    # Add the response to the vectorstore
+    word = response.split()
+    word_array = []
+    for i in range(0, len(word), 200):
+        word_array.append(" ".join(word[i:i+200]))
+
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(word_array)
+    db.add_documents(texts)
+    db.persist()
 
     # Save the chat in the database
     Chat.objects.create(userid=chat.userid, message=message, response=response, chatid=chatid)

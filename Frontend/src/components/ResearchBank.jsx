@@ -76,9 +76,9 @@ export default function ResearchBank() {
             </svg>
           </div>
         </section>
-        <section className="space-y-4">
+        <section className="space-y-4 overflow-y-scroll max-h-[88vh] overflow-x-hidden">
           <h2 className="text-xl font-bold">Research Bank</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {threads.map((thread) => (
                 <ResearchCard
                     imgSrc={thread.imgsrc}

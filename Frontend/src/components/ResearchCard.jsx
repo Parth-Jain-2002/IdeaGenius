@@ -23,7 +23,7 @@ function IconResearch(props) {
 
 const ResearchCard = ({ imgSrc, title, url, chatid }) => {
   return (
-    <div className="relative p-4 rounded-lg shadow-lg bg-white">
+    <div className="relative p-4 rounded-lg shadow-lg bg-white mb-1">
       <img
         alt={title}
         className="mx-auto rounded-lg"
