@@ -1,9 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth, db, googleProvider } from '../config/firebaseConfig.jsx'; // Assuming you have a googleProvider
 import { collection, doc, setDoc } from 'firebase/firestore';
-import React, {useContext,useState,useEffect} from 'react'
-import {auth,db} from '../config/firebaseConfig.jsx'
-import {collection,doc,setDoc} from 'firebase/firestore'
 import axios from 'axios'
 
 const AuthContext = React.createContext()
