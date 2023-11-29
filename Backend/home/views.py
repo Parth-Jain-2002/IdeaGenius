@@ -19,6 +19,10 @@ from langchain.prompts import PromptTemplate
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceHubEmbeddings
 
+import yt_dlp
+import whisper
+from django.conf import settings
+
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
@@ -26,6 +30,10 @@ from .models import UserAction, Chat, User, Thread
 
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
+
+# Load whisper model
+whisper_model = whisper.load_model("tiny")
+
 
 @csrf_exempt
 # Create your views here.
@@ -76,7 +84,7 @@ def summarize(url, chatid):
     print(ai_summary)
     return ai_summary['result']
 
-def insights(url,chat_id):
+def insights(url,chatid):
     # scrape the url
     summary = scrape(url)
     text_array = []
@@ -104,7 +112,7 @@ def insights(url,chat_id):
     # actionable insights from the text
     query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
     ai_insights = qa({"query": query_to_ask})
-    
+    print(ai_insights['result'])
     return ai_insights['result']
 
 def deep_dive(url,chat_id):
@@ -138,6 +146,27 @@ def deep_dive(url,chat_id):
     
     return ai_deep_dive['result']
 
+
+# Function for saving audio from input video id of YouTube
+def download(video_id: str) -> str:
+    video_url = f'https://www.youtube.com/watch?v={video_id}'
+    ydl_opts = {
+        'format': 'm4a/bestaudio/best',
+        'paths': {'home': 'audio/'},
+        'outtmpl': {'default': '%(id)s.%(ext)s'},
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'm4a',
+        }]
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        error_code = ydl.download([video_url])
+        if error_code != 0:
+            raise Exception('Failed to download video')
+
+    return f'audio/{video_id}.m4a'
+    
+
 def scrape(url):
     # if the url contains youtube, then call other function
     if 'youtube' in url:
@@ -154,39 +183,33 @@ def scrape(url):
 
     return summary
 
-def scrape_youtube(url, transcript=True):
-    # get the video id from the url
-    yt_url = url.split('=')[1]
+def scrape_youtube(video_url):
+     # Extract video ID from the URL
+    video_id = video_url.split('v=')[1].split('&')[0]
 
-    # TODO: Afterwards use Whisper to get the transcript
-    # Step 1: Get the transcript
-    text_yt = []
-    text_list = []
-    all_text = ""
-    transcript_list = YouTubeTranscriptApi.list_transcripts(yt_url)
-    transcript_en = None
-    last_language = ""
-    for transcript in transcript_list:
-        if transcript.language_code == 'en':
-            transcript_en = transcript
-            break
-        else:
-            last_language = transcript.language_code
-    if transcript_en is None:   
-        transcript_en = transcript_list.find_transcript([last_language])
-        transcript_en = transcript_en.translate('en')
+    try:
+        # Try to get the transcript using YouTubeTranscriptApi
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        transcript_paragraph = ' '.join(entry['text'] for entry in transcript_list)
+        print("Transcription:", transcript_paragraph)
+        return transcript_paragraph
+    except Exception as e:
+        # If getting the transcript fails, use whisper as a fallback
+        print("Error getting transcript:", e)
+        print("Using whisper as a fallback.")
 
-    text = transcript_en.fetch()
-    text_yt.append(text)
-
-    for i in range(len(text_yt)):
-        for j in range(len(text_yt[i])):
-            text_list.append(text_yt[i][j]['text'])
-            all_text += text_yt[i][j]['text'] + " "
+        file_path = download(video_id)
+        print("file path : ", file_path)
+        try:
+            transcription = whisper_model.transcribe(file_path, fp16=False)
+            transcript_paragraph = transcription['text']
+            print("Whisper:", transcript_paragraph)
+            return transcript_paragraph
+        except Exception as whisper_error:
+            print("Whisper transcription failed:", whisper_error)
+    # Handle the error or log it as needed
+            return "Fallback transcription using Whisper failed."
     
-    if transcript:
-        return all_text
-
 @csrf_exempt
 def test(request):
     # Get the PDF file from the request
