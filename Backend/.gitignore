@@ -8,3 +8,6 @@ db.sqlite3
 __pycache__
 home/__pycache__
 ideagenius/__pycache__
+
+*.pyc
+*.pyo
