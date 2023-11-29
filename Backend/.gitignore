@@ -3,3 +3,5 @@ cookies_snapshot
 .env
 vector_store
 v1
+audio
+db.sqlite3

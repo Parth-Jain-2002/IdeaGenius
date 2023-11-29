@@ -23,7 +23,9 @@ class Thread(models.Model):
     url = models.CharField(max_length=255, default="")
     vectorstore_path = models.CharField(max_length=255, default="")
 
-class User(models.Model):
+class UserDoc(models.Model):
     userid = models.CharField(max_length=50)
-    topics = models.JSONField()
+    email = models.CharField(max_length=255, default="", unique=True)
+    name = models.CharField(max_length=255, default="")
+    topics = models.JSONField(default=dict)
 
