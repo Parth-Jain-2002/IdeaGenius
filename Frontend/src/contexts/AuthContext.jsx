@@ -1,6 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth, db, googleProvider } from '../config/firebaseConfig.jsx'; // Assuming you have a googleProvider
 import { collection, doc, setDoc } from 'firebase/firestore';
+import React, {useContext,useState,useEffect} from 'react'
+import {auth,db} from '../config/firebaseConfig.jsx'
+import {collection,doc,setDoc} from 'firebase/firestore'
+import axios from 'axios'
 
 const AuthContext = React.createContext()
 
@@ -18,7 +22,8 @@ export default function AuthProvider({children}) {
         const user = userCredential.user
         const user_id = user.uid
         const user_email = user.email
-        await axios.post('http://localhost:8000/user/new', {
+        
+        await axios.post('http://localhost:8000/new_user', {
             _id: user_id,
             email: user_email,
             name: username
@@ -28,11 +33,6 @@ export default function AuthProvider({children}) {
             console.log(error)
         })
 
-        setUserInfo({
-            email: user_email,
-            name: username,
-            id: user_id
-        })
         return userCredential
     }
 
@@ -42,16 +42,20 @@ export default function AuthProvider({children}) {
         const user_id = user.uid
         const user_email = user.email
 
-        // await axios.get(`http://localhost:8000/user/${user_id}`).then((response) => {
-        //     console.log(response)
-        //     setUserInfo({
-        //         email: user_email,
-        //         name: response.data.name,
-        //         id: user_id
-        //     })
-        // }, (error) => {
-        //     console.log(error)
-        // })
+        await axios.get(`http://localhost:8000/get_user`,{
+            params:{
+                userid: user_id
+            }
+        }).then((response) => {
+            console.log(response)
+            setUserInfo({
+                email: user_email,
+                name: response.data.name,
+                id: user_id
+            })
+        }, (error) => {
+            console.log(error)
+        })
 
         localStorage.setItem("ideagen_logged_in",true)
         localStorage.setItem("ideagen_user_id",user_id)

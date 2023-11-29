@@ -3,3 +3,11 @@ cookies_snapshot
 .env
 vector_store
 v1
+audio
+db.sqlite3
+__pycache__
+home/__pycache__
+ideagenius/__pycache__
+
+*.pyc
+*.pyo

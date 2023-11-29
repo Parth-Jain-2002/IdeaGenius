@@ -21,6 +21,18 @@ function IconResearch(props) {
     )
   }
 
+function parseText(text) {
+    return text.length > 40 ? text.slice(0, 40) + "..." : text;
+}
+
+function parseUrl(url) {
+    // Remove http:// or https://
+    url = url.replace(/(^\w+:|^)\/\//, "");
+    // Remove text after first /
+    url = url.split("/")[0];
+    return url.length > 40 ? url.slice(0, 40) + "..." : url;
+}
+
 const ResearchCard = ({ imgSrc, title, url, chatid }) => {
   return (
     <div className="relative p-4 rounded-lg shadow-lg bg-white mb-1">
@@ -35,9 +47,13 @@ const ResearchCard = ({ imgSrc, title, url, chatid }) => {
         }}
         width="200"
       />
-      <h3 className="text-lg font-semibold mt-2 text-center">{title}</h3>
+      <h3 className="text-lg font-semibold mt-2 text-center"
+        onMouseEnter={(e) => e.target.innerText = title}
+        onMouseLeave={(e) => e.target.innerText = parseText(title)}
+      >
+        {parseText(title)}</h3>
       <Link className="inline-block mt-2 text-center" to={url}>
-        {url}
+        {parseUrl(url)}
       </Link>
       <div className="absolute bottom-3 right-3">
         {/* Use a suitable Tailwind CSS icon here */}

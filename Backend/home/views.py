@@ -26,7 +26,7 @@ from django.conf import settings
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
-from .models import UserAction, Chat, User, Thread
+from .models import UserAction, Chat, UserDoc, Thread
 
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
@@ -53,25 +53,7 @@ def ai_response(request):
     return JsonResponse(response)
 
 def summarize(url, chatid):
-    # scrape the url
-    summary = scrape(url)
-    text_array = []
-
-    # Split the summary into chunks of 100 words
-    words = summary.split()
-    for i in range(0, len(words), 200):
-        text_array.append(" ".join(words[i:i+200]))
-
-    print(text_array)
-
-    # Split the text into chunks of 1000 characters
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.create_documents(text_array)
-    print(texts)
-    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
-
-    # save vectorstore
-    db.persist()
+    db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
 
     # create a QA chain
@@ -85,25 +67,7 @@ def summarize(url, chatid):
     return ai_summary['result']
 
 def insights(url,chatid):
-    # scrape the url
-    summary = scrape(url)
-    text_array = []
-
-    # Split the summary into chunks of 100 words
-    words = summary.split()
-    for i in range(0, len(words), 200):
-        text_array.append(" ".join(words[i:i+200]))
-
-    print(text_array)
-
-    # Split the text into chunks of 1000 characters
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.create_documents(text_array)
-    print(texts)
-    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
-
-    # save vectorstore
-    db.persist()
+    db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
 
     # create a QA chain
@@ -115,7 +79,20 @@ def insights(url,chatid):
     print(ai_insights['result'])
     return ai_insights['result']
 
-def deep_dive(url,chat_id):
+def deep_dive(url,chatid):
+    db = add_to_research_bank(url,chatid)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+
+    # deep dive into the text
+    query_to_ask = "Deep dive into this article in 5 ordered list points"
+    ai_deep_dive = qa({"query": query_to_ask})
+    
+    return ai_deep_dive['result']
+
+def add_to_research_bank(url,chatid):
     # scrape the url
     summary = scrape(url)
     text_array = []
@@ -135,16 +112,28 @@ def deep_dive(url,chat_id):
 
     # save vectorstore
     db.persist()
-    retriever = db.as_retriever()
+    return db
 
-    # create a QA chain
-    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
 
-    # deep dive into the text
-    query_to_ask = "Deep dive into this article in 5 ordered list points"
-    ai_deep_dive = qa({"query": query_to_ask})
+# Function for saving audio from input video id of YouTube
+def download(video_id: str) -> str:
+    video_url = f'https://www.youtube.com/watch?v={video_id}'
+    ydl_opts = {
+        'format': 'm4a/bestaudio/best',
+        'paths': {'home': 'audio/'},
+        'outtmpl': {'default': '%(id)s.%(ext)s'},
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'm4a',
+        }]
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        error_code = ydl.download([video_url])
+        if error_code != 0:
+            raise Exception('Failed to download video')
+
+    return f'audio/{video_id}.m4a'
     
-    return ai_deep_dive['result']
 
 
 # Function for saving audio from input video id of YouTube
@@ -275,6 +264,9 @@ def perform_task(url, action, chatid):
         return insights(url, chatid)
     elif action == 'clicked_deep_dive':
         return deep_dive(url, chatid)
+    elif action == 'clicked_research_bank':
+        add_to_research_bank(url, chatid)
+        return "Add to research bank"
     else:
         return "No action found"
 
@@ -371,7 +363,8 @@ def url_test(request):
 
     # Perform the task, chat message
     response = perform_task(url, action,chatid)
-    Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
+    if action != 'clicked_research_bank':
+        Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
 
     return JsonResponse({'response':'test'})
 
@@ -382,11 +375,16 @@ def chat_interface(request):
     message = data['message']
     chatid = data['chat_id']
 
-    # Get the last chat from the database according to timestamp
-    chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
+    chat = ''
+    prompt = ''
+    try:
+        # Get the last chat from the database according to timestamp
+        chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
 
-    # Prompt
-    prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
+        # Prompt
+        prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
+    except:
+        prompt = "What is your response to this query: " + message + "?"
 
     # Use the vectorstore from the thread
     thread = Thread.objects.get(chatid=chatid)
@@ -412,7 +410,35 @@ def chat_interface(request):
     db.persist()
 
     # Save the chat in the database
-    Chat.objects.create(userid=chat.userid, message=message, response=response, chatid=chatid)
+    Chat.objects.create(userid=thread.userid, message=message, response=response, chatid=chatid)
 
     return JsonResponse({'response':response})
 
+#------------------------------------------------------------------------------------------
+#----------------------------------- USER -------------------------------------------------
+#------------------------------------------------------------------------------------------
+
+@csrf_exempt
+def new_user(request):
+    data = json.loads(request.body.decode('utf-8'))
+    _id = data['_id']
+    email = data['email']
+    name = data['name']
+
+    print("ID: " + _id + " Email: " + email + " Name: " + name)
+
+    # Create a new user in the database
+    try:
+        UserDoc.objects.create(userid=_id, email=email, name=name, topics={"Miscellaneous":[]})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'response':'User already exists'})
+
+    return JsonResponse({'response':'Success'})
+
+@csrf_exempt
+def get_user(request):
+    userid = request.GET['userid']
+    user = UserDoc.objects.get(userid=userid)
+
+    return JsonResponse({'email':user.email, 'name':user.name})
