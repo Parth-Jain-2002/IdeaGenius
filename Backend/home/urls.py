@@ -15,4 +15,6 @@ urlpatterns = [
 
     path('get_user',views.get_user, name='get_user'),
     path('new_user',views.new_user, name='new_user'),
+
+    path('get_topics',views.get_topics, name='get_topics'),
 ]

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const Collapsible = ({ title, data }) => {
+const Collapsible = ({ title, data, chat }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleCollapsible = () => {
     setIsOpen(!isOpen);
+  };
+
+  const parseTitle = (title) => {
+    return title.length > 20 ? title.slice(0, 20) + '...' : title;
   };
 
   return (
@@ -33,7 +38,7 @@ const Collapsible = ({ title, data }) => {
         <div className="collapsible-content">
           <ul className="list-disc list-inside space-y-1">
             {data.map((item, index) => (
-              <li key={index}>{item}</li>
+              <li key={index}><Link to={ `../chat/${item.chatid}`}>{parseTitle(item.title)}</Link></li>
             ))}
           </ul>
         </div>

@@ -321,6 +321,13 @@ def create_thread(url, userid):
     # Update the vectorstore path in the database
     thread.save()
 
+    # Add the topic to the "Miscellaneous" topic
+    user = UserDoc.objects.get(userid=userid)
+    topics = user.topics
+    topics['Miscellaneous'].append({'title':title, 'chatid':str(chatid)})
+    user.topics = topics
+    user.save()
+
     return chatid
     
 @csrf_exempt
@@ -392,6 +399,14 @@ def chat_interface(request):
     Chat.objects.create(userid=thread.userid, message=message, response=response, chatid=chatid)
 
     return JsonResponse({'response':response})
+
+#------------------------------------------------------------------------------------------
+@csrf_exempt
+def get_topics(request):
+    userid = request.GET['userid']
+    user = UserDoc.objects.get(userid=userid)
+
+    return JsonResponse({'topics':user.topics})
 
 #------------------------------------------------------------------------------------------
 #----------------------------------- USER -------------------------------------------------

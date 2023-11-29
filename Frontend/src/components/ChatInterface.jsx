@@ -12,6 +12,8 @@ export default function ChatInterface() {
     const [chats, setChats] = useState([])
     const [chatInfo, setChatInfo] = useState({})
     const [loading, setLoading] = useState(false)
+    const [topics, setTopics] = useState({})
+
 
     const formatResponse = (text, containerRef) => {
         const result = [];
@@ -111,7 +113,19 @@ export default function ChatInterface() {
         }, (error) => {
             console.log(error)
         })
-    },[])
+
+        axios.get(`http://localhost:8000/get_topics`,{
+            params:{
+                userid : localStorage.getItem("ideagen_user_id")
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            setTopics(response.data.topics)
+        }, (error) => {
+            console.log(error)
+        })
+    },[chatid])
 
   return (
     <section className="grid h-screen grid-cols-5">
@@ -132,8 +146,10 @@ export default function ChatInterface() {
         </div>
         <div className="space-y-4 text-center">
           <h2 className="text-lg font-semibold border-b">My Ideas</h2>
-          <Collapsible title="Idea 1" data={['Document 1', 'Document 2']} />
-          <Collapsible title="Idea 2" data={['Document 1', 'Document 2']} />
+            {/* { "Idea 1":[], "Idea 2": ["dkfjdfjl","jjdofdsofn"]} */}
+            {Object.keys(topics).map((topic, index) => (
+                <Collapsible title={topic} data={topics[topic]} chat={true}/>
+            ))}
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />

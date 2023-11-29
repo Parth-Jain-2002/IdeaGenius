@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 
 export default function ResearchBank() {
     const [threads, setThreads] = useState([])
+    const [topics, setTopics] = useState({})
 
     useEffect(() => {
         //console.log(localStorage.getItem("ideagen_user_id"))
@@ -18,6 +19,18 @@ export default function ResearchBank() {
             console.log(response)
             console.log(response.data.data)
             setThreads(response.data.data)
+        }, (error) => {
+            console.log(error)
+        })
+
+        axios.get(`http://localhost:8000/get_topics`,{
+            params:{
+                userid : localStorage.getItem("ideagen_user_id")
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            setTopics(response.data.topics)
         }, (error) => {
             console.log(error)
         })
@@ -42,8 +55,10 @@ export default function ResearchBank() {
         </div>
         <div className="space-y-4 text-center">
           <h2 className="text-lg font-semibold border-b">My Ideas</h2>
-          <Collapsible title="Idea 1" data={['Document 1', 'Document 2']} />
-          <Collapsible title="Idea 2" data={['Document 1', 'Document 2']} />
+          {/* { "Idea 1":[], "Idea 2": ["dkfjdfjl","jjdofdsofn"]} */}
+          {Object.keys(topics).map((topic, index) => (
+                <Collapsible title={topic} data={topics[topic]} chat={true}/>
+            ))}
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />
