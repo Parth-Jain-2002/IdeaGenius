@@ -44,12 +44,7 @@ export default function AuthProvider({children}) {
                 userid: user_id
             }
         }).then((response) => {
-            console.log(response)
-            setUserInfo({
-                email: user_email,
-                name: response.data.name,
-                id: user_id
-            })
+            localStorage.setItem("ideagen_user_name",response.data.name)
         }, (error) => {
             console.log(error)
         })
@@ -57,10 +52,10 @@ export default function AuthProvider({children}) {
         localStorage.setItem("ideagen_logged_in",true)
         localStorage.setItem("ideagen_user_id",user_id)
         localStorage.setItem("ideagen_user_email",user_email)
-        localStorage.setItem("ideagen_user_name","Test")
 
         return userCredential
     }
+    
     async function loginWithGoogle() {
         try {
           const result = await auth.signInWithPopup(googleProvider);
@@ -71,20 +66,28 @@ export default function AuthProvider({children}) {
           const user_email = user.email;
           const user_displayName = user.displayName; 
 
+          console.log(user_id)
+
           localStorage.setItem('ideagen_logged_in', true);
           localStorage.setItem('ideagen_user_id', user_id);
           localStorage.setItem('ideagen_user_email', user_email);
           localStorage.setItem('ideagen_user_name', user_displayName);
     
-          setUserInfo({
-            email: user_email,
-            name: user_displayName, // You might want to get the name from the user object if available
-            id: user_id,
-          });
+          await axios.post('http://localhost:8000/new_user', {
+                _id: user_id,
+                email: user_email,
+                name: user_displayName
+            }).then((response) => {
+                console.log(response)
+            }, (error) => {
+                console.log(error)
+            })
+
         } catch (error) {
           console.error('Error signing in with Google', error);
         }
       }
+
     function logout(){
         return auth.signOut().then(()=>{
             localStorage.setItem("ideagen_logged_in",false)

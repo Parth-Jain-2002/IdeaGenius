@@ -97,12 +97,12 @@ def add_to_research_bank(url,chatid):
     summary = scrape(url)
     text_array = []
 
-    # Split the summary into chunks of 100 words
+    # Split the summary into chunks of 200 words
     words = summary.split()
     for i in range(0, len(words), 200):
         text_array.append(" ".join(words[i:i+200]))
 
-    print(text_array)
+    # print(text_array)
 
     # Split the text into chunks of 1000 characters
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
@@ -113,27 +113,6 @@ def add_to_research_bank(url,chatid):
     # save vectorstore
     db.persist()
     return db
-
-
-# Function for saving audio from input video id of YouTube
-def download(video_id: str) -> str:
-    video_url = f'https://www.youtube.com/watch?v={video_id}'
-    ydl_opts = {
-        'format': 'm4a/bestaudio/best',
-        'paths': {'home': 'audio/'},
-        'outtmpl': {'default': '%(id)s.%(ext)s'},
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'm4a',
-        }]
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        error_code = ydl.download([video_url])
-        if error_code != 0:
-            raise Exception('Failed to download video')
-
-    return f'audio/{video_id}.m4a'
-    
 
 
 # Function for saving audio from input video id of YouTube
