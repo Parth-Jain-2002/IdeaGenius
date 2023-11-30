@@ -452,10 +452,8 @@ def get_user(request):
 
 def check_user_exists(request):
     try:
-        data = json.loads(request.body)
-        user_email = data.get('email', '')
-        
-        user = UserDoc.objects.get(email=user_email)
+        email = request.GET['email']
+        user = UserDoc.objects.get(email=email)
         
         user_data = {
             'email': user.email,

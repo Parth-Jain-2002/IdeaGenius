@@ -72,18 +72,8 @@ export default function AuthProvider({children}) {
           localStorage.setItem('ideagen_user_id', user_id);
           localStorage.setItem('ideagen_user_email', user_email);
           localStorage.setItem('ideagen_user_name', user_displayName);
-
-          try {
-            const existingUser = await axios.post('http://localhost:8000/check_user_exists', { email: user_email });
-        
-            if (existingUser.data) {
-                // User exists, handle the data
-                console.log(existingUser.data);
-        
-            } else {
-                console.log('User not found on the server. Creating a new one.');
-                // Proceed to create a new user
-                await axios.post('http://localhost:8000/new_user', {
+    
+          await axios.post('http://localhost:8000/new_user', {
                 _id: user_id,
                 email: user_email,
                 name: user_displayName
@@ -91,16 +81,13 @@ export default function AuthProvider({children}) {
                 console.log(response)
             }, (error) => {
                 console.log(error)
-            });
-            }
-        
+            })
+
         } catch (error) {
-            console.error('Error checking or creating user:', error);
+          console.error('Error signing in with Google', error);
         }
-       
-      }catch (error) {
-        console.error('Error in google sign in', error);
-    }}
+      }
+
 
     function logout(){
         return auth.signOut().then(()=>{
