@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+
 import requests
 from readability import Document
 import re
@@ -10,6 +11,7 @@ import json
 import os
 import pdfplumber
 import docx2txt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -441,24 +443,63 @@ def new_user(request):
     return JsonResponse({'response':'Success'})
 
 @csrf_exempt
-@require_http_methods(["POST"])
-
 def get_user(request):
     userid = request.GET['userid']
     user = UserDoc.objects.get(userid=userid)
 
+    if user is None:
+        return JsonResponse({'response':'User does not exist'})
+
     return JsonResponse({'email':user.email, 'name':user.name})
   
 
-def check_user_exists(request):
-    try:
-        email = request.GET['email']
-        user = UserDoc.objects.get(email=email)
-        
-        user_data = {
-            'email': user.email,
-            'name': user.name,
-        }
-        return JsonResponse(user_data)
-    except ObjectDoesNotExist:
-        return JsonResponse(None, safe=False)    
+#------------------------------------------------------------------------------------------
+#--------------------------------IDEA GENERATION-------------------------------------------
+#------------------------------------------------------------------------------------------
+
+def generate_source_documents(answer, chatids):
+    source_documents = ""
+    for chatid in chatids:
+        chat = Thread.objects.get(chatid=chatid)
+
+        # Get the vectorstore path from the thread
+        vectorstore_path = chat.vectorstore_path
+
+        # Use the vectorstore from the thread
+        db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+        retriever = db.as_retriever(search_kwargs={"k": 8})
+
+        # create a QA chain
+        qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+        response = qa({"query": source_document_generation(answer)})
+
+        # If the response contains "No valid points ", then skip this chat
+        if "No valid points" in response['result']:
+            continue
+        source_documents += response['result']
+
+    response = llm(final_source_generation(source_documents,answer))
+    return response
+
+@csrf_exempt
+def generate_idea():
+    answer = request.GET['answer']
+    idea = request.GET['idea']
+    userid = request.GET['userid']
+
+    # Get the all the chatid in the idea from UserDoc
+    user = UserDoc.objects.get(userid=userid)
+    topics = user.topics
+    chatids = topics[idea]
+
+    # Get the source documents from the chatids
+    source_documents = generate_source_documents(answer,chatids)
+
+    prompt = idea_generation(answer, source_documents)
+
+    answer = llm(prompt)
+    print(answer)
+
+    return JsonResponse({'response':answer})
+
+    
