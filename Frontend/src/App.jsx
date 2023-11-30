@@ -7,6 +7,12 @@ import AuthProvider from './contexts/AuthContext'
 import Dashboard from './components/Dashboard'
 import ResearchBank from './components/ResearchBank'
 import ChatInterface from './components/ChatInterface'
+import { Navigate } from 'react-router-dom'
+
+const ProtectedRoute = ({children}) => {
+  const isLoggedIn = localStorage.getItem("ideagen_logged_in")
+  return isLoggedIn ? children : <Navigate to="/login" />
+}
 
 export default function App() {
   return (
@@ -18,9 +24,9 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/research" element={<ResearchBank/>} />
-            <Route path="/chat/:chatid" element={<ChatInterface/>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/research" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
+            <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
