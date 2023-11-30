@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 import requests
 from readability import Document
 import re
@@ -175,8 +177,16 @@ def scrape_youtube(video_url):
             return transcript_paragraph
         except Exception as whisper_error:
             print("Whisper transcription failed:", whisper_error)
-    # Handle the error or log it as needed
-            return "Fallback transcription using Whisper failed."
+
+        # Fallback to Whisper failed. Delete the audio file.
+        print("Deleting audio file:", file_path)
+        try:
+            os.remove(file_path)
+            print("File deleted successfully.")
+        except Exception as delete_error:
+            print("Error deleting file:", delete_error)
+
+        return "Fallback transcription using Whisper failed."
     
 @csrf_exempt
 def test(request):
@@ -431,8 +441,26 @@ def new_user(request):
     return JsonResponse({'response':'Success'})
 
 @csrf_exempt
+@require_http_methods(["POST"])
+
 def get_user(request):
     userid = request.GET['userid']
     user = UserDoc.objects.get(userid=userid)
 
     return JsonResponse({'email':user.email, 'name':user.name})
+  
+
+def check_user_exists(request):
+    try:
+        data = json.loads(request.body)
+        user_email = data.get('email', '')
+        
+        user = UserDoc.objects.get(email=user_email)
+        
+        user_data = {
+            'email': user.email,
+            'name': user.name,
+        }
+        return JsonResponse(user_data)
+    except ObjectDoesNotExist:
+        return JsonResponse(None, safe=False)    
