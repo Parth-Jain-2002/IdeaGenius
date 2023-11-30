@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard'
 import ResearchBank from './components/ResearchBank'
 import ChatInterface from './components/ChatInterface'
 import IdeaInterface from './components/IdeaInterface'
+import LandingPage from './components/LandingPage'
 import { Navigate } from 'react-router-dom'
 
 const ProtectedRoute = ({children}) => {
@@ -21,7 +22,7 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

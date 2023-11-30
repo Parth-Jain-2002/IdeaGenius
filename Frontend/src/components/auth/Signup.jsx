@@ -3,6 +3,8 @@ import {useAuth} from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import imagem from "../../assets/images/IdeaGenLogo.png"
 import { Link } from "react-router-dom";
+import Lottie from "lottie-react";
+import animationData from "../../assets/animations/Animation - 1701313508796.json";
 function Signup() {
 
     const emailRef = useRef()
@@ -23,7 +25,7 @@ function Signup() {
         try {
             setError('')
             await signup(emailRef.current.value, passwordRef.current.value, nameRef.current.value)
-            navigate('/login')
+            navigate('/research')
         } catch {
             setError('Failed to create an account')
             alert("Failed to Sign Up")
@@ -46,11 +48,14 @@ function Signup() {
     return (
             <div className="lg:flex gap-4 h-auto w-full">
 
-               
-                    <img src={imagem} alt="" className="h-full hidden lg:flex w-[50%]"/>
+
+<div className="bg-white hidden lg:flex justify-center mr-10 md:w-1/2 xl:w-[45%] h-screen">
+                <Lottie animationData={animationData} />
+                </div>
              
 
-                <div className="lg:w-[35%] w-[90%] mx-auto ">
+                <div className="bg-white w-full border-2 rounded-2xl md:max-w-md lg:max-w-full md:mx-6 md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
+        flex items-center justify-center">
 
                     <div className="w-full h-100">
 

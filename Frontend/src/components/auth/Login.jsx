@@ -3,6 +3,8 @@ import {useAuth} from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import imagem from "../../assets/images/IdeaGenLogo.png"
 import { Link } from "react-router-dom";
+import Lottie from "lottie-react";
+import animationData from "../../assets/animations/Animation - 1701313508796.json";
 function Login() {
     const { login , loginWithGoogle } = useAuth()
     const [email, setEmail] = useState()
@@ -32,15 +34,15 @@ function Login() {
     }
 
     return (
-        <>
-                <section className="flex flex-col md:flex-row h-screen items-center">
+       
+                <div className="lg:flex gap-4 h-auto w-full">
 
-                <div className="bg-white hidden lg:flex justify-center w-full md:w-1/2 xl:w-3/5 h-screen">
-                    <img src={imagem} alt=""/>
+                <div className="bg-white hidden lg:flex justify-center w-full md:w-1/2 xl:w-[45%] h-screen">
+                <Lottie animationData={animationData} />
                 </div>
 
 
-                    <div className="bg-white w-full md:max-w-md lg:max-w-full md:mx-auto md:mx-0 md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
+                    <div className="bg-white w-full border-2 rounded-2xl md:max-w-md lg:max-w-full md:mx-6 md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
         flex items-center justify-center">
 
                         <div className="w-full h-100">
@@ -123,8 +125,8 @@ function Login() {
                         </div>
                     </div>
 
-                </section>
-        </>
+                </div>
+      
     )
 }
 
