@@ -14,6 +14,7 @@ import MarketInsight from './components/MarketInsight'
 import VisionDoc from './components/VisionDoc'
 import Collab from './components/Collab'
 import People from './components/People'
+import IdeaDashboard from './components/IdeaDashboard'
 
 const ProtectedRoute = ({children}) => {
   const isLoggedIn = localStorage.getItem("ideagen_logged_in")
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
             <Route path="/collab/:ideaid" element={<ProtectedRoute><Collab/></ProtectedRoute>} />
             <Route path="/people" element={<People/>} />
+            <Route path="/ideaDashboard" element={<IdeaDashboard/>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
