@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard'
 import ResearchBank from './components/ResearchBank'
 import ChatInterface from './components/ChatInterface'
 import { Navigate } from 'react-router-dom'
+import People from './components/People'
 
 const ProtectedRoute = ({children}) => {
   const isLoggedIn = localStorage.getItem("ideagen_logged_in")
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/research" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
             <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+            <Route path="/people" element={<People/>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

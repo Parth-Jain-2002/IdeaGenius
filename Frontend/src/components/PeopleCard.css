@@ -1,0 +1,45 @@
+/* PeopleCard.css */
+
+.people-card {
+  display: flex;
+  flex-direction: column; /* Display the card's content in a column */
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  width: 150px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+  border-radius: 8px; /* Add border radius for a rounded appearance */
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #ddd;
+  border-radius: 50%;
+  margin-bottom: 10px; /* Add space between the avatar and the info */
+}
+
+.info {
+  text-align: center; /* Center text in the info section */
+}
+
+button {
+  background-color: #0073b1;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #005d8e;
+}
+
+/* Add a margin to the entire People component */
+div > div {
+  display: flex;
+  flex-wrap: wrap; /* Allow cards to wrap to the next row */
+  justify-content: space-around; /* Space around cards within the container */
+}
