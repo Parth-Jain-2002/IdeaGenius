@@ -38,7 +38,7 @@ export default function ResearchBank() {
 
   return (
     <section className="grid h-screen grid-cols-5">
-      <aside className="flex flex-col items-center justify-between p-4 bg-[#efefef] dark:bg-zinc-900 border-r">
+      <aside className="flex flex-col items-center justify-between p-10 bg-[#f8f9fb] dark:bg-zinc-900 ">
         <div className="flex items-center space-x-2">
           <img
             alt="Logo"
@@ -53,19 +53,19 @@ export default function ResearchBank() {
           />
           <h1 className="text-2xl font-bold">IDEAGEN</h1>
         </div>
-        <div className="space-y-4 text-center">
-          <h2 className="text-lg font-semibold border-b">My Ideas</h2>
+        <div className="space-y-4 mt-20 text-center">
+          <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
           {/* { "Idea 1":[], "Idea 2": ["dkfjdfjl","jjdofdsofn"]} */}
           {Object.keys(topics).map((topic, index) => (
                 <Collapsible title={topic} data={topics[topic]} chat={true}/>
             ))}
         </div>
-        <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
+        <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />
           Upgrade
         </button>
       </aside>
-      <main className="flex flex-col col-span-4 p-4">
+      <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
         <section className="flex items-center justify-between mb-4">
         <input
             className="w-1/2 p-2 border border-gray-300 rounded-full"
@@ -92,8 +92,8 @@ export default function ResearchBank() {
           </div>
         </section>
         <section className="space-y-4 overflow-y-scroll max-h-[88vh] overflow-x-hidden">
-          <h2 className="text-xl font-bold">Research Bank</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
+          <div className="mt-8 grid grid-cols-3 gap-5">
             {threads.map((thread) => (
                 <ResearchCard
                     imgSrc={thread.imgsrc}
