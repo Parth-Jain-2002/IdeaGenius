@@ -7,6 +7,7 @@ import AuthProvider from './contexts/AuthContext'
 import Dashboard from './components/Dashboard'
 import ResearchBank from './components/ResearchBank'
 import ChatInterface from './components/ChatInterface'
+import IdeaInterface from './components/IdeaInterface'
 import LandingPage from './components/LandingPage'
 import { Navigate } from 'react-router-dom'
 
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/research" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
             <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+            <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface/></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

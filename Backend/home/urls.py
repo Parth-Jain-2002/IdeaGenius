@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('get_user',views.get_user, name='get_user'),
     path('new_user',views.new_user, name='new_user'),
-    path('check_user_exists',views.check_user_exists, name='check_user_exists'),
     path('get_topics',views.get_topics, name='get_topics'),
+
+    path('generate_idea',views.generate_idea, name='generate_idea'),
 ]
