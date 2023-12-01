@@ -482,20 +482,27 @@ def generate_source_documents(answer, chatids):
     return response
 
 @csrf_exempt
-def generate_idea():
-    answer = request.GET['answer']
-    idea = request.GET['idea']
-    userid = request.GET['userid']
+def generate_idea(request):
+    data = json.loads(request.body.decode('utf-8'))
+    answer = data['answer']
+    idea = data['idea']
+    userid = data['userid']
 
-    # Get the all the chatid in the idea from UserDoc
-    user = UserDoc.objects.get(userid=userid)
-    topics = user.topics
-    chatids = topics[idea]
+    answer = answer.split("###NewAnswer###")
 
-    # Get the source documents from the chatids
-    source_documents = generate_source_documents(answer,chatids)
+    print(answer)
+    print(idea)
+    print(userid)
 
-    prompt = idea_generation(answer, source_documents)
+    # # Get the all the chatid in the idea from UserDoc
+    # user = UserDoc.objects.get(userid=userid)
+    # topics = user.topics
+    # chatids = topics[idea]
+
+    # # Get the source documents from the chatids
+    # source_documents = generate_source_documents(answer,chatids)
+
+    prompt = idea_generation(answer, "")
 
     answer = llm(prompt)
     print(answer)

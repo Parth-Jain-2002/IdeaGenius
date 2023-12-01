@@ -70,11 +70,15 @@ export default function IdeaInterface() {
                 setLoading(true)
                 axios.post(`http://localhost:8000/generate_idea`,{
                     userid : localStorage.getItem("ideagen_user_id"),
-                    answer : answer
+                    idea : 'idea_1',
+                    answer : answer.join(' ###NewAnswer### ') + ' ###NewAnswer### ' + message.current.value
                 }
                 ).then((response) => {
                     ideas = response.data.ideas
                     setInitialIdeas(ideas)
+                    // Replace the "Generating ideas..." message with the initial ideas
+                    setChats(chats.slice(0, -1))
+                    setChats([...chats, {message: message.current.value, response: ideas}])
                     setLoading(false)
                 }, (error) => {
                     console.log(error)
