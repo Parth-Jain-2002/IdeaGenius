@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
 import requests
 from readability import Document
 import re
@@ -8,6 +11,7 @@ import json
 import os
 import pdfplumber
 import docx2txt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -175,8 +179,16 @@ def scrape_youtube(video_url):
             return transcript_paragraph
         except Exception as whisper_error:
             print("Whisper transcription failed:", whisper_error)
-    # Handle the error or log it as needed
-            return "Fallback transcription using Whisper failed."
+
+        # Fallback to Whisper failed. Delete the audio file.
+        print("Deleting audio file:", file_path)
+        try:
+            os.remove(file_path)
+            print("File deleted successfully.")
+        except Exception as delete_error:
+            print("Error deleting file:", delete_error)
+
+        return "Fallback transcription using Whisper failed."
     
 @csrf_exempt
 def test(request):
@@ -435,4 +447,66 @@ def get_user(request):
     userid = request.GET['userid']
     user = UserDoc.objects.get(userid=userid)
 
+    if user is None:
+        return JsonResponse({'response':'User does not exist'})
+
     return JsonResponse({'email':user.email, 'name':user.name})
+  
+
+#------------------------------------------------------------------------------------------
+#--------------------------------IDEA GENERATION-------------------------------------------
+#------------------------------------------------------------------------------------------
+
+def generate_source_documents(answer, chatids):
+    source_documents = ""
+    for chatid in chatids:
+        chat = Thread.objects.get(chatid=chatid)
+
+        # Get the vectorstore path from the thread
+        vectorstore_path = chat.vectorstore_path
+
+        # Use the vectorstore from the thread
+        db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+        retriever = db.as_retriever(search_kwargs={"k": 8})
+
+        # create a QA chain
+        qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+        response = qa({"query": source_document_generation(answer)})
+
+        # If the response contains "No valid points ", then skip this chat
+        if "No valid points" in response['result']:
+            continue
+        source_documents += response['result']
+
+    response = llm(final_source_generation(source_documents,answer))
+    return response
+
+@csrf_exempt
+def generate_idea(request):
+    data = json.loads(request.body.decode('utf-8'))
+    answer = data['answer']
+    idea = data['idea']
+    userid = data['userid']
+
+    answer = answer.split("###NewAnswer###")
+
+    print(answer)
+    print(idea)
+    print(userid)
+
+    # # Get the all the chatid in the idea from UserDoc
+    # user = UserDoc.objects.get(userid=userid)
+    # topics = user.topics
+    # chatids = topics[idea]
+
+    # # Get the source documents from the chatids
+    # source_documents = generate_source_documents(answer,chatids)
+
+    prompt = idea_generation(answer, "")
+
+    answer = llm(prompt)
+    print(answer)
+
+    return JsonResponse({'response':answer})
+
+    

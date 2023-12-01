@@ -88,6 +88,7 @@ export default function AuthProvider({children}) {
         }
       }
 
+
     function logout(){
         return auth.signOut().then(()=>{
             localStorage.setItem("ideagen_logged_in",false)
