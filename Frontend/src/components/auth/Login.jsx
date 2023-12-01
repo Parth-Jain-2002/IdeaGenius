@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import imagem from "../../assets/images/IdeaGenLogo.png"
 import { Link } from "react-router-dom";
 import Lottie from "lottie-react";
-import animationData from "../../assets/animations/Animation - 1701313508796.json";
+import animationData from "../../assets/animations/Animation - 1701440987559.json";
 function Login() {
     const { login , loginWithGoogle } = useAuth()
     const [email, setEmail] = useState()
