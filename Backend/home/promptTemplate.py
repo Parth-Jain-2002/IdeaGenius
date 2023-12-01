@@ -47,7 +47,10 @@ def source_document_generation(answer):
 
     Now, the next step is to generate 4 unique, disjoint problem statements for alumni/clients, which will be collaboratively addressed with college students. To achieve this, we will leverage source documents. If there are relevant points in the source documents that can contribute to formulating the problem statements, we need to identify and utilize them.
 
-    Your task is to extract 5-7 valid points from the source documents that can be instrumental in crafting the problem statements. If no relevant points are found, please return 'No valid points found.'"""
+    Your task is to extract 5-7 valid points from the source documents that can be instrumental in crafting the problem statements. If no relevant points are found, please return 'No valid points found.'
+    
+    Return each idea with title, description and target audience. For example, "Problem Statement 1: \nTitle: IdeaGenius \n Description: A platform to solve ideation and market research problems \n Target Audience: Alumni/Clients"
+    """
 
     # Step 3: Return the refined prompt
     return prompt

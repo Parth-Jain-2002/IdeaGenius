@@ -24,7 +24,7 @@ class HuggingChat(LLM):
     chatbot : Optional[hugchat.ChatBot] = None
     email: Optional[str] = None
     psw: Optional[str] = None
-    cookie_path : Optional[str] = None
+    cookie_path : Optional[str] = "./cookies_snapshot"
     conversation : Optional[str] = None
     model: Optional[int] = 1 # 0 = OpenAssistant/oasst-sft-6-llama-30b-xor , 1 = meta-llama/Llama-2-70b-chat-hf
 

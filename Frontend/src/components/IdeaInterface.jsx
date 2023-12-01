@@ -20,9 +20,9 @@ export default function IdeaInterface() {
         "5. Preferred technologies or trends?",
     ]
     const [answer, setAnswer] = useState([])
-    const [index, setIndex] = useState(-1)
+    const [index, setIndex] = useState(0)
     const [chats, setChats] = useState([])
-    const [initialIdeas, setInitialIdeas] = useState([])
+    const [initialIdeas, setInitialIdeas] = useState()
 
 
     const formatResponse = (text, containerRef) => {
@@ -59,37 +59,30 @@ export default function IdeaInterface() {
     };
 
     const handleChat = () => {
-        if(index === -1){
+        if(index === question.length - 1){
+            setChats([...chats, {message: message.current.value, response: "Generating ideas..."}])
+            setLoading(true)
+            axios.post(`http://localhost:8000/generate_idea`,{
+                userid : localStorage.getItem("ideagen_user_id"),
+                idea : 'idea_1',
+                answer : answer.join(' ###NewAnswer### ') + ' ###NewAnswer### ' + message.current.value
+            }
+            ).then((response) => {
+                let ideas = response.data.response
+                console.log(response)
+                setInitialIdeas(ideas)
+                // Replace the "Generating ideas..." message with the initial ideas
+                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: ideas}])
+                setLoading(false)
+            }, (error) => {
+                console.log(error)
+            })
+        }
+        else{
+            setAnswer([...answer, message.current.value])
             setChats([...chats, {message: message.current.value, response: question[index+1]}])
             message.current.value = ""
             setIndex(index+1)
-        }
-        else{
-            if(index === question.length - 1){
-                setChats([...chats, {message: message.current.value, response: "Generating ideas..."}])
-                setLoading(true)
-                axios.post(`http://localhost:8000/generate_idea`,{
-                    userid : localStorage.getItem("ideagen_user_id"),
-                    idea : 'idea_1',
-                    answer : answer.join(' ###NewAnswer### ') + ' ###NewAnswer### ' + message.current.value
-                }
-                ).then((response) => {
-                    ideas = response.data.ideas
-                    setInitialIdeas(ideas)
-                    // Replace the "Generating ideas..." message with the initial ideas
-                    setChats(chats.slice(0, -1))
-                    setChats([...chats, {message: message.current.value, response: ideas}])
-                    setLoading(false)
-                }, (error) => {
-                    console.log(error)
-                })
-            }
-            else{
-                setAnswer([...answer, message.current.value])
-                setChats([...chats, {message: message.current.value, response: question[index+1]}])
-                message.current.value = ""
-                setIndex(index+1)
-            }
         }
     }
 
@@ -119,6 +112,7 @@ export default function IdeaInterface() {
       <main className="flex flex-col p-4">
         <section className="flex items-center justify-end mb-4">
         <div className="flex items-center space-x-2">
+            <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
             <svg
                 className=" h-6 w-6 text-gray-600 dark:text-gray-300"
                 fill="none"
@@ -134,14 +128,14 @@ export default function IdeaInterface() {
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
             </svg>
-            <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
           </div>
         </section>
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
             <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md mr-2">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
                     <div className="items-center">
-                        <h3 className="text-lg font-semibold ml-4"></h3>
+                        <h3 className="text-lg font-semibold ml-4">IdeaX</h3>
+                        <span className="text-sm text-gray-500 ml-4">Let's start the journey of the idea creation. Before generating some amazing ideas, we would like you to answer some basic questions for us</span>
                     </div>
                     <img
                         alt="Icon"
@@ -159,13 +153,12 @@ export default function IdeaInterface() {
                             <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                             <div className="ml-2 mr-2 flex-grow">
                                 <div className="text-sm text-gray-500">AI</div>
-                                <div className="bg-blue-200 dark:bg-zinc-700 rounded-md px-5 py-3 mt-1">Let's start the journey of the idea creation. Before generating some amazing ideas, we would like you to answer some basic questions for us</div>
+                                <div className="bg-blue-200 dark:bg-zinc-700 rounded-md px-5 py-3 mt-1">1. Current challenge or pain point?</div>
                             </div>
                         </div>
                 {chats ? (
                     chats.map((chat, index) => (
                         <>
-                            {index !== 0 ?
                             <div className="flex items-start mb-4">
                                 <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                                 <div className="ml-2 mr-2 flex-grow">
@@ -173,7 +166,6 @@ export default function IdeaInterface() {
                                     <div className="bg-gray-200 dark:bg-zinc-700 rounded-md px-5 py-3 mt-1">{chat.message}</div>
                                 </div>
                             </div>
-                            : ""}
                             <div className="flex items-start mb-4">
                                 <div className="ml-auto flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                                 <div className="ml-2 mr-2 flex-grow">
