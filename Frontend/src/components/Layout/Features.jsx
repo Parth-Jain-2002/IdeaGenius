@@ -4,9 +4,9 @@ export default function Features() {
   return (
     <section class="bg-[#f4f7fa] mt-42 dark:bg-gray-900">
   <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-      <div class="max-w-screen-md mb-8 lg:mb-16">
+      <div class=" mb-8 lg:mb-16">
           <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Features</h2>
-          <p class="text-gray-500 text-justify sm:text-xl dark:text-gray-400">From organizing diverse research to estimating project costs, our platform offers a one-stop solution. Elevate your ideation game with likeability scores, market trend analysis, and collaborative opportunities—all in one dynamic space.</p>
+          <p class="text-gray-500 mt-4 text-justify sm:text-xl dark:text-gray-400">From organizing diverse research to estimating project costs, our platform offers a one-stop solution. Elevate your ideation game with likeability scores, market trend analysis, and collaborative opportunities—all in one dynamic space.</p>
       </div>
       <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-16 md:space-y-0">
           <div className='bg-white shadow-lg p-4 rounded-2xl'>

@@ -2,11 +2,11 @@ import React from 'react'
 
 export default function Pricing() {
   return (
-    <section class="bg-[#f4f7fa] dark:bg-gray-900">
-  <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-      <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
+    <section class="bg-[#f4f7fa] ">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+  <div class=" mb-8 lg:mb-16">
           <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Pricing</h2>
-          <p class="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">IdeaGen offers three plans for all your needs</p>
+          <p class="text-gray-500 mt-4 text-justify sm:text-xl dark:text-gray-400">Choose a plan that aligns with your project needs, whether you're a solo entrepreneur, a student team, or a corporate innovator. Enjoy the freedom to scale resources as your project evolves, ensuring a tailored and cost-effective experience. Explore our pricing tiers below to discover the perfect fit for unlocking the full potential of your ideas."</p>
       </div>
       <div class="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
         

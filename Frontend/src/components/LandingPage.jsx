@@ -9,10 +9,10 @@ import Pricing from './Layout/Pricing';
 import Features from './Layout/Features';
 const LandingPage = () => {
   return (
-    <div className='bg-[#f4f7fa] p-4 px-14'>
+    <div className='bg-[#f4f7fa] py-6 px-20 '>
       {/* Navbar */}
-      <nav className="p-4">
-        <div className="container mx-auto flex items-center justify-between">
+    
+        <div className="container flex items-center justify">
           {/* Logo and Name */}
           <div className="flex items-center">
             <img
@@ -38,14 +38,14 @@ const LandingPage = () => {
           </div>
           
         </div>
-      </nav>
-<div className='flex justify-between'>
+     
+<div className='flex justify-between '>
   {/* Main Animation on the right side */}
   <div className="flex-col gap-10">
         {/* Rest of your landing page content */}
         <h1 className='mt-20 text-8xl'>Research. </h1>
         <h1 className='mt-2 text-[#4f46e5] text-8xl'>Smarter.</h1>
-        <p className='mt-8 text-normal w-6/7 font-light text-lg'>A dynamic platform engineered to revolutionize ideation and market research processes.
+        <p className='mt-8 text-normal w-4/5 font-light text-lg'>A dynamic platform engineered to revolutionize ideation and market research processes.
 </p>
 <div className='flex justify-between'>
             <button className='flex gap-2 mt-10 p-3 border-4 text-white rounded-2xl bg-[#4f46e5] '>
@@ -59,15 +59,20 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <div className="flex-none w-[45%] ">
+      <div className="flex-none w-[40%] ">
         <Lottie
           animationData={mainAnimation}
           className="w-full h-full"
         />
       </div>
 </div>
+<div>
 <Features/>
-      <Pricing />
+</div>
+<div>
+<Pricing />
+</div>
+     
     </div>
   );
 };
