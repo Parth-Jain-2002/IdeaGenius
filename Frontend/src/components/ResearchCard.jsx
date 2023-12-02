@@ -48,7 +48,7 @@ const ResearchCard = ({ imgSrc, title, url, chatid }) => {
         width="200"
       />
       <h3 className="text-lg font-medium mt-2 text-center"
-        onMouseEnter={(e) => e.target.innerText = title}
+        //onMouseEnter={(e) => e.target.innerText = title}
         onMouseLeave={(e) => e.target.innerText = parseText(title)}
       >
         {parseText(title)}</h3>

@@ -1,7 +1,7 @@
 // PeopleCard.jsx
 
 import React from 'react';
-import './PeopleCard.css';
+//import './PeopleCard.css';
 
 const PeopleCard = ({ name, jobTitle }) => {
   // Generate a random number to use as a seed for a random Unsplash user avatar

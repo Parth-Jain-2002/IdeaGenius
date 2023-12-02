@@ -3,14 +3,38 @@ import ResearchCard from "./ResearchCard"
 import Collapsible from "./Collapsible"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import plus_icon from "../assets/images/plus_icon_black.png"
+import NewIdeaModal from "./modals/NewIdeaModal"
 
 export default function ResearchBank() {
     const [threads, setThreads] = useState([])
     const [topics, setTopics] = useState({})
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
-    useEffect(() => {
-        //console.log(localStorage.getItem("ideagen_user_id"))
-        axios.get(`http://localhost:8000/get_threads`,{
+    const openModal = () => {
+      setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+      setIsModalOpen(false)
+    }
+
+    const getTopics = () => {
+      axios.get(`http://localhost:8000/get_topics`,{
+            params:{
+                userid : localStorage.getItem("ideagen_user_id")
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            setTopics(response.data.topics)
+        }, (error) => {
+            console.log(error)
+        })
+    }
+
+    const getThreads = () => {
+      axios.get(`http://localhost:8000/get_threads`,{
             params:{
                 userid: localStorage.getItem("ideagen_user_id")
             }
@@ -22,19 +46,14 @@ export default function ResearchBank() {
         }, (error) => {
             console.log(error)
         })
+    }
 
-        axios.get(`http://localhost:8000/get_topics`,{
-            params:{
-                userid : localStorage.getItem("ideagen_user_id")
-            }
-        }
-        ).then((response) => {
-            console.log(response)
-            setTopics(response.data.topics)
-        }, (error) => {
-            console.log(error)
-        })
+    useEffect(() => {        
+        getThreads()
+        getTopics()
     },[])
+
+    
 
   return (
     <section className="grid h-screen grid-cols-5">
@@ -59,6 +78,12 @@ export default function ResearchBank() {
           {Object.keys(topics).map((topic, index) => (
                 <Collapsible title={topic} data={topics[topic]} chat={true}/>
             ))}
+          {/* Add a new idea */}
+          <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
+            <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
+            New Idea
+          </button>
+          {isModalOpen && <NewIdeaModal onClose={closeModal} topics={Object.keys(topics)}/>}
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />
