@@ -95,7 +95,7 @@ export default function ResearchBank() {
         </button>
       </aside>
       <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
-        <Navbar />
+        <Navbar link={"/dashboard"}/>
         <section className="space-y-4 overflow-y-scroll max-h-[88vh] overflow-x-hidden">
           <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
           <div className="mt-8 grid grid-cols-3 gap-5">
