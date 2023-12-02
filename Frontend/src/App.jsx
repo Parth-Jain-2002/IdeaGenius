@@ -36,9 +36,8 @@ export default function App() {
             <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface/></ProtectedRoute>} />
 
             <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
-            <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
-            <Route path="/collab/:ideaid" element={<ProtectedRoute><Collab/></ProtectedRoute>} />
-            <Route path="/people" element={<People/>} />
+            <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc/></ProtectedRoute>} />
+            <Route path="/people/:ideaid" element={<ProtectedRoute><People/></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
