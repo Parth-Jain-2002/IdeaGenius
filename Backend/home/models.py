@@ -11,8 +11,8 @@ class UserAction(models.Model):
 class Chat(models.Model):
     userid = models.CharField(max_length=50)
     chatid = models.UUIDField(default=uuid.uuid4, editable=False)
-    message = models.CharField(max_length=255)
-    response = models.CharField(max_length=255)
+    message = models.TextField()
+    response = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class Thread(models.Model):
@@ -29,3 +29,12 @@ class UserDoc(models.Model):
     name = models.CharField(max_length=255, default="")
     topics = models.JSONField(default=dict)
 
+class Topic(models.Model):
+    userid = models.CharField(max_length=50)
+    topicid = models.CharField(max_length=50, default="", unique=True)
+    description = models.CharField(max_length=255, default="")
+    time_constraint_value = models.IntegerField(default=0)
+    budget_constraint_value = models.IntegerField(default=0)
+    subtask = models.TextField(default="")
+    # This is a JSON object that contains the following keywords: {keywords: ['Finance', 'Investment', 'Stocks']}
+    keywords = models.JSONField(default=dict)

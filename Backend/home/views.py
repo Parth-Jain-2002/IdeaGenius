@@ -30,7 +30,7 @@ from django.conf import settings
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
-from .models import UserAction, Chat, UserDoc, Thread
+from .models import UserAction, Chat, UserDoc, Thread, Topic
 
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
@@ -425,6 +425,7 @@ def new_topic(request):
     data = json.loads(request.body.decode('utf-8'))
     userid = data['userid']
     topic = data['title']
+    description = data['description']
 
     # Create a new topic in the database
     user = UserDoc.objects.get(userid=userid)
@@ -432,6 +433,8 @@ def new_topic(request):
     topics[topic] = []
     user.topics = topics
     user.save()
+
+    Topic.objects.create(userid=userid, topicid=topic, description=description, time_constraint_value=0, budget_constraint_value=0, subtask="", keywords={"keywords":[]})
 
     return JsonResponse({'response':'Success'})
 
