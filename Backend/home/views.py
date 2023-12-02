@@ -451,6 +451,37 @@ def new_topic(request):
 
     return JsonResponse({'response':'Success'})
 
+@csrf_exempt
+def edit_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    chatid = data['chatid']
+    topicid = data['topicid']
+    prevtopicid = data['prevtopicid']
+
+    print(topicid)
+    print(prevtopicid)
+
+    thread = Thread.objects.get(chatid=chatid)
+
+    userDoc = UserDoc.objects.get(userid=userid)
+    topics = userDoc.topics
+
+    # Remove the chatid from the previous topic
+    prevtopic = topics[prevtopicid]
+    prevtopic = [chat for chat in prevtopic if chat['chatid'] != str(chatid)]
+    topics[prevtopicid] = prevtopic
+    # Add the chatid to the new topic
+    newtopic = topics[topicid]
+    newtopic.append({'title':thread.title, 'chatid':str(chatid)})
+    topics[topicid] = newtopic
+    
+    userDoc.topics = topics
+    userDoc.save()
+
+    return JsonResponse({'response':'Success'})
+
+
 #------------------------------------------------------------------------------------------
 #----------------------------------- USER -------------------------------------------------
 #------------------------------------------------------------------------------------------

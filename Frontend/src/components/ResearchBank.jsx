@@ -55,7 +55,7 @@ export default function ResearchBank() {
     useEffect(() => {        
         getThreads()
         getTopics()
-    },[ideaid])
+    },[ideaid,threads])
 
     
 
@@ -87,7 +87,7 @@ export default function ResearchBank() {
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
             New Idea
           </button>
-          {isModalOpen && <NewIdeaModal onClose={closeModal} topics={Object.keys(topics)} getTopics={getTopics}/>}
+          {isModalOpen && <NewIdeaModal onClose={closeModal} topics={Object.keys(topics)} getTopics={getThreads}/>}
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />
@@ -96,7 +96,7 @@ export default function ResearchBank() {
       </aside>
       <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
         <Navbar link={"/dashboard"}/>
-        <section className="space-y-4 overflow-y-scroll max-h-[88vh] overflow-x-hidden">
+        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden">
           <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
           <div className="mt-8 grid grid-cols-3 gap-5">
             {threads.map((thread) => (
@@ -105,6 +105,9 @@ export default function ResearchBank() {
                     title={thread.title}
                     url={thread.url}
                     chatid={thread.chatid}
+                    topics = {topics}
+                    currentTopic={ideaid}
+                    getTopics={getTopics}
                 />
             ))}
             </div>
