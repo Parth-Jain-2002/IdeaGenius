@@ -12,7 +12,6 @@ import LandingPage from './components/LandingPage'
 import { Navigate } from 'react-router-dom'
 import MarketInsight from './components/MarketInsight'
 import VisionDoc from './components/VisionDoc'
-import Collab from './components/Collab'
 import People from './components/People'
 import IdeaDashboard from './components/IdeaDashboard'
 

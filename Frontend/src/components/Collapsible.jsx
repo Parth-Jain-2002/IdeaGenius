@@ -37,9 +37,13 @@ const Collapsible = ({ title, data, chat }) => {
       {isOpen && (
         <div className="collapsible-content">
           <ul className="list-disc list-inside space-y-1">
-            {data.map((item, index) => (
-              <li key={index}><Link to={ `../chat/${item.chatid}`}>{parseTitle(item.title)}</Link></li>
-            ))}
+            { chat && (
+              <>
+              {data.map((item, index) => (
+                <li key={index}><Link to={ `../chat/${item.chatid}`}>{parseTitle(item.title)}</Link></li>
+              ))}
+              </>
+            )}
           </ul>
         </div>
       )}
