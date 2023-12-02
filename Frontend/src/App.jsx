@@ -31,7 +31,7 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/research" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
+            <Route path="/research/:ideaid" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
             <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface/></ProtectedRoute>} />
 

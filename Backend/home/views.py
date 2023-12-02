@@ -8,6 +8,7 @@ import requests
 from readability import Document
 import re
 import json
+import uuid
 import os
 import pdfplumber
 import docx2txt
@@ -299,8 +300,20 @@ def get_thread(request):
 @csrf_exempt
 def get_threads(request):
     userid = request.GET['userid']
-    threads = Thread.objects.filter(userid=userid)
+    ideaid = request.GET['ideaid']
     
+    userDoc = UserDoc.objects.get(userid=userid)
+    topics = userDoc.topics
+    chatids = topics[ideaid]
+
+    # Convert the chatids to UUID
+    print(chatids)
+    chatids = [chatid['chatid'] for chatid in chatids]
+    print(chatids)
+    chatids = [uuid.UUID(chatid) for chatid in chatids]
+    print(chatids)
+    threads = Thread.objects.filter(chatid__in=chatids)
+
     # convert the chats to json
     response = []
     for thread in threads:

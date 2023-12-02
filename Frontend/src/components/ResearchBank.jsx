@@ -3,6 +3,7 @@ import ResearchCard from "./ResearchCard"
 import Collapsible from "./Collapsible"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import plus_icon from "../assets/images/plus_icon_black.png"
 import NewIdeaModal from "./modals/NewIdeaModal"
 
@@ -10,6 +11,7 @@ export default function ResearchBank() {
     const [threads, setThreads] = useState([])
     const [topics, setTopics] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const { ideaid } = useParams()
 
     const openModal = () => {
       setIsModalOpen(true)
@@ -36,7 +38,8 @@ export default function ResearchBank() {
     const getThreads = () => {
       axios.get(`http://localhost:8000/get_threads`,{
             params:{
-                userid: localStorage.getItem("ideagen_user_id")
+                userid: localStorage.getItem("ideagen_user_id"),
+                ideaid: ideaid
             }
         }
         ).then((response) => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import folderIcon from '../assets/images/folder_icon.png';
 
 const Collapsible = ({ title, data, chat }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,9 +16,10 @@ const Collapsible = ({ title, data, chat }) => {
   return (
     <div className="collapsible">
       <div
-        className="collapsible-trigger flex items-center w-full cursor-pointer"
+        className="collapsible-trigger flex items-center w-full cursor-pointer hover:bg-gray-200 rounded-lg py-1 px-3"
         onClick={toggleCollapsible}
-      >
+      > 
+      { !chat && (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -32,25 +34,22 @@ const Collapsible = ({ title, data, chat }) => {
             d="M19 9l-7 7-7-7"
           />
         </svg>
+      )}
+      { chat && (
+        <img src={folderIcon} alt="Folder icon" className="h-4 w-4 mr-4" />)
+      }
         {title}
       </div>
       {isOpen && (
         <div className="collapsible-content">
           <ul className="list-disc list-inside space-y-1">
-            { chat && (
-              <>
-              {data.map((item, index) => (
-                <li key={index}><Link to={ `../chat/${item.chatid}`}>{parseTitle(item.title)}</Link></li>
-              ))}
-              </>
-            )}
             {
               !chat && (
                 <>
                 { title!= "Miscellaneous" &&
                 <li key={1}><Link to={ `../vision-doc/${data}`}>Vision Doc</Link></li>
                 }
-                <li key={2}><Link to={ `../research-bank/${data}`}>Research Bank</Link></li>
+                <li key={2}><Link to={ `../research/${data}`}>Research Bank</Link></li>
                 </>
               )
             }
