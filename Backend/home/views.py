@@ -540,4 +540,20 @@ def generate_idea(request):
 
     return JsonResponse({'response':answer})
 
+@csrf_exempt
+def get_insights(request):    
+    data = json.loads(request.body.decode('utf-8'))    
+    ideaid = data['idea_id'] 
+      
+
+    return JsonResponse({'competitors':
+                            [{ 'name': 'Competitor 1', 'revenue': 1000000, 'employees': 50 },
+                            { 'name': 'Competitor 2', 'revenue': 800000, 'employees': 40 }],
+                        'domain': "example.com",
+                        "trafficData": 
+                            [{"date": "2023-01-01", "visits": 1000},
+                            {"date": "2023-01-02", "visits": 1200},
+                            {"date": "2023-01-03", "visits": 800}]                                
+                        })
+
     

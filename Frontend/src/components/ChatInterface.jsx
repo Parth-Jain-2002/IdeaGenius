@@ -3,6 +3,7 @@ import imagem from "../assets/images/IdeaGenLogo.png"
 import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router"
 import axios from "axios"
+import Navbar from "./Layout/Navbar"
 
 export default function ChatInterface() {
     // Get chat id from url
@@ -157,26 +158,7 @@ export default function ChatInterface() {
         </button>
       </aside>
       <main className="flex flex-col col-span-4 p-4">
-        <section className="flex items-center justify-end mb-4">
-        <div className="flex items-center space-x-2">
-            <svg
-                className=" h-6 w-6 text-gray-600 dark:text-gray-300"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
-          </div>
-        </section>
+        <Navbar />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh]">
             <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
@@ -201,21 +183,21 @@ export default function ChatInterface() {
                         <>
                             <div className="flex items-start mb-4">
                                 <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
-                                <div className="ml-2 mr-2 flex-grow">
+                                <div className="ml-auto mr-2 text-right max-w-3xl">
                                     <div className="text-sm text-gray-500">User</div>
-                                    <div className="bg-gray-200 dark:bg-zinc-700 rounded-md px-5 py-3 mt-1">{chat.message}</div>
+                                    <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-3 mt-1 leading-loose">{chat.message}</div>
                                 </div>
                             </div>
                             <div className="flex items-start mb-4">
-                                <div className="ml-auto flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
-                                <div className="ml-2 mr-2 flex-grow">
+                                <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
+                                <div className="ml-2 mr-2 flex-grow max-w-3xl">
                                     <div className="text-sm text-gray-500">AI</div>
                                     <div
-                                        className="bg-blue-200 dark:bg-blue-900 rounded-md px-5 py-3 mt-1"
+                                        className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-3 mt-1 leading-loose"
                                         ref={containerRef}
                                         style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
                                     >
-                                        <pre dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
+                                        <span dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
                                     </div>
                                 </div>
                             </div>
