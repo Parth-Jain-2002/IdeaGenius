@@ -12,7 +12,6 @@ import LandingPage from './components/LandingPage'
 import { Navigate } from 'react-router-dom'
 import MarketInsight from './components/MarketInsight'
 import VisionDoc from './components/VisionDoc'
-import Collab from './components/Collab'
 import People from './components/People'
 import IdeaDashboard from './components/IdeaDashboard'
 
@@ -32,14 +31,13 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/research" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
+            <Route path="/research/:ideaid" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
             <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface/></ProtectedRoute>} />
 
             <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
-            <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
-            <Route path="/collab/:ideaid" element={<ProtectedRoute><Collab/></ProtectedRoute>} />
-            <Route path="/people" element={<People/>} />
+            <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc/></ProtectedRoute>} />
+            <Route path="/people/:ideaid" element={<ProtectedRoute><People/></ProtectedRoute>} />
             <Route path="/ideaDashboard" element={<IdeaDashboard/>} />
           </Routes>
         </BrowserRouter>

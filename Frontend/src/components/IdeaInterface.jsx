@@ -190,7 +190,7 @@ export default function IdeaInterface() {
           <div className="mt-4 flex items-center space-x-2">
           <div className="flex w-full">
             <input
-                className="p-2 ml-2 rounded-xl shadow-md w-full mr-2 bg-[#efefef]"
+                className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef]"
                 placeholder="Enter your message"
                 type="text"
                 ref={message}

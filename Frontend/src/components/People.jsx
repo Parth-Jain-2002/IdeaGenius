@@ -1,9 +1,12 @@
 import React, {useEffect} from 'react'
 import PeopleCard from './PeopleCard'
+import { useParams } from 'react-router-dom'
 
 function People() {
   // user id
   const uid = localStorage.getItem("ideagen_user_id")
+  // idea id
+  const { ideaid } = useParams()
   const getPeople = () => {
     const obj= [
     { id: 1, name: 'John Doe', jobTitle: 'Software Engineer' },

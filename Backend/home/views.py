@@ -8,6 +8,7 @@ import requests
 from readability import Document
 import re
 import json
+import uuid
 import os
 import pdfplumber
 import docx2txt
@@ -30,7 +31,7 @@ from django.conf import settings
 from transformers import Pix2StructProcessor, Pix2StructForConditionalGeneration
 from PIL import Image
 
-from .models import UserAction, Chat, UserDoc, Thread
+from .models import UserAction, Chat, UserDoc, Thread, Topic
 
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
@@ -299,8 +300,20 @@ def get_thread(request):
 @csrf_exempt
 def get_threads(request):
     userid = request.GET['userid']
-    threads = Thread.objects.filter(userid=userid)
+    ideaid = request.GET['ideaid']
     
+    userDoc = UserDoc.objects.get(userid=userid)
+    topics = userDoc.topics
+    chatids = topics[ideaid]
+
+    # Convert the chatids to UUID
+    print(chatids)
+    chatids = [chatid['chatid'] for chatid in chatids]
+    print(chatids)
+    chatids = [uuid.UUID(chatid) for chatid in chatids]
+    print(chatids)
+    threads = Thread.objects.filter(chatid__in=chatids)
+
     # convert the chats to json
     response = []
     for thread in threads:
@@ -419,6 +432,24 @@ def get_topics(request):
     user = UserDoc.objects.get(userid=userid)
 
     return JsonResponse({'topics':user.topics})
+
+@csrf_exempt
+def new_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topic = data['title']
+    description = data['description']
+
+    # Create a new topic in the database
+    user = UserDoc.objects.get(userid=userid)
+    topics = user.topics
+    topics[topic] = []
+    user.topics = topics
+    user.save()
+
+    Topic.objects.create(userid=userid, topicid=topic, description=description, time_constraint_value=0, budget_constraint_value=0, subtask="", keywords={"keywords":[]})
+
+    return JsonResponse({'response':'Success'})
 
 #------------------------------------------------------------------------------------------
 #----------------------------------- USER -------------------------------------------------
