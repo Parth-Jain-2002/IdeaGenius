@@ -512,6 +512,21 @@ def generate_source_documents(answer, chatids):
     response = llm(final_source_generation(source_documents,answer))
     return response
 
+def validate(response):
+    print(response)
+    try:
+        response = response.split("[")[1].split("]")[0]
+        response = "[" + response + "]"
+        response = json.loads(response)
+        if len(response) == 4:
+            # Check if the object contains title and description
+            return True
+        else:
+            return False
+    except:
+        return False
+    
+
 @csrf_exempt
 def generate_idea(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -535,10 +550,22 @@ def generate_idea(request):
 
     prompt = idea_generation(answer, "")
 
-    answer = llm(prompt)
-    print(answer)
+    prompt+= "Title should be of max 10-15 words. Description should be of max 40-50 words. Return a JSON object array of the following format: [{\"title\": \"Title of the idea\", \"description\": \"Description of the idea\"} , { Ideas 2 }, { Ideas 3 }, { Ideas 4 }]"
 
-    return JsonResponse({'response':answer})
+    while True:
+        response = llm(prompt)
+        # Check if there is a array in the response or not with four elements of title and description
+        if(validate(response)):
+            break
+    
+    response = response.split("[")[1].split("]")[0]
+    response = "[" + response + "]"
+
+    return JsonResponse({'response':response})
+
+#------------------------------------------------------------------------------------------
+#------------------------------MARKET INSIGHTS---------------------------------------------
+#------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def get_insights(request):    
