@@ -70,10 +70,10 @@ export default function IdeaInterface() {
             }
             ).then((response) => {
                 let ideas = response.data.response
-                console.log(response)
+                console.log(ideas)
                 setInitialIdeas(ideas)
                 // Replace the "Generating ideas..." message with the initial ideas
-                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: ideas}])
+                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: str(ideas)}])
                 setLoading(false)
             }, (error) => {
                 console.log(error)
