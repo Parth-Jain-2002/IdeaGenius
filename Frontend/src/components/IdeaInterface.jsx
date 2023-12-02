@@ -3,6 +3,7 @@ import imagem from "../assets/images/IdeaGenLogo.png"
 import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router"
 import axios from "axios"
+import Navbar from "./Layout/Navbar"
 
 export default function IdeaInterface() {
     // Get chat id from url
@@ -110,26 +111,7 @@ export default function IdeaInterface() {
   return (
     <section>
       <main className="flex flex-col p-4">
-        <section className="flex items-center justify-end mb-4">
-        <div className="flex items-center space-x-2">
-            <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
-            <svg
-                className=" h-6 w-6 text-gray-600 dark:text-gray-300"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-        </section>
+        <Navbar />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
             <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md mr-2">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
