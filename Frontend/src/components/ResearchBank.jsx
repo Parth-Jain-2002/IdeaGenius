@@ -54,7 +54,7 @@ export default function ResearchBank() {
     useEffect(() => {        
         getThreads()
         getTopics()
-    },[])
+    },[ideaid])
 
     
 

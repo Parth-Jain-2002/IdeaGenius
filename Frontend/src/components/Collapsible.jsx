@@ -20,6 +20,7 @@ const Collapsible = ({ title, data, chat }) => {
         onClick={toggleCollapsible}
       > 
       { !chat && (
+        <>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -34,11 +35,19 @@ const Collapsible = ({ title, data, chat }) => {
             d="M19 9l-7 7-7-7"
           />
         </svg>
+        {title}
+        </>
       )}
       { chat && (
-        <img src={folderIcon} alt="Folder icon" className="h-4 w-4 mr-4" />)
-      }
+        <>
+        <Link to={`../research/${title}`} className="flex items-center">
+        <img src={folderIcon} alt="Folder icon" className="h-4 w-4 mr-4" />
         {title}
+        </Link>
+        </>
+        )
+      }
+        
       </div>
       {isOpen && (
         <div className="collapsible-content">
