@@ -44,6 +44,16 @@ const Collapsible = ({ title, data, chat }) => {
               ))}
               </>
             )}
+            {
+              !chat && (
+                <>
+                { title!= "Miscellaneous" &&
+                <li key={1}><Link to={ `../vision-doc/${data}`}>Vision Doc</Link></li>
+                }
+                <li key={2}><Link to={ `../research-bank/${data}`}>Research Bank</Link></li>
+                </>
+              )
+            }
           </ul>
         </div>
       )}

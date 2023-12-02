@@ -420,6 +420,21 @@ def get_topics(request):
 
     return JsonResponse({'topics':user.topics})
 
+@csrf_exempt
+def new_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topic = data['title']
+
+    # Create a new topic in the database
+    user = UserDoc.objects.get(userid=userid)
+    topics = user.topics
+    topics[topic] = []
+    user.topics = topics
+    user.save()
+
+    return JsonResponse({'response':'Success'})
+
 #------------------------------------------------------------------------------------------
 #----------------------------------- USER -------------------------------------------------
 #------------------------------------------------------------------------------------------

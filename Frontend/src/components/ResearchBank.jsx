@@ -83,7 +83,7 @@ export default function ResearchBank() {
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
             New Idea
           </button>
-          {isModalOpen && <NewIdeaModal onClose={closeModal} topics={Object.keys(topics)}/>}
+          {isModalOpen && <NewIdeaModal onClose={closeModal} topics={Object.keys(topics)} getTopics={getTopics}/>}
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
             <IconLightningbolt className="h-5 w-5 mr-2" />

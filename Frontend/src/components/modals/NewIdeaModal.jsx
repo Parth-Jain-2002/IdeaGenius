@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import crossIcon from '../../assets/images/cross_icon.png';
 import infoIcon from '../../assets/images/info_icon_red.svg';
+import axios from 'axios';
 
-const NewIdeaModal = ({ onClose, topics }) => {
+const NewIdeaModal = ({ onClose, topics, getTopics }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
@@ -31,9 +32,18 @@ const NewIdeaModal = ({ onClose, topics }) => {
       return;
     }
     
+    axios.post(`http://localhost:8000/new_topic`, {
+        userid: localStorage.getItem('ideagen_user_id'),
+        title: title,
+        description: description,
+        }).then((response) => {
+            //console.log(response)
+            onClose()
+            getTopics()
+        }, (error) => {
+            console.log(error)
+        })
 
-    // Close the modal
-    onClose();
   };
 
   return (
