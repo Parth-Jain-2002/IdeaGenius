@@ -1,12 +1,12 @@
 import imagem from "../assets/images/IdeaGenLogo.png"
-import ResearchCard from "./ResearchCard"
-import Collapsible from "./Collapsible"
+import ResearchCard from "../components/ResearchCard"
+import Collapsible from "../components/Collapsible"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import plus_icon from "../assets/images/plus_icon_black.png"
-import NewIdeaModal from "./modals/NewIdeaModal"
-import Navbar from "./Layout/Navbar"
+import NewIdeaModal from "../components/modals/NewIdeaModal"
+import Navbar from "../components/Layout/Navbar"
 
 export default function ResearchBank() {
     const [threads, setThreads] = useState([])

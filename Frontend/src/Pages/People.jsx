@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import PeopleCard from './PeopleCard'
+import PeopleCard from '../components/PeopleCard'
 import { useParams } from 'react-router-dom'
 
 function People() {

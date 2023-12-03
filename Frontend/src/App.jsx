@@ -4,16 +4,16 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Signup from './components/auth/Signup'
 import ForgotPassword from './components/auth/ForgotPassword'
 import AuthProvider from './contexts/AuthContext'
-import Dashboard from './components/Dashboard'
-import ResearchBank from './components/ResearchBank'
-import ChatInterface from './components/ChatInterface'
-import IdeaInterface from './components/IdeaInterface'
-import LandingPage from './components/LandingPage'
+import Dashboard from './Pages/Dashboard'
+import ResearchBank from './Pages/ResearchBank'
+import ChatInterface from './Pages/ChatInterface'
+import IdeaInterface from './Pages/IdeaInterface'
+import LandingPage from './Pages/LandingPage'
 import { Navigate } from 'react-router-dom'
-import MarketInsight from './components/MarketInsight'
-import VisionDoc from './components/VisionDoc'
-import People from './components/People'
-import IdeaDashboard from './components/IdeaDashboard'
+import MarketInsight from './Pages/MarketInsight'
+import VisionDoc from './Pages/VisionDoc'
+import People from './Pages/People'
+// import IdeaDashboard from './components/IdeaDashboard'
 
 const ProtectedRoute = ({children}) => {
   const isLoggedIn = localStorage.getItem("ideagen_logged_in")
@@ -38,7 +38,7 @@ export default function App() {
             <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
             <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc/></ProtectedRoute>} />
             <Route path="/people/:ideaid" element={<ProtectedRoute><People/></ProtectedRoute>} />
-            <Route path="/ideaDashboard" element={<IdeaDashboard/>} />
+            {/* <Route path="/ideaDashboard" element={<IdeaDashboard/>} /> */}
           </Routes>
         </BrowserRouter>
       </AuthProvider>
