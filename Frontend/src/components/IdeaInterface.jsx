@@ -5,7 +5,7 @@ import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import Navbar from "./Layout/Navbar"
-
+import { motion } from "framer-motion";
 export default function IdeaInterface() {
     // Get chat id from url
     const {chatid} = useParams()
