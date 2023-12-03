@@ -2,7 +2,7 @@ import React , {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import logo from '../assets/images/IdeaGenLogo.png';
 import axios from 'axios';
-import Navbar from './Layout/Navbar';
+import Navbar from '../components/Layout/Navbar';
 
 function VisionDoc() {
   const {ideaid} = useParams()

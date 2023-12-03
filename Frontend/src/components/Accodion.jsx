@@ -19,22 +19,12 @@ return (
             </AccordionItemButton>
         </AccordionItemHeading>
         <AccordionItemPanel>
-        <>
-                { title!= "Miscellaneous" &&
-                <li key={1}><Link to={ `../vision-doc/${data}`}>
-                  <div className='flex flex-row'>
-                  <img src={visionDocIcon} alt="Vision doc icon" className="h-4 w-4 mr-2 mt-1" />
-                  Vision Doc
-                  </div>
-                  </Link></li>
-                }
-                <li key={2}><Link to={ `../research/${data}`}>
-                  <div className='flex flex-row'>
-                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2 mt-1" />
-                  Research Bank
-                  </div>
-                  </Link></li>
-                </>
+            <p>
+                Exercitation in fugiat est ut ad ea cupidatat ut in
+                cupidatat occaecat ut occaecat consequat est minim minim
+                esse tempor laborum consequat esse adipisicing eu
+                reprehenderit enim.
+            </p>
         </AccordionItemPanel>
     </AccordionItem>
     <AccordionItem>
