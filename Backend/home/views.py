@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from pytrends.request import TrendReq
 
 import requests
 from readability import Document
@@ -433,6 +434,19 @@ def get_topics(request):
 
     return JsonResponse({'topics':user.topics})
 
+
+@csrf_exempt
+def get_topic(request):
+    userid = request.GET['userid']
+    topicid = request.GET['topicid']
+
+    print(topicid)
+
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    response = {'title':topic.title, 'description':topic.description, 'generated':topic.generated, 'time_constraint_value':topic.time_constraint_value, 'budget_constraint_value':topic.budget_constraint_value, 'subtask':topic.subtask, 'keywords':topic.keywords}
+
+    return JsonResponse(response)
+
 @csrf_exempt
 def new_topic(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -450,6 +464,37 @@ def new_topic(request):
     Topic.objects.create(userid=userid, topicid=topic, description=description, time_constraint_value=0, budget_constraint_value=0, subtask="", keywords={"keywords":[]})
 
     return JsonResponse({'response':'Success'})
+
+@csrf_exempt
+def edit_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    chatid = data['chatid']
+    topicid = data['topicid']
+    prevtopicid = data['prevtopicid']
+
+    print(topicid)
+    print(prevtopicid)
+
+    thread = Thread.objects.get(chatid=chatid)
+
+    userDoc = UserDoc.objects.get(userid=userid)
+    topics = userDoc.topics
+
+    # Remove the chatid from the previous topic
+    prevtopic = topics[prevtopicid]
+    prevtopic = [chat for chat in prevtopic if chat['chatid'] != str(chatid)]
+    topics[prevtopicid] = prevtopic
+    # Add the chatid to the new topic
+    newtopic = topics[topicid]
+    newtopic.append({'title':thread.title, 'chatid':str(chatid)})
+    topics[topicid] = newtopic
+    
+    userDoc.topics = topics
+    userDoc.save()
+
+    return JsonResponse({'response':'Success'})
+
 
 #------------------------------------------------------------------------------------------
 #----------------------------------- USER -------------------------------------------------
@@ -512,6 +557,21 @@ def generate_source_documents(answer, chatids):
     response = llm(final_source_generation(source_documents,answer))
     return response
 
+def validate(response):
+    print(response)
+    try:
+        response = response.split("[")[1].split("]")[0]
+        response = "[" + response + "]"
+        response = json.loads(response)
+        if len(response) == 4:
+            # Check if the object contains title and description
+            return True
+        else:
+            return False
+    except:
+        return False
+    
+
 @csrf_exempt
 def generate_idea(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -519,8 +579,7 @@ def generate_idea(request):
     idea = data['idea']
     userid = data['userid']
 
-    answer = answer.split("###NewAnswer###")
-
+    answer = answer.split("###NewAnswer###")    
     print(answer)
     print(idea)
     print(userid)
@@ -535,25 +594,115 @@ def generate_idea(request):
 
     prompt = idea_generation(answer, "")
 
-    answer = llm(prompt)
-    print(answer)
+    prompt+= "Title should be of max 10-15 words. Description should be of max 40-50 words. Return a JSON object array of the following format: [{\"title\": \"Title of the idea\", \"description\": \"Description of the idea\"} , { Ideas 2 }, { Ideas 3 }, { Ideas 4 }]"
 
-    return JsonResponse({'response':answer})
+    while True:
+        response = llm(prompt)
+        # Check if there is a array in the response or not with four elements of title and description
+        if(validate(response)):
+            break
+    
+    response = response.split("[")[1].split("]")[0]
+    response = "[" + response + "]"
+
+    return JsonResponse({'response':response})
+
+@csrf_exempt
+def select_idea(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    idea = data['idea']
+    title = data['title']
+    description = data['description']
+
+    print(idea)
+
+    # Get the Idea from the database
+    topic = Topic.objects.get(userid=userid, topicid=idea)
+    topic.title = title
+    topic.description = description
+    topic.generated = True
+    topic.save()
+
+    return JsonResponse({'response':'Success'})
+
+#------------------------------------------------------------------------------------------
+#------------------------------MARKET INSIGHTS---------------------------------------------
+#------------------------------------------------------------------------------------------
+
+def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
+    requests_args = {
+        'headers': {
+            "Host": "trends.google.com",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Alt-Used": "trends.google.com",
+            "Connection": "keep-alive",
+            "Referer": "https://trends.google.com/",
+            "Cookie": "cZXaaywi4A.; HSID=AoFRtgASs2HSkWM6Z; SSID=A0vUE6uqpIZHv6LPI; APISID=W_X19jGuZATQSbE2/ArgJ3xN-ryKK1D2dx; SAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-1PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-3PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; OTZ=7318707_34_34__34_; AEC=Ackid1T5Y5GAftQMaxiiE6yijr0zTwITOvLFzTqgU11xe9w6w_E4jCDgzA; NID=511=Y5j0ksvB22XslmGpcrpnKYu5NV1k3e2Qrn52N9kIAlK_txaeHI3kRM7nG3_23ohLpc6MgkX2n8LMKK9mRiar4Rl0uXd-FncYF7NwczNG9MLwkJHi3ftRvbi6ql9jLWD5Lu9pSjPWkfPm_NVRdL8FTt5Z5KYKG-KOIM5TPvyFMlOxSz4It_krbWhS1DkCo_yPQ-Mcd-lC2JOKEyiw_xDOCa5ucyZbM_CQmEauTY023Nzcg5PO-CqIWDvZzCtuRK_zH68rAewMiHTrXUmQaEI74zhDgAkX9c_hccFjXB903luNnUrP6KM266ve6gSKPkB97TiLdpb726DowwrV3wxZQobdZFmxs6LDGvZSUQC8y2dSOCSiMTOXcqce_7EcNxUc9ZO3Aa-aEMqGKcdF0eUeIydXH8dYv0sQZc-EvoJF4Ni1XY2bHGtLCMc2zqpD5UUDrr7CIG8; 1P_JAR=2023-12-03-12; __Secure-1PSIDTS=sidts-CjIBPVxjSr0A6YslWR6n99ovet9Z00qmpHv4H7yS9KFPN5d-3juKGfBCAJbCk33pT-WlZRAA; __Secure-3PSIDTS=sidts-CjIBPVxjSr0A6YslWR6n99ovet9Z00qmpHv4H7yS9KFPN5d-3juKGfBCAJbCk33pT-WlZRAA; SIDCC=ACA-OxNkCioIAsOmxm5xP4kFl_bJXK6i6gc_Hdqffg_T5TRmafjRQKbuID_lUtcZt29KWKKxSmY; __Secure-1PSIDCC=ACA-OxOm7cZkstXikFw9T7UdIXuamnunz06UJfmUiSp8plKpF24ZaVnGLxGkCkZZukE6pS8xNg; __Secure-3PSIDCC=ACA-OxMkFy6qfWd6deOyR0Qi92_pXxTt0hd5UgBbM8N_XFHE0faES_0dtZ6hav2NyHuUkCl7flk",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "TE": "trailers"
+        }
+    }
+    
+    pytrends = TrendReq(requests_args=requests_args)
+
+    # Build payload
+    pytrends.build_payload(
+        kw_list=keywords,
+        cat=0,
+        timeframe=timeframe,
+        geo=geo,
+        gprop=''
+    )
+
+    
+    interest_over_time_df = pytrends.interest_over_time()
+
+    
+
+    return interest_over_time_df
+
+
+
+
+
 
 @csrf_exempt
 def get_insights(request):    
     data = json.loads(request.body.decode('utf-8'))    
     ideaid = data['idea_id'] 
       
+    idea = Topic(
+        userid="ideagen_user_id",
+        topicid="Streamline_Expense_Tracking",
+        description="Develop an intuitive web and mobile app for efficient expense tracking, categorization, and reporting, leveraging AI for smart insights and automated receipt scanning",
+        time_constraint_value=3,  
+        budget_constraint_value=10000,  
+        subtask={"Implement manual and automated expense entry and categorization.","Develop a user-friendly reporting system with customizable visualizations."},
+        keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
+    )
+    
+    keyword_list=idea.keywords.get('keywords', [])
+    interest_over_time = get_google_trends_data(keyword_list)
+    
+    # print("Interest Over Time:")
+    # print(interest_over_time)  
+    
+    
 
     return JsonResponse({'competitors':
                             [{ 'name': 'Competitor 1', 'revenue': 1000000, 'employees': 50 },
                             { 'name': 'Competitor 2', 'revenue': 800000, 'employees': 40 }],
-                        'domain': "example.com",
-                        "trafficData": 
+                        'trafficData': 
                             [{"date": "2023-01-01", "visits": 1000},
                             {"date": "2023-01-02", "visits": 1200},
-                            {"date": "2023-01-03", "visits": 800}]                                
+                            {"date": "2023-01-03", "visits": 800}],
+                        'interest_over_time': interest_over_time.to_json(),
+                        'keywords': keyword_list                             
                         })
 
     

@@ -16,7 +16,10 @@ urlpatterns = [
     path('get_user',views.get_user, name='get_user'),
     path('new_user',views.new_user, name='new_user'),
     path('get_topics',views.get_topics, name='get_topics'),
+    path('get_topic',views.get_topic, name='get_topic'),
     path('new_topic',views.new_topic, name='new_topic'),
+    path('edit_topic',views.edit_topic, name='edit_topic'),
+    path('select_idea',views.select_idea, name='select_idea'),
 
     path('generate_idea',views.generate_idea, name='generate_idea'),
     path('get_insights',views.get_insights, name='get_insights'),

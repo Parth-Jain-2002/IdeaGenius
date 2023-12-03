@@ -10,21 +10,26 @@ export default function MarketInsight() {
   const [competitors, setCompetitors] = useState([]);
   const [traffic, setTraffic] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [customerInterest, setCustomerInterest] = useState([]);
+  const [keywords, setKeywords] = useState([]);
 
   useEffect(() => {
     axios.post(`http://localhost:8000/get_insights`, {
       idea_id: ideaid
     }
-    ).then((response) => {
-      console.log(response)
+    ).then((response) => {      
       setCompetitors(response.data.competitors);
       setTraffic(response.data.trafficData);
+      setCustomerInterest(response.data.interest_over_time);
+      setKeywords(response.data.keywords)   
+      console.log(response.data)   
     }, (error) => {
       console.log(error)
     })
   }, [ideaid])
+  
 
-
+  
 
 
   return (
@@ -79,6 +84,9 @@ export default function MarketInsight() {
           </div>
 
         </div>
+      </section>
+      <section>
+        
       </section>
 
 

@@ -55,7 +55,7 @@ export default function ResearchBank() {
     useEffect(() => {        
         getThreads()
         getTopics()
-    },[])
+    },[ideaid])
 
     
 
@@ -95,8 +95,8 @@ export default function ResearchBank() {
         </button>
       </aside>
       <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
-        <Navbar />
-        <section className="space-y-4 overflow-y-scroll max-h-[88vh] overflow-x-hidden">
+        <Navbar link={"/dashboard"}/>
+        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden">
           <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
           <div className="mt-8 grid grid-cols-3 gap-5">
             {threads.map((thread) => (
@@ -105,6 +105,9 @@ export default function ResearchBank() {
                     title={thread.title}
                     url={thread.url}
                     chatid={thread.chatid}
+                    topics = {topics}
+                    currentTopic={ideaid}
+                    getThreads={getThreads}
                 />
             ))}
             </div>

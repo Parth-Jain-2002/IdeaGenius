@@ -2,16 +2,18 @@ import Collapsible from "./Collapsible"
 import imagem from "../assets/images/IdeaGenLogo.png"
 import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router"
+import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
 import axios from "axios"
 import Navbar from "./Layout/Navbar"
 
 export default function IdeaInterface() {
     // Get chat id from url
-    const {chatid} = useParams()
+    const {ideaid} = useParams()
     const containerRef = useRef()
     const message = useRef()
     const [loading, setLoading] = useState(false)
-    const [topics, setTopics] = useState({})
+    const navigate = useNavigate();
 
     const question = [
         "1. Current challenge or pain point?",
@@ -23,7 +25,7 @@ export default function IdeaInterface() {
     const [answer, setAnswer] = useState([])
     const [index, setIndex] = useState(0)
     const [chats, setChats] = useState([])
-    const [initialIdeas, setInitialIdeas] = useState()
+    const [initialIdeas, setInitialIdeas] = useState([])
 
 
     const formatResponse = (text, containerRef) => {
@@ -59,6 +61,21 @@ export default function IdeaInterface() {
         return result.join('');
     };
 
+    const handleNavigate = (title,description) => {
+        axios.post(`http://localhost:8000/select_idea`,{
+                userid : localStorage.getItem("ideagen_user_id"),
+                idea : ideaid,
+                title : title,
+                description : description
+            }
+            ).then((response) => {
+                console.log(response)
+                navigate(`/dashboard`)
+            }, (error) => {
+                console.log(error)
+            })
+    }
+
     const handleChat = () => {
         if(index === question.length - 1){
             setChats([...chats, {message: message.current.value, response: "Generating ideas..."}])
@@ -70,8 +87,9 @@ export default function IdeaInterface() {
             }
             ).then((response) => {
                 let ideas = response.data.response
-                console.log(response)
-                setInitialIdeas(ideas)
+                //console.log("ideas : ", ideas)
+                //console.log(typeof(ideas))
+                setInitialIdeas(JSON.parse(ideas))
                 // Replace the "Generating ideas..." message with the initial ideas
                 setChats([...chats.slice(0, chats.length), {message: message.current.value, response: ideas}])
                 setLoading(false)
@@ -94,24 +112,11 @@ export default function IdeaInterface() {
         }
     };
         
-    useEffect(() => {
-        axios.get(`http://localhost:8000/get_topics`,{
-            params:{
-                userid : localStorage.getItem("ideagen_user_id")
-            }
-        }
-        ).then((response) => {
-            console.log(response)
-            setTopics(response.data.topics)
-        }, (error) => {
-            console.log(error)
-        })
-    },[chatid])
 
   return (
     <section>
       <main className="flex flex-col p-4">
-        <Navbar />
+        <Navbar link={"/dashboard"}/>
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
             <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md mr-2">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
@@ -152,13 +157,33 @@ export default function IdeaInterface() {
                                 <div className="ml-auto flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                                 <div className="ml-2 mr-2 flex-grow">
                                     <div className="text-sm text-gray-500">AI</div>
-                                    <div
-                                        className="bg-blue-200 dark:bg-blue-900 rounded-md px-5 py-3 mt-1"
-                                        ref={containerRef}
-                                        style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
-                                    >
-                                        <pre dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
-                                    </div>
+                                    {index === question.length - 1 && initialIdeas.length==4 ? (
+            // Render AI-generated problem statements differently
+            <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-md bg-slate-50 lg:grid-cols-2 gap-12">
+      {initialIdeas.map((problem, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className=" hover:border-x-4 hover:border-y-4 bg-white dark:bg-zinc-900 border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
+        >
+          <h2 className="text-lg p-2 font-semibold mb-4">{index+1}. {problem.title}</h2>
+          <p className="text-gray-600 p-2">{problem.description}</p>
+          <button onClick={() => handleNavigate(problem.title,problem.description)} className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black">Select Idea</button>
+        </motion.div>
+      ))}
+    </div>
+        ) : (
+            // Default rendering for other AI responses
+            <div
+                className="bg-blue-200 dark:bg-blue-900 rounded-md px-5 py-3 mt-1"
+                ref={containerRef}
+                style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
+            >
+                <pre dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
+            </div>
+        )}
                                 </div>
                             </div>
                         </>
