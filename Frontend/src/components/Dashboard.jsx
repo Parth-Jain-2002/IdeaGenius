@@ -53,7 +53,7 @@ export default function ResearchBank() {
             }}
             width="50"
           />
-          <h1 className="text-2xl font-bold text-white">IDEAGEN</h1>
+          <h1 className="text-2xl font-bold">IDEAGEN</h1>
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
