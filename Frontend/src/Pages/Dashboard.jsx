@@ -9,6 +9,16 @@ import NewIdeaModal from "../components/modals/NewIdeaModal"
 import IdeaDashboard from "../components/IdeaDashboard"
 import Navbar from "../components/Layout/Navbar"
 import animationdata from "../assets//animations/Animation - 1701611049947.json"
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from 'react-accessible-accordion';
+
+// Demo styles, see 'Styles' section below for some notes on use.
+//import 'react-accessible-accordion/dist/fancy-example.css';
 export default function ResearchBank() {
     const [topics, setTopics] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -43,7 +53,7 @@ export default function ResearchBank() {
     
 
   return (
-    <section className="grid h-screen grid-cols-5">
+    <section className="grid h-screen text-black grid-cols-5">
       <aside className="flex flex-col items-center justify-between p-10 bg-[#f8f9fb] dark:bg-zinc-900 ">
         <div className="flex items-center space-x-2">
           <img
@@ -57,14 +67,32 @@ export default function ResearchBank() {
             }}
             width="50"
           />
-          <h1 className="text-2xl font-bold text-white">IDEAGEN</h1>
+          <h1 className="text-2xl font-bold text-black">IDEAGEN</h1>
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
-         
-          {Object.keys(topics).map((topic, index) => (
-                <Collapsible title={topic} data={topic} chat={false} />
+         <Accordion>
+         {Object.keys(topics).map((topic, index) => (
+             <AccordionItem>
+             <AccordionItemHeading>
+                 <AccordionItemButton className="text-black">
+                     {topic.title}
+                 </AccordionItemButton>
+             </AccordionItemHeading>
+             <AccordionItemPanel>
+                 <p>
+                     Exercitation in fugiat est ut ad ea cupidatat ut in
+                     cupidatat occaecat ut occaecat consequat est minim minim
+                     esse tempor laborum consequat esse adipisicing eu
+                     reprehenderit enim.
+                 </p>
+             </AccordionItemPanel>
+             {/* <Collapsible title={topic} data={topic} chat={false} /> */}
+         </AccordionItem>
+                
             ))}
+         </Accordion>
+          
         
           <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
