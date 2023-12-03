@@ -3,13 +3,16 @@ import ResearchCard from "./ResearchCard"
 import Collapsible from "./Collapsible"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import plus_icon from "../assets/images/plus_icon_black.png"
 import NewIdeaModal from "./modals/NewIdeaModal"
+import Navbar from "./Layout/Navbar"
 
 export default function ResearchBank() {
     const [threads, setThreads] = useState([])
     const [topics, setTopics] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const { ideaid } = useParams()
 
     const openModal = () => {
       setIsModalOpen(true)
@@ -36,7 +39,8 @@ export default function ResearchBank() {
     const getThreads = () => {
       axios.get(`http://localhost:8000/get_threads`,{
             params:{
-                userid: localStorage.getItem("ideagen_user_id")
+                userid: localStorage.getItem("ideagen_user_id"),
+                ideaid: ideaid
             }
         }
         ).then((response) => {
@@ -51,7 +55,7 @@ export default function ResearchBank() {
     useEffect(() => {        
         getThreads()
         getTopics()
-    },[])
+    },[ideaid])
 
     
 
@@ -91,31 +95,7 @@ export default function ResearchBank() {
         </button>
       </aside>
       <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
-        <section className="flex items-center justify-between mb-4">
-        <input
-            className="w-1/2 p-2 border border-gray-300 rounded-full"
-            placeholder="Converse with the research bank"
-            type="text"
-        />
-          <div className="flex items-center space-x-2">
-          <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
-            <svg
-                className=" h-6 w-6 text-gray-600 dark:text-gray-300"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-        </section>
+        <Navbar link={"/dashboard"}/>
         <section className="space-y-4 overflow-y-scroll max-h-[88vh] overflow-x-hidden">
           <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
           <div className="mt-8 grid grid-cols-3 gap-5">

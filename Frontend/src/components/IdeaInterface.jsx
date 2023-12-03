@@ -2,8 +2,10 @@ import Collapsible from "./Collapsible"
 import imagem from "../assets/images/IdeaGenLogo.png"
 import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import { motion } from "framer-motion";
+import Navbar from "./Layout/Navbar"
+
 export default function IdeaInterface() {
     // Get chat id from url
     const {chatid} = useParams()
@@ -11,6 +13,7 @@ export default function IdeaInterface() {
     const message = useRef()
     const [loading, setLoading] = useState(false)
     const [topics, setTopics] = useState({})
+    const navigate = useNavigate();
 
     const question = [
         "1. Current challenge or pain point?",
@@ -22,30 +25,8 @@ export default function IdeaInterface() {
     const [answer, setAnswer] = useState([])
     const [index, setIndex] = useState(0)
     const [chats, setChats] = useState([])
-    const [initialIdeas, setInitialIdeas] = useState()
+    const [initialIdeas, setInitialIdeas] = useState([])
 
-    const [problemStatements, setProblemStatements] = useState([
-        {
-          title: "Problem Statement 1",
-          explanation:
-            "How might we design and implement a cost-effective, intuitive blind spot monitoring system for commercial vehicles, utilizing sensors and machine learning algorithms to detect potential hazards and alert drivers, reducing the risk of accidents and improving safety on India's roads?",
-        },
-        {
-          title: "Problem Statement 2",
-          explanation:
-            "How might we develop an advanced lane departure warning system that integrates with existing autonomous driving features, using computer vision and deep learning techniques to detect lane markings and prevent unintentional lane changes, minimizing the risk of accidents caused by human error?",
-        },
-        {
-          title: "Problem Statement 3",
-          explanation:
-            "How might we create an AI-powered driver fatigue detection system, leveraging facial recognition and machine learning algorithms to identify signs of drowsiness, distraction, or other forms of impairment, and alert drivers to take breaks or rest when needed, reducing the likelihood of accidents caused by tiredness?",
-        },
-        {
-          title: "Problem Statement 4",
-          explanation:
-            "How might we design and deploy a low-cost, scalable, and modular smart traffic management system for urban areas, utilizing IoT sensors, data analytics, and real-time optimization algorithms to reduce congestion, decrease travel times, and improve air quality, ultimately enhancing the overall driving experience for citizens?",
-        },
-      ]);
 
     const formatResponse = (text, containerRef) => {
         const result = [];
@@ -79,7 +60,9 @@ export default function IdeaInterface() {
     
         return result.join('');
     };
-
+const handleNavigate = () => {
+  navigate("/dashboard");
+}
     const handleChat = () => {
         if(index === question.length - 1){
             setChats([...chats, {message: message.current.value, response: "Generating ideas..."}])
@@ -91,10 +74,10 @@ export default function IdeaInterface() {
             }
             ).then((response) => {
                 let ideas = response.data.response
-                console.log(response)
+                console.log("ideas : ", ideas)
                 setInitialIdeas(ideas)
                 // Replace the "Generating ideas..." message with the initial ideas
-                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: ideas}])
+                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: str(ideas)}])
                 setLoading(false)
             }, (error) => {
                 console.log(error)
@@ -132,26 +115,7 @@ export default function IdeaInterface() {
   return (
     <section>
       <main className="flex flex-col p-4">
-        <section className="flex items-center justify-end mb-4">
-        <div className="flex items-center space-x-2">
-            <span className="text-lg">{localStorage.getItem("ideagen_logged_in")? localStorage.getItem("ideagen_user_name"): "" }</span>
-            <svg
-                className=" h-6 w-6 text-gray-600 dark:text-gray-300"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-        </section>
+        <Navbar />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
             <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md mr-2">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
@@ -192,12 +156,10 @@ export default function IdeaInterface() {
                                 <div className="ml-auto flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                                 <div className="ml-2 mr-2 flex-grow">
                                     <div className="text-sm text-gray-500">AI</div>
-                                    <div className="ml-2 mr-2 flex-grow">
-        <div className="text-sm  text-gray-500">{chat.sender}</div>
-        {index === question.length - 1 ? (
+                                    {index === question.length - 1 ? (
             // Render AI-generated problem statements differently
-            <div className="grid grid-cols-2 md:grid-cols-2 p-2 rounded-md bg-slate-50 lg:grid-cols-2 gap-12">
-      {problemStatements.map((problem, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-md bg-slate-50 lg:grid-cols-2 gap-12">
+      {initialIdeas && initialIdeas.map((problem, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, scale: 0.8 }}
@@ -206,8 +168,8 @@ export default function IdeaInterface() {
           className=" hover:border-x-4 hover:border-y-4 bg-white dark:bg-zinc-900 border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
         >
           <h2 className="text-lg p-2 font-semibold mb-4">1. {problem.title}</h2>
-          <p className="text-gray-600 p-2">{problem.explanation}</p>
-          <button className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black">Refine Idea</button>
+          <p className="text-gray-600 p-2">{problem.description}</p>
+          <button onClick={() => handleNavigate()} className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black">Refine Idea</button>
         </motion.div>
       ))}
     </div>
@@ -220,8 +182,7 @@ export default function IdeaInterface() {
             >
                 <pre dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
             </div>
-        )}
-    </div>
+        )}
                                 </div>
                             </div>
                         </>

@@ -8,6 +8,7 @@ import requests
 from readability import Document
 import re
 import json
+import uuid
 import os
 import pdfplumber
 import docx2txt
@@ -299,8 +300,20 @@ def get_thread(request):
 @csrf_exempt
 def get_threads(request):
     userid = request.GET['userid']
-    threads = Thread.objects.filter(userid=userid)
+    ideaid = request.GET['ideaid']
     
+    userDoc = UserDoc.objects.get(userid=userid)
+    topics = userDoc.topics
+    chatids = topics[ideaid]
+
+    # Convert the chatids to UUID
+    print(chatids)
+    chatids = [chatid['chatid'] for chatid in chatids]
+    print(chatids)
+    chatids = [uuid.UUID(chatid) for chatid in chatids]
+    print(chatids)
+    threads = Thread.objects.filter(chatid__in=chatids)
+
     # convert the chats to json
     response = []
     for thread in threads:
@@ -438,6 +451,37 @@ def new_topic(request):
 
     return JsonResponse({'response':'Success'})
 
+@csrf_exempt
+def edit_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    chatid = data['chatid']
+    topicid = data['topicid']
+    prevtopicid = data['prevtopicid']
+
+    print(topicid)
+    print(prevtopicid)
+
+    thread = Thread.objects.get(chatid=chatid)
+
+    userDoc = UserDoc.objects.get(userid=userid)
+    topics = userDoc.topics
+
+    # Remove the chatid from the previous topic
+    prevtopic = topics[prevtopicid]
+    prevtopic = [chat for chat in prevtopic if chat['chatid'] != str(chatid)]
+    topics[prevtopicid] = prevtopic
+    # Add the chatid to the new topic
+    newtopic = topics[topicid]
+    newtopic.append({'title':thread.title, 'chatid':str(chatid)})
+    topics[topicid] = newtopic
+    
+    userDoc.topics = topics
+    userDoc.save()
+
+    return JsonResponse({'response':'Success'})
+
+
 #------------------------------------------------------------------------------------------
 #----------------------------------- USER -------------------------------------------------
 #------------------------------------------------------------------------------------------
@@ -499,6 +543,21 @@ def generate_source_documents(answer, chatids):
     response = llm(final_source_generation(source_documents,answer))
     return response
 
+def validate(response):
+    print(response)
+    try:
+        response = response.split("[")[1].split("]")[0]
+        response = "[" + response + "]"
+        response = json.loads(response)
+        if len(response) == 4:
+            # Check if the object contains title and description
+            return True
+        else:
+            return False
+    except:
+        return False
+    
+
 @csrf_exempt
 def generate_idea(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -522,9 +581,37 @@ def generate_idea(request):
 
     prompt = idea_generation(answer, "")
 
-    answer = llm(prompt)
-    print(answer)
+    prompt+= "Title should be of max 10-15 words. Description should be of max 40-50 words. Return a JSON object array of the following format: [{\"title\": \"Title of the idea\", \"description\": \"Description of the idea\"} , { Ideas 2 }, { Ideas 3 }, { Ideas 4 }]"
 
-    return JsonResponse({'response':answer})
+    while True:
+        response = llm(prompt)
+        # Check if there is a array in the response or not with four elements of title and description
+        if(validate(response)):
+            break
+    
+    response = response.split("[")[1].split("]")[0]
+    response = "[" + response + "]"
+
+    return JsonResponse({'response':response})
+
+#------------------------------------------------------------------------------------------
+#------------------------------MARKET INSIGHTS---------------------------------------------
+#------------------------------------------------------------------------------------------
+
+@csrf_exempt
+def get_insights(request):    
+    data = json.loads(request.body.decode('utf-8'))    
+    ideaid = data['idea_id'] 
+      
+
+    return JsonResponse({'competitors':
+                            [{ 'name': 'Competitor 1', 'revenue': 1000000, 'employees': 50 },
+                            { 'name': 'Competitor 2', 'revenue': 800000, 'employees': 40 }],
+                        'domain': "example.com",
+                        "trafficData": 
+                            [{"date": "2023-01-01", "visits": 1000},
+                            {"date": "2023-01-02", "visits": 1200},
+                            {"date": "2023-01-03", "visits": 800}]                                
+                        })
 
     
