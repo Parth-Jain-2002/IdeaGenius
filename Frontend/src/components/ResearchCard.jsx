@@ -35,7 +35,7 @@ function parseUrl(url) {
     return url.length > 40 ? url.slice(0, 40) + "..." : url;
 }
 
-const ResearchCard = ({ imgSrc, title, url, chatid, topics, currentTopic, getTopics }) => {
+const ResearchCard = ({ imgSrc, title, url, chatid, topics, currentTopic, getThreads }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const openModal = () => {
@@ -73,7 +73,7 @@ const ResearchCard = ({ imgSrc, title, url, chatid, topics, currentTopic, getTop
         <IconResearch className="h-6 w-6 p-1 rounded-full hover:bg-gray-200" />
         </Link>
         <img src={three_dots} alt="Three dots icon" className="h-6 w-6 ml-2 p-1 rounded-full hover:bg-gray-200" onClick={openModal}/>
-        {isModalOpen && <EditFormChat onClose={closeModal} topics={Object.keys(topics)} currentTopic={currentTopic} chatId={chatid} getTopics={getTopics}/>}
+        {isModalOpen && <EditFormChat onClose={closeModal} topics={Object.keys(topics)} currentTopic={currentTopic} chatId={chatid} getThreads={getThreads}/>}
       </div>
     </div>
   );

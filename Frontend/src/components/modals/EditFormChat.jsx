@@ -5,7 +5,7 @@ import crossIcon from '../../assets/images/cross_icon.png';
 import infoIcon from '../../assets/images/info_icon_red.svg';
 import axios from 'axios';
 
-const EditFormChat = ({ onClose, topics, getTopics, currentTopic, chatId }) => {
+const EditFormChat = ({ onClose, topics, getThreads, currentTopic, chatId }) => {
   const [topicid, setTopicid] = useState(currentTopic);
   const [title, setTitle] = useState(`Save as ${currentTopic}`);
 
@@ -23,7 +23,7 @@ const EditFormChat = ({ onClose, topics, getTopics, currentTopic, chatId }) => {
         prevtopicid: currentTopic
     }).then((response) => {
             //console.log(response)
-            getTopics()
+            getThreads()
             onClose()
     }, (error) => {
       console.log(error)
