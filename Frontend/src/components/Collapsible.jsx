@@ -18,7 +18,7 @@ const Collapsible = ({ title, data, chat }) => {
   return (
     <div className="collapsible">
       <div
-        className="collapsible-trigger flex items-center w-full cursor-pointer hover:bg-gray-200 rounded-lg py-1 px-3"
+        className="collapsible-trigger flex items-center w-full cursor-pointer hover:bg-gray-200 rounded-lg py-1 px-3 text-white"
         onClick={toggleCollapsible}
       > 
       { !chat && (
@@ -52,7 +52,7 @@ const Collapsible = ({ title, data, chat }) => {
         
       </div>
       {isOpen && (
-        <div className="collapsible-content">
+        <div className="collapsible-content text-white">
           <ul className="list-none list-inside text-left ml-3 space-y-2">
             {
               !chat && (

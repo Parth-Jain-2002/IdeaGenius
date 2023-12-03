@@ -3,21 +3,21 @@
 import React from 'react';
 //import './PeopleCard.css';
 
-const PeopleCard = ({ name, jobTitle }) => {
-  // Generate a random number to use as a seed for a random Unsplash user avatar
+const PeopleCard = ({ name, jobTitle}) => {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
-  const unsplashUrl = `https://source.unsplash.com/50x50/?user&${randomSeed}`;
-
+  const url = `https://source.unsplash.com/150x150/?user&${randomSeed}`;
   return (
-    <div className="people-card">
-      <div className="avatar">
-        <img src={unsplashUrl} alt={`Avatar of ${name}`} />
+    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
+      <img className="w-full h-48 object-cover" src={url} alt={`Profile of ${name}`} />
+      <div className="px-6 py-4">
+        <div className="font-bold text-xl mb-2">{name}</div>
+        <p className="text-gray-700 text-base">{jobTitle}</p>
       </div>
-      <div className="info">
-        <h3>{name}</h3>
-        <p>{jobTitle}</p>
+      <div className="px-6 py-4">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Connect
+        </button>
       </div>
-      <button onClick={console.log('clicked')}>Add Connection</button>
     </div>
   );
 };
