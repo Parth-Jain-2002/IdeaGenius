@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import folderIcon from '../assets/images/folder_icon.png';
+import researchIcon from '../assets/images/research_bank_icon.png';
+import visionDocIcon from '../assets/images/vision_doc_icon.png';
 
 const Collapsible = ({ title, data, chat }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,14 +53,24 @@ const Collapsible = ({ title, data, chat }) => {
       </div>
       {isOpen && (
         <div className="collapsible-content">
-          <ul className="list-disc list-inside space-y-1">
+          <ul className="list-none list-inside text-left ml-3 space-y-2">
             {
               !chat && (
                 <>
                 { title!= "Miscellaneous" &&
-                <li key={1}><Link to={ `../vision-doc/${data}`}>Vision Doc</Link></li>
+                <li key={1}><Link to={ `../vision-doc/${data}`}>
+                  <div className='flex flex-row'>
+                  <img src={visionDocIcon} alt="Vision doc icon" className="h-4 w-4 mr-2 mt-1" />
+                  Vision Doc
+                  </div>
+                  </Link></li>
                 }
-                <li key={2}><Link to={ `../research/${data}`}>Research Bank</Link></li>
+                <li key={2}><Link to={ `../research/${data}`}>
+                  <div className='flex flex-row'>
+                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2 mt-1" />
+                  Research Bank
+                  </div>
+                  </Link></li>
                 </>
               )
             }

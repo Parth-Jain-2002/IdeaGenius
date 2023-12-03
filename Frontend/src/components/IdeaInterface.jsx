@@ -3,6 +3,7 @@ import imagem from "../assets/images/IdeaGenLogo.png"
 import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
 import axios from "axios"
 import Navbar from "./Layout/Navbar"
 import { motion } from "framer-motion";
@@ -75,9 +76,10 @@ const handleNavigate = () => {
             ).then((response) => {
                 let ideas = response.data.response
                 console.log("ideas : ", ideas)
-                setInitialIdeas(ideas)
+                console.log(typeof(ideas))
+                setInitialIdeas(JSON.parse(ideas))
                 // Replace the "Generating ideas..." message with the initial ideas
-                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: str(ideas)}])
+                setChats([...chats.slice(0, chats.length), {message: message.current.value, response: ideas}])
                 setLoading(false)
             }, (error) => {
                 console.log(error)
@@ -115,7 +117,7 @@ const handleNavigate = () => {
   return (
     <section>
       <main className="flex flex-col p-4">
-        <Navbar />
+        <Navbar link={"/dashboard"}/>
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
             <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md mr-2">
                 <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
@@ -159,7 +161,7 @@ const handleNavigate = () => {
                                     {index === question.length - 1 ? (
             // Render AI-generated problem statements differently
             <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-md bg-slate-50 lg:grid-cols-2 gap-12">
-      {initialIdeas && initialIdeas.map((problem, index) => (
+      {initialIdeas.length==4 && initialIdeas.map((problem, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, scale: 0.8 }}
@@ -167,7 +169,7 @@ const handleNavigate = () => {
           transition={{ duration: 0.5 }}
           className=" hover:border-x-4 hover:border-y-4 bg-white dark:bg-zinc-900 border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
         >
-          <h2 className="text-lg p-2 font-semibold mb-4">1. {problem.title}</h2>
+          <h2 className="text-lg p-2 font-semibold mb-4">{index+1}. {problem.title}</h2>
           <p className="text-gray-600 p-2">{problem.description}</p>
           <button onClick={() => handleNavigate()} className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black">Refine Idea</button>
         </motion.div>
@@ -182,7 +184,7 @@ const handleNavigate = () => {
             >
                 <pre dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
             </div>
-        )}
+        )}
                                 </div>
                             </div>
                         </>
