@@ -26,7 +26,7 @@ function People() {
   return (
     <div>
       <h3>people you may know</h3>
-      <div>
+      <div className='flex flex-wrap gap-6 justify-center items-center h-screen'>
         {getPeople().map((person) => (
           <PeopleCard name={person.name} jobTitle={person.jobTitle}/>
         ))}

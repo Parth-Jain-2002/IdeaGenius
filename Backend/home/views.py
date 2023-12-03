@@ -434,6 +434,19 @@ def get_topics(request):
 
     return JsonResponse({'topics':user.topics})
 
+
+@csrf_exempt
+def get_topic(request):
+    userid = request.GET['userid']
+    topicid = request.GET['topicid']
+
+    print(topicid)
+
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    response = {'title':topic.title, 'description':topic.description, 'generated':topic.generated, 'time_constraint_value':topic.time_constraint_value, 'budget_constraint_value':topic.budget_constraint_value, 'subtask':topic.subtask, 'keywords':topic.keywords}
+
+    return JsonResponse(response)
+
 @csrf_exempt
 def new_topic(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -593,6 +606,25 @@ def generate_idea(request):
     response = "[" + response + "]"
 
     return JsonResponse({'response':response})
+
+@csrf_exempt
+def select_idea(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    idea = data['idea']
+    title = data['title']
+    description = data['description']
+
+    print(idea)
+
+    # Get the Idea from the database
+    topic = Topic.objects.get(userid=userid, topicid=idea)
+    topic.title = title
+    topic.description = description
+    topic.generated = True
+    topic.save()
+
+    return JsonResponse({'response':'Success'})
 
 #------------------------------------------------------------------------------------------
 #------------------------------MARKET INSIGHTS---------------------------------------------
