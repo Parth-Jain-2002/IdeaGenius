@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from "react";
 import { Link } from 'react-router-dom'; // Replace with your routing library and correct import
+import three_dots from "../assets/images/three_dot_icon.png";
+import EditFormChat from './modals/EditFormChat';
 
 function IconResearch(props) {
     return (
@@ -33,7 +35,17 @@ function parseUrl(url) {
     return url.length > 40 ? url.slice(0, 40) + "..." : url;
 }
 
-const ResearchCard = ({ imgSrc, title, url, chatid }) => {
+const ResearchCard = ({ imgSrc, title, url, chatid, topics, currentTopic, getTopics }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   return (
     <div className="relative p-4 rounded-lg shadow-lg bg-white mb-1">
       <img
@@ -55,11 +67,13 @@ const ResearchCard = ({ imgSrc, title, url, chatid }) => {
       <Link className="inline-block font-light mt-4 text-sm text-center" to={url}>
         {parseUrl(url)}
       </Link>
-      <div className="absolute bottom-3 right-3">
+      <div className="absolute bottom-3 right-3 flex">
         {/* Use a suitable Tailwind CSS icon here */}
         <Link to={`../chat/${chatid}`}>
-        <IconResearch className="w-5 h-5" />
+        <IconResearch className="h-6 w-6 p-1 rounded-full hover:bg-gray-200" />
         </Link>
+        <img src={three_dots} alt="Three dots icon" className="h-6 w-6 ml-2 p-1 rounded-full hover:bg-gray-200" onClick={openModal}/>
+        {isModalOpen && <EditFormChat onClose={closeModal} topics={Object.keys(topics)} currentTopic={currentTopic} chatId={chatid} getTopics={getTopics}/>}
       </div>
     </div>
   );
