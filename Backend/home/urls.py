@@ -18,6 +18,7 @@ urlpatterns = [
     path('get_topics',views.get_topics, name='get_topics'),
     path('new_topic',views.new_topic, name='new_topic'),
     path('edit_topic',views.edit_topic, name='edit_topic'),
+    path('select_idea',views.select_idea, name='select_idea'),
 
     path('generate_idea',views.generate_idea, name='generate_idea'),
     path('get_insights',views.get_insights, name='get_insights'),

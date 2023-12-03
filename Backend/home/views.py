@@ -594,6 +594,25 @@ def generate_idea(request):
 
     return JsonResponse({'response':response})
 
+@csrf_exempt
+def select_idea(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    idea = data['idea']
+    title = data['title']
+    description = data['description']
+
+    print(idea)
+
+    # Get the Idea from the database
+    topic = Topic.objects.get(userid=userid, topicid=idea)
+    topic.title = title
+    topic.description = description
+    topic.generated = True
+    topic.save()
+
+    return JsonResponse({'response':'Success'})
+
 #------------------------------------------------------------------------------------------
 #------------------------------MARKET INSIGHTS---------------------------------------------
 #------------------------------------------------------------------------------------------
