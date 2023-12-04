@@ -1,6 +1,7 @@
 import React , {useState, useEffect, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 import logo from '../assets/images/IdeaGenLogo.png';
+import redoIcon from '../assets/images/redo_icon.png';
 import visionIcon from '../assets/images/vision_icon.png';
 import researchIcon from '../assets/images/research_bank_icon.png';
 import axios from 'axios';
@@ -13,6 +14,8 @@ function VisionDoc() {
   const [loading, setLoading] = useState(false)
   const containerRef = useRef()
   const message = useRef()
+  const [blocks, setBlocks] = useState([" "])
+
 
   const getIdeaInfo = () => {
     console.log(ideaid)
@@ -76,22 +79,37 @@ function VisionDoc() {
     setLoading(true)
     console.log("Sending message")
     console.log(message.current.value)
-    axios.post(`http://localhost:8000/chat_interface`,{
-        chat_id: chatid,
-        message: message.current.value
+    
+  }
+
+  const generateTimeInsights = () => {
+    axios.post(`http://localhost:8000/get_time_insights`, {
+      ideaid: ideaid,
+      userid: localStorage.getItem("ideagen_user_id")
     }
     ).then((response) => {
-        console.log(response)
-        setChats([...chats,{
-            message: message.current.value,
-            response: response.data.response
-        }])
-        message.current.value = ""
-        setLoading(false)
+      console.log(response)
+      getIdeaInfo()
     }, (error) => {
-        console.log(error)
-        setLoading(false)
+      console.log(error)
     })
+  }
+
+  const generateCostInsights = () => {
+    axios.post(`http://localhost:8000/get_cost_insights`, {
+      ideaid: ideaid,
+      userid: localStorage.getItem("ideagen_user_id")
+    }
+    ).then((response) => {
+      console.log(response)
+      getIdeaInfo()
+    }, (error) => {
+      console.log(error)
+    })
+  }
+
+  const generateSubtasks = () => {
+
   }
 
   useEffect(() => {
@@ -113,7 +131,7 @@ function VisionDoc() {
       <Navbar />
       <section className="grid grid-cols-4">
         <main className="col-span-3 min-h-[88vh] max-h-[88vh]">
-      <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh]">
+      <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh] overflow-y-scroll">
         <div className="mb-8 flex flex-row">
           {/* This is where you can start writing in block 1 */}
           <img src={visionIcon} alt="Logo" className="rounded-lg border-2 border-gray-300 bg-gray-100 p-1 mr-4" height="65" width="65" />
@@ -133,18 +151,23 @@ function VisionDoc() {
         </div>
 
         <div className="mb-4">
-          <div>
+          <div className="flex flex-row mb-2">
             <label className="font-bold">Time Insights</label>
+            {(ideaInfo.time_insight!=undefined && Object.keys(ideaInfo.time_insight).length>0) &&
+              <img src={researchIcon} alt="Logo" className=" rounded-lg hover:bg-gray-100 px-1 ml-2" height="10" width="30" onClick={()=>generateTimeInsights()}/>
+            }
           </div>
           <div className='outline-none flex-row'>
             {/* This is where you can start writing in block 2 */}
-            {ideaInfo.subtask ? <>
+            {ideaInfo.time_insight!=undefined && Object.keys(ideaInfo.time_insight).length>0 ? <>
               <div contentEditable="true" className='outline-none flex-row'>
-                <p>{ideaInfo.subtask}</p>
+                {Object.keys(ideaInfo.time_insight).map((key, index) => (
+                  <p><span className='font-bold text-sm text-gray-600'>{key.toUpperCase()+" :"}</span> {ideaInfo.time_insight[key].toString()}</p>
+                ))}
               </div>
             </>:
             <>
-              <button className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row">
+              <button className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row" onClick={()=>generateTimeInsights()}>
                 <img src={researchIcon} alt="Logo" className="rounded-lg  mr-2" height="20" width="20"/>
                 <p className='text-gray-500 text-sm'>Add Time Insights</p>
               </button>
@@ -153,18 +176,23 @@ function VisionDoc() {
         </div>
 
         <div className="mb-4">
-          <div>
+        <div className="flex flex-row mb-2">
             <label className="font-bold">Cost Insights</label>
+            {(ideaInfo.cost_insight!=undefined && Object.keys(ideaInfo.cost_insight).length>0) &&
+              <img src={researchIcon} alt="Logo" className=" rounded-lg hover:bg-gray-100 px-1 ml-2" height="10" width="30" onClick={()=>generateCostInsights()}/>
+            }
           </div>
           <div className='outline-none flex-row'>
             {/* This is where you can start writing in block 2 */}
-            {ideaInfo.subtask ? <>
+            {ideaInfo.cost_insight!=undefined && Object.keys(ideaInfo.cost_insight).length>0 ? <>
               <div contentEditable="true" className='outline-none flex-row'>
-                <p>{ideaInfo.subtask}</p>
+                {Object.keys(ideaInfo.cost_insight).map((key, index) => (
+                  <p><span className='font-bold text-sm text-gray-600'>{key.toUpperCase()+" :"}</span> {ideaInfo.cost_insight[key]}</p>
+                ))}
               </div>
             </>:
             <>
-              <button className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row">
+              <button className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row" onClick={()=>generateCostInsights()}>
                 <img src={researchIcon} alt="Logo" className="rounded-lg  mr-2" height="20" width="20"/>
                 <p className='text-gray-500 text-sm'>Add Cost Insights</p>
               </button>
@@ -191,6 +219,19 @@ function VisionDoc() {
             </>}
           </div>
         </div>
+
+        <div className="mb-4">
+          <div>
+            <label className='font-bold'>Imagine Further</label>
+          </div>
+          <div className='outline-none flex-row'>
+            {blocks.map((block, index) => (
+              <div contentEditable="true" className='outline-none flex-row'>
+                <p>{block}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       </main>
       
@@ -206,7 +247,7 @@ function VisionDoc() {
                       <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                       <div className="ml-2 mr-2 text-right max-w-3xl w-full">
                           <div className="text-xs text-gray-500 px-1">{localStorage.getItem("ideagen_user_name")}</div>
-                          <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose">{chat.message}</div>
+                          <div className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose">{chat.message}</div>
                       </div>
                   </div>
                   <div className="flex items-start mb-4">
@@ -214,11 +255,21 @@ function VisionDoc() {
                       <div className="ml-2 mr-2 flex-grow max-w-3xl">
                           <div className="text-xs text-gray-500 px-1">VisionX</div>
                           <div
-                              className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose"
+                              className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose"
                               ref={containerRef}
                               style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
                           >
                               <span dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
+                          <div className="flex flex-row justify-center space-x-2 mt-2">
+                            <button className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row" onClick={()=>navigator.clipboard.writeText(chat.response)}>
+                              <span className="text-sm">Copy</span>
+                            </button>
+                            <button className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row" onClick={()=>{
+                              setBlocks([...blocks, chat.response])
+                            }}>
+                              <span className="text-sm">Add to Vision</span>
+                            </button>
+                          </div>
                           </div>
                       </div>
                   </div>

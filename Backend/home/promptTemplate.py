@@ -54,3 +54,45 @@ def source_document_generation(answer):
 
     # Step 3: Return the refined prompt
     return prompt
+
+
+def idea_info(idea):
+    prompt= f""" The deatils of the idea are: 
+        Title: {idea.title},
+        Description: {idea.description},
+        Time_insight: {str(idea.time_insight)},
+        Cost_insight: {str(idea.cost_insight)},
+        Subtask: {idea.subtask},
+
+        Some of the fields might be empty. But don't need to consider them.
+    """
+
+    return prompt
+
+def generate_cost_insights_prompt(idea):
+    prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
+    This is for a platform that enables alumni/clients to collaborate with college students on projects.
+    So, we are generating insights for the idea:
+
+    {idea_info(idea)}
+
+    We need to generate cost insights for this idea. 
+    """
+
+    prompt += "The cost should in rupees. Return the JSON object with the following fields: cost, explanation, and note(if any)"
+
+    return prompt
+
+def generate_time_insights_prompt(idea):
+    prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
+    This is for a platform that enables alumni/clients to collaborate with college students on projects.
+    So, we are generating insights for the idea:
+
+    {idea_info(idea)}
+
+    We need to generate time insights for this idea. 
+    """
+
+    prompt += "The time should in days. Return the JSON object with the following fields: time, explanation, and note(if any)"
+
+    return prompt

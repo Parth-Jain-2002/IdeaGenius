@@ -19,12 +19,17 @@ import {
   AccordionItemHeading,
   AccordionItemButton,
   AccordionItemPanel,
+  AccordionItemState
 } from 'react-accessible-accordion';
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
+
+import '../assets/dashboard.css';
+
+
 export default function ResearchBank() {
-    const [topics, setTopics] = useState({})
+    const [topics, setTopics] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [currentTopic, setCurrentTopic] = useState("")
    
@@ -54,7 +59,10 @@ export default function ResearchBank() {
         getTopics()
     },[])
 
-    
+    const handleclick = (topic) => {
+      setCurrentTopic(topic);
+      console.log("current topic : ", currentTopic);
+    }
 
   return (
     <section className="grid h-screen text-black grid-cols-5">
@@ -75,39 +83,47 @@ export default function ResearchBank() {
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
-          <Accordion className="rounded-lg w-64 border-2">
+          <Accordion className="rounded-lg w-64 border-2" >
    
           {Object.keys(topics).map((topic, index) => (
-             <AccordionItem className="border-y-2">
-             <AccordionItemHeading className="hover:bg-gray-300">
-                 <AccordionItemButton className="text-black p-2 font-semibold  flex justify-between ">
+             <AccordionItem className="border-y-2" >
 
-                 <img src={folderIcon} alt="Folder icon" className="h-4 w-4 my-auto mr-4" />
-        {topic}
-                 </AccordionItemButton>
+             <AccordionItemHeading  className="hover:bg-gray-300">
+              <AccordionItemButton className="text-black p-2 font-medium  flex justify-start " >
+
+                <img src={folderIcon} alt="Folder icon" className="h-4 w-4 my-auto mr-4" />
+              {topic}
+
+              </AccordionItemButton>
+                 
              </AccordionItemHeading>
              <AccordionItemPanel className="  " >
              
                 { topic === "Miscellaneous" ? (
                  <Link to={ `../research/${topic}`}>
-                 <div className='flex justify-end text-sm flex-row p-2 hover:bg-gray-200'>
+                 <div className='flex justify-start text-sm flex-row p-2 hover:bg-gray-200'>
                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
                  Research Bank
                  </div>
                  </Link>
                 ) : (
                   <><Link to={ `../vision-doc/${topic}`}>
-                  <div className='flex  justify-end flex-row text-sm p-2 hover:bg-gray-200'>
+                  <div className='flex  justify-start flex-row text-sm p-2 hover:bg-gray-200'>
                   <img src={visionDocIcon} alt="Vision doc icon" className="h-4 w-4 mr-2" />
                   Vision Doc
                   </div>
                   </Link>
                   <Link to={ `../research/${topic}`}>
-                  <div className='flex justify-end flex-row p-2 text-sm hover:bg-gray-200'>
+                  <div className='flex justify-start flex-row p-2 text-sm hover:bg-gray-200'>
                   <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
                   Research Bank
                   </div>
-                  </Link></>
+                  
+                  </Link>
+                  <button onClick={() => setCurrentTopic(topic)} className='flex  w-full justify-start flex-row p-2 text-sm hover:bg-gray-200'>
+                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
+                  Idea Dashboard
+                  </button></>
                 )}
                
                 
@@ -129,20 +145,19 @@ export default function ResearchBank() {
           Upgrade
         </button>
       </aside>
-      <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
-        {/* To be designed */}
+      <main className="flex flex-col bg-white col-span-4 p-4">
         
         <Navbar />
   
-{currentTopic === "" ? (
+{currentTopic === "" || currentTopic === "Miscellaneous" ? (
   <div className="w-full h-full">
-    <div className="flex border-2 border-[#faad14] justify-start space-x-8 mt-4 rounded-lg bg-white w-[95%] h-[30%]">
+    <div className="flex border-2 border-[#faad14] justify-start space-x-8 mt-4 rounded-lg bg-white w-[95%] h-48 shadow-md mb-4">
   <Lottie
        animationData={animationdata}
        className=" h-full"
      />
      <div className=" p-4 my-auto ">
-       <h1 className="text-6xl my-auto font-semibold dark:text-white">IdeaX Hub </h1>
+       <h1 className="text-6xl my-auto font-semibold                                                                                                                      ">IdeaX Hub </h1>
      <h2 class=" mt-8  font-medium text-[#597ef7] text-xl dark:text-gray-400">Refine, Explore, and cultivate groundbreaking ideas.</h2>
 
     
@@ -150,35 +165,82 @@ export default function ResearchBank() {
 
 </div>
 
-<div className="grid grid-cols-4 gap-10 mt-10">
-  <div className="w-56 h-5w-56 p-2 items-center  border-2  bg-gradient-to-br from-white to-blue-300 shadow-md rounded-2xl">
-    <h1 className="text-center mt-14 mb-2 font-normal text-lg  ">Create New Ideas by </h1>
-    <div className="flex justify-center w-2/3 mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
-    <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
+{/* <div className="grid grid-cols-4 gap-10 mt-10"> */}
+  <div className="dashboard relative mx-auto">
+    <div class="container">
+      <div class="hex pos0">
+        <span className="content">
+          <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
+          <div className="flex justify-center w-full mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
+            <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
             New Idea
-            </div>
+          </div>
+        </span>
+      </div>
+      <div class="hex pos1">
+        <span className="content">
+          <h1 className="text-center font-normal text-sm">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
+        </span>
+      </div>
+      <div class="hex pos2">
+        <span className="content">
+          <h1 className="text-center font-normal text-sm">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+        </span>
+      </div>
+      <div class="hex pos3">
+        <span className="content">
+          <h1 className="text-center font-normal text-sm">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
+        </span>
+      </div>
+      <div class="hex pos4">
+        <span className="content">
+          <h1 className="text-center font-normal text-sm">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
+        </span>
+      </div>
+    </div>
+
+    <svg style={{position:'absolute', visibility:'hidden'}} width="0" height="0">
+      <defs>
+            <filter id="goo">
+              {/* <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />     */}
+                {/* <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" /> */}
+                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+            </filter>
+        </defs>
+    </svg>
+
   </div>
-  <div className="w-56 h-5w-56 bg-white border-2  p-2 bg-gradient-to-br from-white to-blue-300 shadow-md  rounded-2xl">
-  <h1 className="text-center font-normal text-lg mt-6">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
+
+  {/* <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
+    <h1 className="text-center mb-2 font-normal text-md">Create New Ideas by </h1>
+    <div className="flex justify-center w-2/3 mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
+      <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
+      New Idea
+    </div>
   </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-2  bg-gradient-to-br from-white to-blue-300 shadow-md  rounded-2xl">
-  <h1 className="text-center font-normal text-lg mt-6">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
+  <h1 className="text-center font-normal text-md">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
   </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-2 bg-gradient-to-br from-white to-blue-300 shadow-md  rounded-2xl">
-  <h1 className="text-center font-normal text-lg mt-6">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
+  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
+  <h1 className="text-center font-normal text-md">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
   </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-2 bg-gradient-to-br from-white to-blue-300 shadow-md  rounded-2xl">
-  <h1 className="text-center font-normal text-lg mt-6">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
+  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
+  <h1 className="text-center font-normal text-md">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
   </div>
+  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
+  <h1 className="text-center font-normal text-md">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
+  </div> */}
   
 
-</div>
+{/* </div> */}
 
 
 </div>
   
 ) : (
-  <div></div>
+  <div>
+    <IdeaDashboard topicid={currentTopic}/>
+  </div>
 )}
 
 

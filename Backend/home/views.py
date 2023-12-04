@@ -15,7 +15,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -445,7 +445,7 @@ def get_topic(request):
     print(topicid)
 
     topic = Topic.objects.get(userid=userid, topicid=topicid)
-    response = {'title':topic.title, 'description':topic.description, 'generated':topic.generated, 'time_constraint_value':topic.time_constraint_value, 'budget_constraint_value':topic.budget_constraint_value, 'subtask':topic.subtask, 'keywords':topic.keywords}
+    response = {'title':topic.title, 'description':topic.description, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords}
 
     return JsonResponse(response)
 
@@ -737,4 +737,80 @@ def get_insights(request):
         #                 'keywords': keyword_list                             
                         })
 
+#----------------------------------------------------------------------------------------
+#-----------------------------------VISION DOC-------------------------------------------
+#----------------------------------------------------------------------------------------
+
+def validate_cost_insights(response):
+    try:
+        # Find the first "{" and the last "}" in response
+        response = response[response.find("{"):response.rfind("}")+1]
+        response = json.loads(response)
+        if 'cost' in response and 'explanation' in response:
+            return response 
+        else:
+            return "Invalid"
+    except:
+        return "Invalid"
+
+def validate_time_insights(response):
+    try:
+        # Find the first "{" and the last "}" in response
+        response = response[response.find("{"):response.rfind("}")+1]
+        response = json.loads(response)
+        if 'time' in response and 'explanation' in response:
+            return response 
+        else:
+            return "Invalid"
+    except:
+        return "Invalid"
+
+@csrf_exempt
+def get_cost_insights(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.cost_insight = {}
+
+    prompt = generate_cost_insights_prompt(topic)
     
+    while True:
+        response = llm(prompt)
+        validate = validate_cost_insights(response)
+        print(validate)
+        if validate != "Invalid":
+            topic.cost_insight = validate
+            topic.save()
+            break
+
+    return JsonResponse({'response':"Success"})
+
+@csrf_exempt
+def get_time_insights(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.time_insight = {}
+
+    prompt = generate_time_insights_prompt(topic)
+    
+    while True:
+        response = llm(prompt)
+        validate = validate_time_insights(response)
+        print(validate)
+        if validate != "Invalid":
+            topic.time_insight = validate
+            topic.save()
+            break
+
+    return JsonResponse({'response':"Success"})
+
+@csrf_exempt
+def get_subtasks(request):
+    pass
