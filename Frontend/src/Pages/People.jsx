@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import PeopleCard from './PeopleCard'
+import PeopleCard from '../components/PeopleCard'
 import { useParams } from 'react-router-dom'
 
 function People() {
@@ -26,7 +26,7 @@ function People() {
   return (
     <div>
       <h3>people you may know</h3>
-      <div className='flex flex-wrap gap-6 justify-center items-center h-screen'>
+      <div>
         {getPeople().map((person) => (
           <PeopleCard name={person.name} jobTitle={person.jobTitle}/>
         ))}

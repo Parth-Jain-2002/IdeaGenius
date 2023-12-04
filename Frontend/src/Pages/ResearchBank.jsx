@@ -1,14 +1,18 @@
 import imagem from "../assets/images/IdeaGenLogo.png"
-import ResearchCard from "./ResearchCard"
-import Collapsible from "./Collapsible"
+import ResearchCard from "../components/ResearchCard"
+import Collapsible from "../components/Collapsible"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import plus_icon from "../assets/images/plus_icon_black.png"
-import NewIdeaModal from "./modals/NewIdeaModal"
+import NewIdeaModal from "../components/modals/NewIdeaModal"
+import Navbar from "../components/Layout/Navbar"
 
 export default function ResearchBank() {
+    const [threads, setThreads] = useState([])
     const [topics, setTopics] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const { ideaid } = useParams()
 
     const openModal = () => {
       setIsModalOpen(true)
@@ -32,9 +36,26 @@ export default function ResearchBank() {
         })
     }
 
+    const getThreads = () => {
+      axios.get(`http://localhost:8000/get_threads`,{
+            params:{
+                userid: localStorage.getItem("ideagen_user_id"),
+                ideaid: ideaid
+            }
+        }
+        ).then((response) => {
+            console.log(response)
+            console.log(response.data.data)
+            setThreads(response.data.data)
+        }, (error) => {
+            console.log(error)
+        })
+    }
+
     useEffect(() => {        
+        getThreads()
         getTopics()
-    },[])
+    },[ideaid])
 
     
 
@@ -53,13 +74,13 @@ export default function ResearchBank() {
             }}
             width="50"
           />
-          <h1 className="text-2xl font-bold text-white">IDEAGEN</h1>
+          <h1 className="text-2xl font-bold">IDEAGEN</h1>
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
           {/* { "Idea 1":[], "Idea 2": ["dkfjdfjl","jjdofdsofn"]} */}
           {Object.keys(topics).map((topic, index) => (
-                <Collapsible title={topic} data={topic} chat={false}/>
+                <Collapsible title={topic} data={topics[topic]} chat={true}/>
             ))}
           {/* Add a new idea */}
           <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
@@ -74,7 +95,23 @@ export default function ResearchBank() {
         </button>
       </aside>
       <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
-        {/* To be designed */}
+        <Navbar link={"/dashboard"}/>
+        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden">
+          <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
+          <div className="mt-8 grid grid-cols-3 gap-5">
+            {threads.map((thread) => (
+                <ResearchCard
+                    imgSrc={thread.imgsrc}
+                    title={thread.title}
+                    url={thread.url}
+                    chatid={thread.chatid}
+                    topics = {topics}
+                    currentTopic={ideaid}
+                    getThreads={getThreads}
+                />
+            ))}
+            </div>
+        </section>
       </main>
     </section>
   )
