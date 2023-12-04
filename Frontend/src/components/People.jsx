@@ -63,14 +63,12 @@ export default function People() {
   const uid = localStorage.getItem("ideagen_user_id")
   const getPeople = () => {
     const obj= [
-    { id: 1, name: 'John Doe', jobTitle: 'Software Engineer' },
-    { id: 2, name: 'Jane Smith', jobTitle: 'Product Manager' },
-    { id: 3, name: 'Jane Smith', jobTitle: 'Product Manager' },
-    { id: 4, name: 'Jane Smith', jobTitle: 'Product Manager' },
-    { id: 5, name: 'Jane Smith', jobTitle: 'Product Manager' },
-    { id: 6, name: 'Jane Smith', jobTitle: 'Product Manager' },
-    { id: 7, name: 'Jane Smith', jobTitle: 'Product Manager' },
-    { id: 8, name: 'Jane Smith', jobTitle: 'Product Manager' },
+    { id: 1, name: 'John Doe', jobTitle: 'Software Engineer', jobDescription: 'I am a software engineer and i engineer software', institution: 'Institute 1' },
+    { id: 2, name: 'Jane Smith', jobTitle: 'Product Manager', jobDescription: 'I am a product manager and i manage products', institution: 'Institute 2' },
+    { id: 3, name: 'Jack Black', jobTitle: 'UI/UX Designer', jobDescription: 'I am a UI/UX Designer and i design UI/UX', institution: 'Institute 3' },
+    { id: 4, name: 'Jill White', jobTitle: 'Frontend Developer', jobDescription: 'I am a frontend developer and i develop frontend', institution: 'Institute 4' },
+    { id: 5, name: 'James Brown', jobTitle: 'Backend Developer', jobDescription: 'I am a backend developer and i develop backend', institution: 'Institute 5' },
+    { id: 6, name: 'Jenny Green', jobTitle: 'Fullstack Developer', jobDescription: 'I am a fullstack developer and i develop fullstack software', institution: 'Institute 6' },
   ];
     obj.map((person) => {
       console.log(person)
@@ -119,26 +117,26 @@ export default function People() {
         <Navbar link={"/dashboard"}/>
         <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden p-2">
           <h2 className="text-3xl mt-4 font-semibold">People you may know from alumni circle</h2>
-          <div className='grid grid-cols-4 justify-center items-center'>
+          <div className='grid grid-cols-3 justify-center items-center'>
             {getPeople().map((person) => (
-              <div className='p-4'>
-                <PeopleCard name={person.name} jobTitle={person.jobTitle}/>
+              <div className='p-4 h-full'>
+                <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
               </div>
             ))}
           </div>
           <h2 className="text-3xl mt-8 font-semibold">People you may need for your student team</h2>
-          <div className='grid grid-cols-4 justify-center items-center'>
+          <div className='grid grid-cols-3 justify-center items-center'>
             {getPeople().map((person) => (
-              <div className='p-4'>
-                <PeopleCard name={person.name} jobTitle={person.jobTitle}/>
+              <div className='p-4 h-full'>
+                <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
               </div>
             ))}
           </div>
           <h2 className="text-3xl mt-4 font-semibold">People you may need for potential funding rounds</h2>
-          <div className='grid grid-cols-4 justify-center items-center'>
+          <div className='grid grid-cols-3 justify-center items-center'>
             {getPeople().map((person) => (
-              <div className='p-4'>
-                <PeopleCard name={person.name} jobTitle={person.jobTitle}/>
+              <div className='p-4 h-full'>
+                <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
               </div>
             ))}
           </div>
