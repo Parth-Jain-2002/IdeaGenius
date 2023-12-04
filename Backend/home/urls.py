@@ -23,4 +23,8 @@ urlpatterns = [
 
     path('generate_idea',views.generate_idea, name='generate_idea'),
     path('get_insights',views.get_insights, name='get_insights'),
+
+    path('get_cost_insights',views.get_cost_insights, name='get_cost_insights'),
+    path('get_time_insights',views.get_time_insights, name='get_time_insights'),
+    path('get_subtasks',views.get_subtasks, name='get_subtasks'),
 ]

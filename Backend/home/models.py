@@ -35,8 +35,8 @@ class Topic(models.Model):
     title = models.CharField(max_length=255, default="")
     description = models.CharField(max_length=255, default="")
     generated = models.BooleanField(default=False)
-    time_constraint_value = models.IntegerField(default=0)
-    budget_constraint_value = models.IntegerField(default=0)
+    time_insight = models.JSONField(default=dict)
+    cost_insight = models.JSONField(default=dict)
     subtask = models.TextField(default="")
     # This is a JSON object that contains the following keywords: {keywords: ['Finance', 'Investment', 'Stocks']}
     keywords = models.JSONField(default=dict)
