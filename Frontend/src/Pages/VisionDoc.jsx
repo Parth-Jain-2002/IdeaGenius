@@ -14,6 +14,8 @@ function VisionDoc() {
   const [loading, setLoading] = useState(false)
   const containerRef = useRef()
   const message = useRef()
+  const [blocks, setBlocks] = useState([" "])
+
 
   const getIdeaInfo = () => {
     console.log(ideaid)
@@ -217,6 +219,19 @@ function VisionDoc() {
             </>}
           </div>
         </div>
+
+        <div className="mb-4">
+          <div>
+            <label className='font-bold'>Imagine Further</label>
+          </div>
+          <div className='outline-none flex-row'>
+            {blocks.map((block, index) => (
+              <div contentEditable="true" className='outline-none flex-row'>
+                <p>{block}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       </main>
       
@@ -232,7 +247,7 @@ function VisionDoc() {
                       <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                       <div className="ml-2 mr-2 text-right max-w-3xl w-full">
                           <div className="text-xs text-gray-500 px-1">{localStorage.getItem("ideagen_user_name")}</div>
-                          <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose">{chat.message}</div>
+                          <div className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose">{chat.message}</div>
                       </div>
                   </div>
                   <div className="flex items-start mb-4">
@@ -240,11 +255,21 @@ function VisionDoc() {
                       <div className="ml-2 mr-2 flex-grow max-w-3xl">
                           <div className="text-xs text-gray-500 px-1">VisionX</div>
                           <div
-                              className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose"
+                              className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose"
                               ref={containerRef}
                               style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
                           >
                               <span dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
+                          <div className="flex flex-row justify-center space-x-2 mt-2">
+                            <button className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row" onClick={()=>navigator.clipboard.writeText(chat.response)}>
+                              <span className="text-sm">Copy</span>
+                            </button>
+                            <button className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row" onClick={()=>{
+                              setBlocks([...blocks, chat.response])
+                            }}>
+                              <span className="text-sm">Add to Vision</span>
+                            </button>
+                          </div>
                           </div>
                       </div>
                   </div>
