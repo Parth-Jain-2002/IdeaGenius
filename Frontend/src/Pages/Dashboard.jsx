@@ -19,12 +19,13 @@ import {
   AccordionItemHeading,
   AccordionItemButton,
   AccordionItemPanel,
+  AccordionItemState
 } from 'react-accessible-accordion';
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
 export default function ResearchBank() {
-    const [topics, setTopics] = useState({})
+    const [topics, setTopics] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [currentTopic, setCurrentTopic] = useState("")
    
@@ -54,7 +55,10 @@ export default function ResearchBank() {
         getTopics()
     },[])
 
-    
+    const handleclick = (topic) => {
+      setCurrentTopic(topic);
+      console.log("current topic : ", currentTopic);
+    }
 
   return (
     <section className="grid h-screen text-black grid-cols-5">
@@ -75,39 +79,47 @@ export default function ResearchBank() {
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
-          {/* <Accordion className="rounded-lg w-64 border-2">
+          <Accordion className="rounded-lg w-64 border-2" >
    
           {Object.keys(topics).map((topic, index) => (
-             <AccordionItem className="border-y-2">
-             <AccordionItemHeading className="hover:bg-gray-300">
-                 <AccordionItemButton className="text-black p-2 font-semibold  flex justify-between ">
+             <AccordionItem className="border-y-2" >
 
-                 <img src={folderIcon} alt="Folder icon" className="h-4 w-4 my-auto mr-4" />
-        {topic}
-                 </AccordionItemButton>
+             <AccordionItemHeading  className="hover:bg-gray-300">
+              <AccordionItemButton className="text-black p-2 font-medium  flex justify-start " >
+
+                <img src={folderIcon} alt="Folder icon" className="h-4 w-4 my-auto mr-4" />
+              {topic}
+
+              </AccordionItemButton>
+                 
              </AccordionItemHeading>
              <AccordionItemPanel className="  " >
              
                 { topic === "Miscellaneous" ? (
                  <Link to={ `../research/${topic}`}>
-                 <div className='flex justify-end text-sm flex-row p-2 hover:bg-gray-200'>
+                 <div className='flex justify-start text-sm flex-row p-2 hover:bg-gray-200'>
                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
                  Research Bank
                  </div>
                  </Link>
                 ) : (
                   <><Link to={ `../vision-doc/${topic}`}>
-                  <div className='flex  justify-end flex-row text-sm p-2 hover:bg-gray-200'>
+                  <div className='flex  justify-start flex-row text-sm p-2 hover:bg-gray-200'>
                   <img src={visionDocIcon} alt="Vision doc icon" className="h-4 w-4 mr-2" />
                   Vision Doc
                   </div>
                   </Link>
                   <Link to={ `../research/${topic}`}>
-                  <div className='flex justify-end flex-row p-2 text-sm hover:bg-gray-200'>
+                  <div className='flex justify-start flex-row p-2 text-sm hover:bg-gray-200'>
                   <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
                   Research Bank
                   </div>
-                  </Link></>
+                  
+                  </Link>
+                  <button onClick={() => setCurrentTopic(topic)} className='flex  w-full justify-start flex-row p-2 text-sm hover:bg-gray-200'>
+                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
+                  Idea Dashboard
+                  </button></>
                 )}
                
                 
@@ -116,7 +128,7 @@ export default function ResearchBank() {
          </AccordionItem>
                 
             ))}
-</Accordion> */}
+</Accordion>
          
           <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
@@ -134,7 +146,7 @@ export default function ResearchBank() {
         
         <Navbar />
   
-{currentTopic === "" ? (
+{currentTopic === "" || currentTopic === "Miscellaneous" ? (
   <div className="w-full h-full">
     <div className="flex border-2 border-[#faad14] justify-start space-x-8 mt-4 rounded-lg bg-white w-[95%] h-[30%]">
   <Lottie
@@ -178,7 +190,9 @@ export default function ResearchBank() {
 </div>
   
 ) : (
-  <div></div>
+  <div>
+    <IdeaDashboard topicid={currentTopic}/>
+  </div>
 )}
 
 

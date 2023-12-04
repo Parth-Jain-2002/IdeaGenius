@@ -15,7 +15,7 @@ function Login() {
         e.preventDefault();
         try {
             await login(email, password)
-            navigate('/research')
+            navigate('/dashboard')
         } catch {
             alert("Failed to Log in")
         }
@@ -26,7 +26,7 @@ function Login() {
         try {
             //setError('')
             await loginWithGoogle()
-            navigate('/research')
+            navigate('/dashboard')
         } catch {
             //setError('Failed to login with google')
             alert("Failed to Sign Up")
