@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from pytrends.request import TrendReq
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs
 
 import requests
 from readability import Document
@@ -667,9 +669,40 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
     return interest_over_time_df
 
 
+def clean_google_url(google_url):
+    # Extract clean URL from Google's /url?q= prefix
+    match = re.search(r'/url\?q=(.+?)&', google_url)
+    return match.group(1) if match else google_url
 
 
-
+def get_competitors(description):
+    search_query = f"{description} top best"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+    # print(urls)
+    competitors = []
+    for url in urls:
+        # print(url)
+        try:
+            response = requests.get(url, timeout=5)
+            # print(f"HTTP request successful for URL: {url}")
+            soup = BeautifulSoup(response.text, 'html.parser')
+            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+            for title in numbered_titles:
+                competitors.append(title.text.strip())
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+        # print(competitors)
+    # print(competitors)
+    
+    competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
+    filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
+    final_competitors=list(set(filtered_competitors))
+    
+    return final_competitors
 
 @csrf_exempt
 def get_insights(request):    
@@ -686,6 +719,10 @@ def get_insights(request):
         keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
     )
     
+    description = idea.description
+    
+    competitors=get_competitors(description)    
+    
     # keyword_list=idea.keywords.get('keywords', [])
     # interest_over_time = get_google_trends_data(keyword_list)
     
@@ -694,15 +731,10 @@ def get_insights(request):
     
     
 
-    return JsonResponse({'competitors':
-                            [{ 'name': 'Competitor 1', 'revenue': 1000000, 'employees': 50 },
-                            { 'name': 'Competitor 2', 'revenue': 800000, 'employees': 40 }],
-                        'trafficData': 
-                            [{"date": "2023-01-01", "visits": 1000},
-                            {"date": "2023-01-02", "visits": 1200},
-                            {"date": "2023-01-03", "visits": 800}]
-                        # 'interest_over_time': interest_over_time.to_json(),
-                        # 'keywords': keyword_list                             
+    return JsonResponse({
+        'competitors': competitors
+        # 'interest_over_time': interest_over_time.to_json(),
+        #                 'keywords': keyword_list                             
                         })
 
     
