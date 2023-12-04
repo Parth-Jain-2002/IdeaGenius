@@ -712,9 +712,11 @@ def get_insights(request):
     idea = Topic(
         userid="ideagen_user_id",
         topicid="Streamline_Expense_Tracking",
+        title="Streamline_Expense_Tracking",
         description="Develop an intuitive web and mobile app for efficient expense tracking, categorization, and reporting, leveraging AI for smart insights and automated receipt scanning",
-        time_constraint_value=3,  
-        budget_constraint_value=10000,  
+        generated=True,
+        time_insight={},  
+        cost_insight={},  
         subtask={"Implement manual and automated expense entry and categorization.","Develop a user-friendly reporting system with customizable visualizations."},
         keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
     )
