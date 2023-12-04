@@ -1,0 +1,54 @@
+.dashboard .container {
+  position: relative;
+  width: 90%;
+  height: 275px;
+}
+
+.dashboard .container .hex {
+  display: inline-block;
+  filter: url('#goo');
+  width: 25%;
+  position: absolute;
+  text-align: center;
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2));
+}
+.dashboard .container .hex .content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dashboard .container .hex::before {
+  content: "";
+  display: block;
+  background: linear-gradient(to right bottom, #cffffe, #fff);
+  padding-top: 86.6%;
+  /* 100%*cos(30) */
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.dashboard .container .pos0 {
+  top: 50%;
+  left: 0%;
+}
+
+.dashboard .container .pos1 {
+  top: 0%;
+  left: 20%;
+}
+
+.dashboard .container .pos2 {
+  top: 50%;
+  left: 40%;
+}
+
+.dashboard .container .pos3 {
+  top: 0%;
+  left: 60%;
+}
+
+.dashboard .container .pos4 {
+  top: 50%;
+  left: 80%;
+}
