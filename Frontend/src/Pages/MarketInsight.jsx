@@ -2,35 +2,67 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import axios from "axios"
 import { Line, Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend, TimeScale } from 'chart.js'
 import Navbar from "../components/Layout/Navbar";
+import 'chartjs-adapter-date-fns';
+import { enUS } from 'date-fns/locale';
 
 ChartJS.register(
-  CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend
+  CategoryScale, LinearScale, BarElement, PointElement, LineElement, TimeScale, Title, Tooltip, Legend
 );
 
 
 export default function MarketInsight() {
   const { ideaid } = useParams();
   const [competitors, setCompetitors] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [customerInterest, setCustomerInterest] = useState([]);
-  const [keywords, setKeywords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [customerInterest, setCustomerInterest] = useState({});
+
 
   useEffect(() => {
     axios.post(`http://localhost:8000/get_insights`, {
       idea_id: ideaid
     }
     ).then((response) => {
-      setCompetitors(response.data.competitors)
-      // const processedData = processChartData(response.data.interest_over_time)
-      // console.log(processedData)
-      // setCustomerInterest(processedData);
-      // setKeywords(response.data.keywords)
-      console.log(response.data)
+      console.log(response.data);
+      setCompetitors(response.data.competitors);
+      const result_df = response.data.interest_over_time;
+      const parsedResult = JSON.parse(result_df);
+      console.log(parsedResult);
+
+      
+      if (parsedResult && parsedResult.sum_frequency) {
+        // Extract data from the parsed result
+        const sumFrequencyData = parsedResult.sum_frequency;
+  
+        // Convert Unix timestamps to a readable date format
+        const dates = Object.keys(sumFrequencyData).map((timestamp) => new Date(Number(timestamp)).toLocaleDateString());
+        console.log(dates)
+        const data = {
+          labels: dates,
+          datasets: [
+            {
+              label: 'Customer Interest Trends',
+              data: Object.values(sumFrequencyData),
+              fill: false,
+              borderColor: 'rgba(75,192,192,1)',
+              borderWidth: 2,
+            },
+          ],
+        };
+  
+        setCustomerInterest(data);
+      }
+      setLoading(false);
+
     }, (error) => {
       console.log(error)
     })
+
+    
+
+
+
   }, [ideaid])
 
   const barChartData = {
@@ -54,47 +86,13 @@ export default function MarketInsight() {
     },
   };
 
-  const processChartData = data => {
-    let labels = [];
-    let datasets = [];
 
-    Object.entries(data).forEach(([keyword, values]) => {
-      // Add labels from the first keyword (assuming all keywords have the same timestamps)
-      if (labels.length === 0) {
-        labels = Object.keys(values);
-      }
-
-      // Create a dataset for each keyword
-      const dataset = {
-        label: keyword,
-        data: Object.values(values),
-        fill: false,
-      };
-
-      datasets.push(dataset);
-    });
-
-    return { labels, datasets };
-  };
-
-
-  // Data for Line Chart
-  const lineChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: 'Domain Traffic',
-        data: [65, 59, 80, 81, 56, 55],
-        fill: false,
-        backgroundColor: 'rgba(75,192,192,0.2)',
-        borderColor: 'rgba(75,192,192,1)',
-        borderWidth: 1,
-      },
-    ],
-  };
 
   const lineChartOptions = {
     scales: {
+      x: {
+                
+      },
       y: {
         beginAtZero: true,
       },
@@ -104,7 +102,9 @@ export default function MarketInsight() {
 
 
 
-  return (
+  return ( loading ? (
+    <h1>Loading Market Insights</h1>
+  ) :  (
     <div className="bg-[#efefef] flex flex-col p-4">
       <Navbar link={"/dashboard"} />
       <header className="bg-gray-500 text-white p-4 rounded-lg">
@@ -152,14 +152,14 @@ export default function MarketInsight() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
 
           <div className=" bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">Customer Interest Trends</h2>
+            <h2 className="text-black text-lg font-semibold mb-4">Domain Traffic</h2>
             <Bar data={barChartData} options={barChartOptions} />
           </div>
 
 
           <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">Domain Traffic</h2>
-            <Line data={lineChartData} options={lineChartOptions} />
+            <h2 className="text-black text-lg font-semibold mb-4">Customer Interest Trends</h2>
+            <Line data={customerInterest} options={lineChartOptions} />
           </div>
         </div>
 
@@ -177,6 +177,6 @@ export default function MarketInsight() {
 
       </main>
     </div>
-  )
+  ))
 }
 
