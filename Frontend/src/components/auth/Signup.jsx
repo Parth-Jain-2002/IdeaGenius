@@ -46,7 +46,7 @@ function Signup() {
 
 
     return (
-            <div className="flex gap-4 h-auto">
+            <div className="flex gap-4 h-screen">
 
 
 
@@ -54,14 +54,13 @@ function Signup() {
                 
              
 
-                <div className="bg-white w-full border-2 rounded-2xl md:max-w-md lg:max-w-full md:mx-6 md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
-        items-center justify-center">
+                <div className="bg-white w-full border-2 rounded-2xl md:max-w-md lg:max-w-full mx-auto md:w-1/2 xl:w-1/3 my-auto px-6 lg:px-16 xl:px-12 items-center justify-center">
 
-                    <div className="w-full h-100">
+                    <div className="w-full h-full flex flex-col items-center justify-center">
 
-                        <h1 className="text-xl md:text-2xl font-bold mt-12"> Signup to your account</h1>
+                        <h1 className="text-xl md:text-2xl font-bold mt-8"> Signup to your account</h1>
 
-                        <form className="mt-6 w-5/6" action="#" method="POST">
+                        <form className="mt-6 w-full" action="#" method="POST">
                             {error && <div className="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
                             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                             <strong class="font-bold">Holy smokes!</strong>
@@ -126,7 +125,7 @@ function Signup() {
                     </div>
                         </form>
 
-                        <hr className="my-6 border-gray-300 w-full"/>
+                        {/* <hr className="my-6 border-gray-300 w-full"/> */}
 
                   
 

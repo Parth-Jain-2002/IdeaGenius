@@ -15,7 +15,7 @@ function Login() {
         e.preventDefault();
         try {
             await login(email, password)
-            navigate('/research')
+            navigate('/dashboard')
         } catch {
             alert("Failed to Log in")
         }
@@ -26,7 +26,7 @@ function Login() {
         try {
             //setError('')
             await loginWithGoogle()
-            navigate('/research')
+            navigate('/dashboard')
         } catch {
             //setError('Failed to login with google')
             alert("Failed to Sign Up")
@@ -34,7 +34,7 @@ function Login() {
     }
 
     return (
-        <div className="flex gap-4 h-auto">
+        <div className="flex gap-4 h-screen">
 
 
 
@@ -42,14 +42,13 @@ function Login() {
         
      
 
-        <div className="bg-white w-full border-2 rounded-2xl md:max-w-md lg:max-w-full md:mx-6 md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
-items-center justify-center">
+        <div className="bg-white w-full border-2 rounded-2xl md:max-w-md lg:max-w-full mx-auto md:w-1/2 xl:w-1/3 my-auto px-6 lg:px-16 xl:px-12 items-center justify-center">
 
-            <div className="w-full h-100">
+            <div className="w-full h-full flex flex-col items-center justify-center">
 
                 <h1 className="text-xl md:text-2xl font-bold mt-12"> Login to your account</h1>
 
-                <form className="mt-6 w-5/6" action="#" method="POST">
+                <form className="mt-6 w-full" action="#" method="POST">
                     
                 
                     <div>
@@ -98,7 +97,6 @@ items-center justify-center">
             </div>
                 </form>
 
-                <hr className="my-6 border-gray-300 w-full"/>
 
           
 
