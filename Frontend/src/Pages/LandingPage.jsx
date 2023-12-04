@@ -5,8 +5,8 @@ import Lottie from "lottie-react";
 import mainAnimation from "../assets/animations/Animation - 1701314100612 (1).json";
 import { HiArrowSmDown } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import Pricing from './Layout/Pricing';
-import Features from './Layout/Features';
+import Pricing from '../components/Layout/Pricing';
+import Features from '../components/Layout/Features';
 const LandingPage = () => {
   return (
     <div className='bg-[#f4f7fa] py-6 px-20 '>

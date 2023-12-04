@@ -1,14 +1,15 @@
-import imagem from "../assets/images/IdeaGenLogo.png"
-import ResearchCard from "./ResearchCard"
-import Collapsible from "./Collapsible"
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import plus_icon from "../assets/images/plus_icon_black.png"
-import NewIdeaModal from "./modals/NewIdeaModal"
-import Navbar from "./Layout/Navbar"
+import React, {useEffect, useState} from 'react'
+import PeopleCard from '../components/PeopleCard'
+import { useParams } from 'react-router-dom'
 
-export default function ResearchBank() {
+import imagem from "../assets/images/IdeaGenLogo.png"
+import Collapsible from "../components/Collapsible"
+import axios from "axios"
+import plus_icon from "../assets/images/plus_icon_black.png"
+import NewIdeaModal from "../components/modals/NewIdeaModal"
+import Navbar from "../components/Layout/Navbar"
+
+export default function People() {
     const [threads, setThreads] = useState([])
     const [topics, setTopics] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -58,10 +59,28 @@ export default function ResearchBank() {
     },[ideaid])
 
     
+  // user id
+  const uid = localStorage.getItem("ideagen_user_id")
+  const getPeople = () => {
+    const obj= [
+    { id: 1, name: 'John Doe', jobTitle: 'Software Engineer', jobDescription: 'I am a software engineer and i engineer software', institution: 'Institute 1' },
+    { id: 2, name: 'Jane Smith', jobTitle: 'Product Manager', jobDescription: 'I am a product manager and i manage products', institution: 'Institute 2' },
+    { id: 3, name: 'Jack Black', jobTitle: 'UI/UX Designer', jobDescription: 'I am a UI/UX Designer and i design UI/UX', institution: 'Institute 3' },
+    { id: 4, name: 'Jill White', jobTitle: 'Frontend Developer', jobDescription: 'I am a frontend developer and i develop frontend', institution: 'Institute 4' },
+    { id: 5, name: 'James Brown', jobTitle: 'Backend Developer', jobDescription: 'I am a backend developer and i develop backend', institution: 'Institute 5' },
+    { id: 6, name: 'Jenny Green', jobTitle: 'Fullstack Developer', jobDescription: 'I am a fullstack developer and i develop fullstack software', institution: 'Institute 6' },
+  ];
+    obj.map((person) => {
+      console.log(person)
+    })
+    return obj
+  }
+
+    
 
   return (
     <section className="grid h-screen grid-cols-5">
-      <aside className="flex flex-col items-center justify-between p-10 bg-[#f8f9fb] dark:bg-zinc-900 ">
+      <aside className="flex flex-col items-center justify-between p-10 bg-[#f8f9fb]">
         <div className="flex items-center space-x-2">
           <img
             alt="Logo"
@@ -94,23 +113,33 @@ export default function ResearchBank() {
           Upgrade
         </button>
       </aside>
-      <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
+      <main className="flex flex-col bg-[#eee] col-span-4 p-4">
         <Navbar link={"/dashboard"}/>
-        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden">
-          <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
-          <div className="mt-8 grid grid-cols-3 gap-5">
-            {threads.map((thread) => (
-                <ResearchCard
-                    imgSrc={thread.imgsrc}
-                    title={thread.title}
-                    url={thread.url}
-                    chatid={thread.chatid}
-                    topics = {topics}
-                    currentTopic={ideaid}
-                    getThreads={getThreads}
-                />
+        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden p-2">
+          <h2 className="text-3xl mt-4 font-semibold">People you may know from alumni circle</h2>
+          <div className='grid grid-cols-3 justify-center items-center'>
+            {getPeople().map((person) => (
+              <div className='p-4 h-full'>
+                <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
+              </div>
             ))}
-            </div>
+          </div>
+          <h2 className="text-3xl mt-8 font-semibold">People you may need for your student team</h2>
+          <div className='grid grid-cols-3 justify-center items-center'>
+            {getPeople().map((person) => (
+              <div className='p-4 h-full'>
+                <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
+              </div>
+            ))}
+          </div>
+          <h2 className="text-3xl mt-4 font-semibold">People you may need for potential funding rounds</h2>
+          <div className='grid grid-cols-3 justify-center items-center'>
+            {getPeople().map((person) => (
+              <div className='p-4 h-full'>
+                <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
+              </div>
+            ))}
+          </div>
         </section>
       </main>
     </section>
@@ -137,6 +166,3 @@ function IconLightningbolt(props) {
     </svg>
   )
 }
-
-
-

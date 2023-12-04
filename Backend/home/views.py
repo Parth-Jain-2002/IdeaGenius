@@ -640,7 +640,7 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
             "Alt-Used": "trends.google.com",
             "Connection": "keep-alive",
             "Referer": "https://trends.google.com/",
-            "Cookie": "cZXaaywi4A.; HSID=AoFRtgASs2HSkWM6Z; SSID=A0vUE6uqpIZHv6LPI; APISID=W_X19jGuZATQSbE2/ArgJ3xN-ryKK1D2dx; SAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-1PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-3PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; OTZ=7318707_34_34__34_; AEC=Ackid1T5Y5GAftQMaxiiE6yijr0zTwITOvLFzTqgU11xe9w6w_E4jCDgzA; NID=511=Y5j0ksvB22XslmGpcrpnKYu5NV1k3e2Qrn52N9kIAlK_txaeHI3kRM7nG3_23ohLpc6MgkX2n8LMKK9mRiar4Rl0uXd-FncYF7NwczNG9MLwkJHi3ftRvbi6ql9jLWD5Lu9pSjPWkfPm_NVRdL8FTt5Z5KYKG-KOIM5TPvyFMlOxSz4It_krbWhS1DkCo_yPQ-Mcd-lC2JOKEyiw_xDOCa5ucyZbM_CQmEauTY023Nzcg5PO-CqIWDvZzCtuRK_zH68rAewMiHTrXUmQaEI74zhDgAkX9c_hccFjXB903luNnUrP6KM266ve6gSKPkB97TiLdpb726DowwrV3wxZQobdZFmxs6LDGvZSUQC8y2dSOCSiMTOXcqce_7EcNxUc9ZO3Aa-aEMqGKcdF0eUeIydXH8dYv0sQZc-EvoJF4Ni1XY2bHGtLCMc2zqpD5UUDrr7CIG8; 1P_JAR=2023-12-03-12; __Secure-1PSIDTS=sidts-CjIBPVxjSr0A6YslWR6n99ovet9Z00qmpHv4H7yS9KFPN5d-3juKGfBCAJbCk33pT-WlZRAA; __Secure-3PSIDTS=sidts-CjIBPVxjSr0A6YslWR6n99ovet9Z00qmpHv4H7yS9KFPN5d-3juKGfBCAJbCk33pT-WlZRAA; SIDCC=ACA-OxNkCioIAsOmxm5xP4kFl_bJXK6i6gc_Hdqffg_T5TRmafjRQKbuID_lUtcZt29KWKKxSmY; __Secure-1PSIDCC=ACA-OxOm7cZkstXikFw9T7UdIXuamnunz06UJfmUiSp8plKpF24ZaVnGLxGkCkZZukE6pS8xNg; __Secure-3PSIDCC=ACA-OxMkFy6qfWd6deOyR0Qi92_pXxTt0hd5UgBbM8N_XFHE0faES_0dtZ6hav2NyHuUkCl7flk",
+            "Cookie": "__utma=10102256.2103152936.1701433524.1701607890.1701619645.5; __utmz=10102256.1701619645.5.5.utmcsr=trends.google.com|utmccn=(referral)|utmcmd=referral|utmcct=/; SID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKz4JpNzddEd6UNpmjYAUZAhA.; __Secure-1PSID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKz5vymTPiTm5P-aTnCLOo7mg.; __Secure-3PSID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKzV1jUHRGJD4--cZXaaywi4A.; HSID=AoFRtgASs2HSkWM6Z; SSID=A0vUE6uqpIZHv6LPI; APISID=W_X19jGuZATQSbE2/ArgJ3xN-ryKK1D2dx; SAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-1PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-3PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; OTZ=7318707_34_34__34_; AEC=Ackid1T5Y5GAftQMaxiiE6yijr0zTwITOvLFzTqgU11xe9w6w_E4jCDgzA; __Secure-1PSIDTS=sidts-CjIBPVxjSnNAwdXYnPBgz3yOUpGenMsf48llHQV2lyHdxmfgxUYWMarPrvDDM56z-q27mhAA; __Secure-3PSIDTS=sidts-CjIBPVxjSnNAwdXYnPBgz3yOUpGenMsf48llHQV2lyHdxmfgxUYWMarPrvDDM56z-q27mhAA; 1P_JAR=2023-12-04-03; NID=511=cGdCcTCt1v1eucBf_G0N2okWYs0UEDa3jrWEQTDJ_i84Hv8NaAasvMIbwRfW4BeE2uR6dpJWSFqPMVy-w1UbU4yKsUt-tVuGTGwAAKuxitDby3NYTHeVztT8IQipA8bjpxwaZRImOgnhVEQP_ZkaHmei5kYraw6x_XvkxWN0CXgbE8nFw-KxGoTGwhgjnDiPVYqnx4XB9xExB4yZ2RoL5--qri0YqYcfs2wmOQVvMo9kNsqaGPrfsd4AjuvBI9lTtiho5lsNzI6EP7DENs-tDAgPi71BiOQoYeFu3g1kOv0kqrMMh7R18zo8SofEw14rrZTBuYrQM52MRz1tqD9D1qVlxBfWE2HEboH5P3tQxQteAmvP6RMa015FM04B_jS5tuZAn2RSRXkJkZGdoVL7PwyIssTYExCgmlbGa3RXI74gwq4DOut6oiL_oGspylZ3w_hSPR4; SIDCC=ACA-OxMiIFu_W9__2xSewkGUp1OG0Mx7W3Zu3RUj7OG38HFSqEFQxJ9M8kJC0g2yXCpEdvuKD4k; __Secure-1PSIDCC=ACA-OxP9m_fL6PtSgeVOgYnnATJgsqWOAKISlUVENv0-pcuqDBtjBfbAHSNF9JW-n2AoGpPB3w; __Secure-3PSIDCC=ACA-OxN7CS8PpnCYnfXBCsacPcDmw4RuGA7YQwtBtwnP9CRPnHPuNUMpKkIcKEDX21r0XXiHRR0",
             "Sec-Fetch-Dest": "document",
             "Sec-Fetch-Mode": "navigate",
             "Sec-Fetch-Site": "same-origin",
@@ -686,8 +686,8 @@ def get_insights(request):
         keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
     )
     
-    keyword_list=idea.keywords.get('keywords', [])
-    interest_over_time = get_google_trends_data(keyword_list)
+    # keyword_list=idea.keywords.get('keywords', [])
+    # interest_over_time = get_google_trends_data(keyword_list)
     
     # print("Interest Over Time:")
     # print(interest_over_time)  
@@ -700,9 +700,9 @@ def get_insights(request):
                         'trafficData': 
                             [{"date": "2023-01-01", "visits": 1000},
                             {"date": "2023-01-02", "visits": 1200},
-                            {"date": "2023-01-03", "visits": 800}],
-                        'interest_over_time': interest_over_time.to_json(),
-                        'keywords': keyword_list                             
+                            {"date": "2023-01-03", "visits": 800}]
+                        # 'interest_over_time': interest_over_time.to_json(),
+                        # 'keywords': keyword_list                             
                         })
 
     
