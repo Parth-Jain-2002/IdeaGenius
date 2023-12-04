@@ -75,7 +75,7 @@ export default function ResearchBank() {
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
-          {/* <Accordion className="rounded-lg w-64 border-2">
+          <Accordion className="rounded-lg w-64 border-2">
    
           {Object.keys(topics).map((topic, index) => (
              <AccordionItem className="border-y-2">
@@ -116,7 +116,7 @@ export default function ResearchBank() {
          </AccordionItem>
                 
             ))}
-</Accordion> */}
+</Accordion>
          
           <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />

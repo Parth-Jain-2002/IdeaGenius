@@ -3,6 +3,7 @@ import { useParams } from "react-router"
 import axios from "axios"
 import { Line, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend} from 'chart.js'
+import Navbar from "../components/Layout/Navbar";
 
 ChartJS.register(
   CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend 
@@ -80,9 +81,9 @@ export default function MarketInsight() {
 
 
   return (
-    <div className="bg-gradient-to-br from-purple-500 to-indigo-400  flex flex-col">
-     
-      <header className="bg-blue-700 text-white p-4">
+    <div className="bg-[#efefef] flex flex-col p-4">
+      <Navbar link={"/dashboard"}/>
+      <header className="bg-gray-500 text-white p-4 rounded-lg">
         <h1 className="text-2xl font-bold">Market Insights for Idea {ideaid} </h1>
       </header>
 
