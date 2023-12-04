@@ -12,7 +12,7 @@ const LandingPage = () => {
     <div className='bg-[#f4f7fa] py-6 px-20 '>
       {/* Navbar */}
     
-        <div className="container flex items-center justify">
+        <div className="container flex items-center justify-between">
           {/* Logo and Name */}
           <div className="flex items-center">
             <img
@@ -25,10 +25,10 @@ const LandingPage = () => {
 
           {/* Navbar Links */}
           <div className="flex items-center space-x-32">
-            <a href="#" className="text-black">Home</a>
-            <a href="#" className="text-black">Features</a>
+            <a href="/" className="text-black">Home</a>
+            <a href="#features" className="text-black">Features</a>
             <a href="#" className="text-black">Use Cases</a>
-            <a href="#" className="text-black">Pricing</a>
+            <a href="#pricing" className="text-black">Pricing</a>
           </div>
 
           {/* User Section */}
@@ -66,10 +66,10 @@ const LandingPage = () => {
         />
       </div>
 </div>
-<div>
+<div id="features">
 <Features/>
 </div>
-<div>
+<div id="pricing">
 <Pricing />
 </div>
      
