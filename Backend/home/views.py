@@ -13,7 +13,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -397,6 +397,90 @@ def chat_interface(request):
         prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
     except:
         prompt = "What is your response to this query: " + message + "?"
+
+    # Use the vectorstore from the thread
+    thread = Thread.objects.get(chatid=chatid)
+    vectorstore_path = thread.vectorstore_path
+    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+    response = qa({"query": prompt})
+    print(response)
+    response = response['result']
+
+    # Add the response to the vectorstore
+    word = response.split()
+    word_array = []
+    for i in range(0, len(word), 200):
+        word_array.append(" ".join(word[i:i+200]))
+
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(word_array)
+    db.add_documents(texts)
+    db.persist()
+
+    # Save the chat in the database
+    Chat.objects.create(userid=thread.userid, message=message, response=response, chatid=chatid)
+
+    return JsonResponse({'response':response})
+
+@csrf_exempt
+def get_idea_chat(request):
+    ideaid = request.GET['ideaid']
+    userid = request.GET['userid']
+
+    # Get the chatid from the topic
+    topic = Topic.objects.get(userid=userid, topicid=ideaid)
+    chatid = topic.chatid
+
+    if chatid == "":
+        return JsonResponse({'data':[]})
+
+    chats = Chat.objects.filter(chatid=chatid)
+    
+    # convert the chats to json
+    response = []
+    for chat in chats:
+        response.append({'message':chat.message, 'response':chat.response})
+
+    return JsonResponse({'data':response})
+
+
+@csrf_exempt
+def idea_interface(request):
+    data = json.loads(request.body.decode('utf-8'))
+    print(data)
+    message = data['message']
+    ideaid = data['ideaid']
+    userid = data['userid']
+
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+    chatid = idea.chatid
+
+    thread = Thread.objects.filter(chatid=chatid)
+    # If the queryset is empty, then create a new thread
+    if not thread:
+        print("Thread does not exist")
+        thread = Thread.objects.create(userid=userid, chatid=chatid)
+        vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
+        thread.vectorstore_path = vectorstore_path
+        # Update the vectorstore path in the database
+        thread.save()
+
+    chat = ''
+    prompt = ''
+    try:
+        # Get the last chat from the database according to timestamp
+        chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
+
+        # Prompt
+        prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
+    except:
+        prompt = "What is your response to this query: " + message + "?"
+
+    prompt= idea_info(idea) + prompt
 
     # Use the vectorstore from the thread
     thread = Thread.objects.get(chatid=chatid)
