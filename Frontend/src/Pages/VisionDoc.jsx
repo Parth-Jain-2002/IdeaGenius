@@ -167,17 +167,7 @@ function VisionDoc() {
   }, [chats]);
 
   useEffect(() => {
-      getIdeaInfo()
-      setChats([
-        {
-            message: "Hello",
-            response: "Hi"
-        },
-        {
-            message: "How are you?",
-            response: "Good"
-        },
-    ])
+    getIdeaInfo()
 
     axios.get(`http://localhost:8000/get_idea_chat`,{
       params:{
