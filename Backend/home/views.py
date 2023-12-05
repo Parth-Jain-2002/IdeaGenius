@@ -15,7 +15,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -814,9 +814,11 @@ def get_insights(request):
 
 def validate_cost_insights(response):
     try:
+        print(response)
         # Find the first "{" and the last "}" in response
         response = response[response.find("{"):response.rfind("}")+1]
         response = json.loads(response)
+        print(response)
         if 'cost' in response and 'explanation' in response:
             return response 
         else:
@@ -884,7 +886,23 @@ def get_time_insights(request):
 
 @csrf_exempt
 def get_subtasks(request):
-    pass
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    print("I am here")
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.subtask = ""
+
+    prompt = generate_subtasks_prompt(topic)
+    
+    response = llm(prompt)
+    topic.subtask = response
+    topic.save()
+    
+    return JsonResponse({'response':"Success"})
 
 
 #----------------------------------------------------------------------------------------
