@@ -13,7 +13,7 @@ import { Navigate } from 'react-router-dom'
 import MarketInsight from './Pages/MarketInsight'
 import VisionDoc from './Pages/VisionDoc'
 import People from './Pages/People'
-// import IdeaDashboard from './components/IdeaDashboard'
+
 
 const ProtectedRoute = ({children}) => {
   const isLoggedIn = localStorage.getItem("ideagen_logged_in")
@@ -38,7 +38,7 @@ export default function App() {
             <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
             <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc/></ProtectedRoute>} />
             <Route path="/people/:ideaid" element={<ProtectedRoute><People/></ProtectedRoute>} />
-            {/* <Route path="/ideaDashboard" element={<IdeaDashboard/>} /> */}
+          
           </Routes>
         </BrowserRouter>
       </AuthProvider>
