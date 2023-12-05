@@ -542,7 +542,7 @@ def get_topic(request):
 def new_topic(request):
     data = json.loads(request.body.decode('utf-8'))
     userid = data['userid']
-    topic = data['title']
+    topic = data['ideaid']
     description = data['description']
 
     # Create a new topic in the database
@@ -552,7 +552,7 @@ def new_topic(request):
     user.topics = topics
     user.save()
 
-    Topic.objects.create(userid=userid, topicid=topic, description=description, time_constraint_value=0, budget_constraint_value=0, subtask="", keywords={"keywords":[]})
+    Topic.objects.create(userid=userid, topicid=topic, title="", description=description, generated=False, time_insight={}, cost_insight={}, subtask="", keywords={})
 
     return JsonResponse({'response':'Success'})
 
