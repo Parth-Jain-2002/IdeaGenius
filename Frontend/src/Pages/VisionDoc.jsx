@@ -16,7 +16,7 @@ function VisionDoc() {
   const messageContainerRef = useRef()
   const visionContainerRef = useRef()
   const message = useRef()
-  const [blocks, setBlocks] = useState(["Start writing here..."])
+  const [block, setBlock] = useState("Start writing here...")
 
 
   const getIdeaInfo = () => {
@@ -30,6 +30,7 @@ function VisionDoc() {
       ).then((response) => {
           console.log(response)
           setIdeaInfo(response.data)
+          setBlock(response.data.visiondoctext ? response.data.visiondoctext : "Start writing here...")
       }, (error) => {
           console.log(error)
       })
@@ -38,7 +39,7 @@ function VisionDoc() {
   const formatResponse = (text, containerRef) => {
     const result = [];
     let count = 0;
-    const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 9) : 40;
+    const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 8.5) : 40;
 
     console.log(maxCount)
 
@@ -139,29 +140,33 @@ function VisionDoc() {
     })
   }
 
-  const handleBlockChange = (event, index) => {
-    if(event.target.innerText !== ""){
-      return;
-    }
-  
-    // Your existing logic
-    if (blocks.length === 1) {
-      setBlocks(["Start writing here..."]);
-      return;
-    }
-    if (event.target.innerText === "") {
-      setBlocks((prevBlocks) => prevBlocks.filter((_, i) => i !== index));
-      console.log("I am here");
-    }
-  };
-
   const AddBlock = () => {
-    setBlocks([...blocks, " "]);
+    setBlock(block + "\n ")
   };
 
-  function scrollToBottom() {
-    messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
+  const SaveData = () => {
+    axios.post(`http://localhost:8000/update_topic`, {
+      ideaid: ideaid,
+      userid: localStorage.getItem("ideagen_user_id"),
+      title: ideaInfo.title,
+      description: ideaInfo.description,
+      time_insight: ideaInfo.time_insight,
+      cost_insight: ideaInfo.cost_insight,
+      subtask: ideaInfo.subtask,
+      visiondoctext: ideaInfo.visiondoctext
+    }
+    ).then((response) => {
+      console.log(response)
+      getIdeaInfo()
+    }, (error) => {
+      console.log(error)
+    })
+    
   }
+
+  const scrollToBottom = () => {
+    messageContainerRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -190,16 +195,22 @@ function VisionDoc() {
         <main className="col-span-3 min-h-[88vh] max-h-[88vh]">
       <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh] overflow-y-scroll">
         <div className="mb-8 flex flex-row justify-between">
-          {/* This is where you can start writing in block 1 */}
           <div className="flex flex-row">
             <img src={visionIcon} alt="Logo" className="rounded-lg border-2 border-gray-300 bg-gray-100 p-1 mr-4" height="65" width="65" />
             <div className="flex flex-col p-1">
                 <h3 className="text-2xl font-bold">{ideaid}</h3>
-                <p className="text-gray-500 text-lg">{ideaInfo.title}</p>
+                <p className="text-gray-500 text-lg outline-none flex-row" contentEditable="true"
+                  onInput={(event) => {
+                    ideaInfo.title = event.target.innerText
+                    setIdeaInfo(ideaInfo)
+                  }}
+                >
+                  {ideaInfo.title}
+                </p>
             </div>
           </div>
           <div className="flex flex-row align-end h-fit">
-            <button className="border-2 border-black bg-green-300 hover:bg-green-400 rounded-lg p-2 flex flex-row">
+            <button className="border-2 border-black bg-green-300 hover:bg-green-400 rounded-lg p-2 flex flex-row" onClick={()=>SaveData()}>
               SAVE
             </button>
           </div>
@@ -208,9 +219,14 @@ function VisionDoc() {
           <div>
             <label className="font-bold">Description</label>
           </div>
-          <div contentEditable="true" className='outline-none flex-row'>
-            {/* This is where you can start writing in block 2 */}
-            <p>{ideaInfo.description}</p>
+          <div >
+            <p
+            contentEditable="true" className='outline-none flex-row'
+            onInput={(event) => {
+              ideaInfo.description = event.target.innerText
+              setIdeaInfo(ideaInfo)
+            }}
+            >{ideaInfo.description}</p>
           </div>
         </div>
 
@@ -222,11 +238,21 @@ function VisionDoc() {
             }
           </div>
           <div className='outline-none flex-row'>
-            {/* This is where you can start writing in block 2 */}
             {ideaInfo.time_insight!=undefined && Object.keys(ideaInfo.time_insight).length>0 ? <>
-              <div contentEditable="true" className='outline-none flex-row'>
+              <div className='outline-none flex-row'>
                 {Object.keys(ideaInfo.time_insight).map((key, index) => (
-                  <p><span className='font-bold text-sm text-gray-600'>{key.toUpperCase()+" :"}</span> {ideaInfo.time_insight[key].toString()}</p>
+                  <p>
+                    <span contentEditable="false" className='font-bold text-sm text-gray-600'>{key.toUpperCase()+" :"}
+                    </span> 
+                    <p contentEditable="true" className='outline-none flex-row'
+                      onInput={(event) => {
+                        ideaInfo.time_insight[key] = event.target.innerText
+                        setIdeaInfo(ideaInfo)
+                      }}
+                    >
+                    {ideaInfo.time_insight[key].toString()}
+                    </p>
+                  </p>
                 ))}
               </div>
             </>:
@@ -247,11 +273,22 @@ function VisionDoc() {
             }
           </div>
           <div className='outline-none flex-row'>
-            {/* This is where you can start writing in block 2 */}
             {ideaInfo.cost_insight!=undefined && Object.keys(ideaInfo.cost_insight).length>0 ? <>
-              <div contentEditable="true" className='outline-none flex-row'>
+              <div className='outline-none flex-row'>
                 {Object.keys(ideaInfo.cost_insight).map((key, index) => (
-                  <p><span className='font-bold text-sm text-gray-600'>{key.toUpperCase()+" :"}</span> {ideaInfo.cost_insight[key]}</p>
+                  <p>
+                    <span contentEditable="false" className='font-bold text-sm text-gray-600'>
+                      {key.toUpperCase()+" :"}
+                    </span> 
+                    <p contentEditable="true" className='outline-none flex-row'
+                      onInput={(event) => {
+                        ideaInfo.cost_insight[key] = event.target.innerText
+                        setIdeaInfo(ideaInfo)
+                      }}
+                    >
+                      {ideaInfo.cost_insight[key]}
+                    </p> 
+                  </p>
                 ))}
               </div>
             </>:
@@ -270,9 +307,13 @@ function VisionDoc() {
             {ideaInfo.subtask && <img src={researchIcon} alt="Logo" className=" rounded-lg hover:bg-gray-100 px-1 ml-2" height="10" width="30" onClick={()=>generateSubtasks()}/> }
           </div>
           <div className='outline-none flex-row'>
-            {/* This is where you can start writing in block 2 */}
             {ideaInfo.subtask ? <>
-              <div contentEditable="true" className='outline-none flex-row' ref={visionContainerRef}>
+              <div contentEditable="true" className='outline-none flex-row' ref={visionContainerRef}
+              onInput={(event) => {
+                ideaInfo.subtask = event.target.innerText
+                setIdeaInfo(ideaInfo)
+              }}
+              >
                 <pre style={{"fontFamily":"Poppins, sans-serif"}}>{formatResponse(ideaInfo.subtask,visionContainerRef)}</pre>
               </div>
             </>:
@@ -289,12 +330,20 @@ function VisionDoc() {
           <div>
             <label className='font-bold'>Imagine Further</label>
           </div>
-          <div className='outline-none flex-row'>
-            {blocks.map((block, index) => (
-              <div className='outline-none flex-row'>
-                <p contentEditable="true" className="outline-none" onInput={(event) => handleBlockChange(event, index)}>{block}</p>
-              </div>
-            ))}
+          <div className='outline-none flex-row' contentEditable="true"
+          onInput={(event) => {
+            console.log(event.target.innerText)
+            if(event.target.innerText.length==0){
+              setBlock("Start writing here...")
+              ideaInfo.visiondoctext = "Start writing here..."
+              setIdeaInfo(ideaInfo)
+            }
+            else{
+              ideaInfo.visiondoctext = event.target.innerText
+              setIdeaInfo(ideaInfo)
+            }
+          }}>
+            <pre style={{"fontFamily":"Poppins, sans-serif"}}>{formatResponse(block,visionContainerRef)}</pre>
           </div>
         </div>
 
@@ -338,7 +387,7 @@ function VisionDoc() {
                               <span className="text-sm">Copy</span>
                             </button>
                             <button className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row" onClick={()=>{
-                              setBlocks([...blocks, chat.response])
+                              setBlock(block+"\n"+chat.response)
                             }}>
                               <span className="text-sm">Add to Vision</span>
                             </button>

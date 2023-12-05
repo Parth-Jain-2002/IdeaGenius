@@ -534,7 +534,8 @@ def get_topic(request):
     print(topicid)
 
     topic = Topic.objects.get(userid=userid, topicid=topicid)
-    response = {'title':topic.title, 'description':topic.description, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords}
+    response = {'title':topic.title, 'description':topic.description, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'generated':topic.generated,
+    'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext}
 
     return JsonResponse(response)
 
@@ -902,6 +903,32 @@ def get_subtasks(request):
     topic.subtask = response
     topic.save()
     
+    return JsonResponse({'response':"Success"})
+
+@csrf_exempt
+def update_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+    title = data['title']
+    description = data['description']
+    subtask = data['subtask']
+    visiondoctext = data['visiondoctext']
+    time_insight = data['time_insight']
+    cost_insight = data['cost_insight']
+
+    print(visiondoctext)
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.title = title
+    topic.description = description
+    topic.subtask = subtask
+    topic.time_insight = time_insight
+    topic.cost_insight = cost_insight
+    topic.visiondoctext = visiondoctext
+    topic.save()
+
     return JsonResponse({'response':"Success"})
 
 
