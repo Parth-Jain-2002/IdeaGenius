@@ -154,6 +154,10 @@ function VisionDoc() {
     }
   };
 
+  const AddBlock = () => {
+    setBlocks([...blocks, " "]);
+  };
+
   function scrollToBottom() {
     messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
   }
@@ -300,6 +304,14 @@ function VisionDoc() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="flex flex-row justify-between opacity-0 hover:opacity-100">
+          <hr className="w-[70vw] border-gray-100 mt-3" />
+          <button className="w-full items-center text-sm font-bold rounded-full text-red-500" onClick={AddBlock}>
+            + Add Block
+          </button>
+          <hr className="w-[70vw] full border-gray-100 mt-3" />
         </div>
       </div>
       </main>
