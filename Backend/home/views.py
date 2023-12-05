@@ -5,7 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from pytrends.request import TrendReq
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, urljoin
+from googlesearch import search
 
 import requests
 from readability import Document
@@ -689,6 +690,43 @@ def get_competitors(description):
     
     return final_competitors
 
+
+def get_tables(description):
+    search_query = f"{description} future market insights"
+    search_results = list(search(search_query, num=10, stop=10, pause=2))
+    
+    
+    all_urls = [clean_google_url(a) for a in search_results]
+    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
+    
+    print(filtered_urls)
+    tables=[]
+    images=[]
+    for url in filtered_urls:        
+        try:
+            response = requests.get(url, timeout=5)            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            first_table = soup.find('table')
+            table_content = []
+            if first_table:
+                for row in first_table.find_all('tr'):
+                    columns = row.find_all(['th', 'td'])
+                    row_data = [column.get_text(strip=True) for column in columns]
+                    table_content.append(row_data)
+                tables.append(table_content)
+            
+            image_urls = [urljoin(url, img['src']) for img in soup.find_all('img')]
+            images.extend(image_urls)
+            
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+        
+    
+    print(tables,images)
+    
+    return tables,images
+
 @csrf_exempt
 def get_insights(request):    
     data = json.loads(request.body.decode('utf-8'))    
@@ -708,19 +746,22 @@ def get_insights(request):
     
     description = idea.description
     
-    competitors=get_competitors(description)    
+    competitors=get_competitors(description)
+    tables,images =get_tables(description)    
     
     keyword_list=idea.keywords.get('keywords', [])
     interest_over_time = get_google_trends_data(keyword_list)
     
-    print("Interest Over Time:")
-    print(interest_over_time)  
+    # print("Interest Over Time:")
+    # print(interest_over_time)  
     
     
 
     return JsonResponse({
         'competitors': competitors,
-        'interest_over_time': interest_over_time.to_json()
+        'interest_over_time': interest_over_time.to_json(),
+        'images': images,
+        'tables': tables
         #                 'keywords': keyword_list                             
                         })
 

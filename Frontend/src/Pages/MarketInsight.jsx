@@ -18,6 +18,7 @@ ChartJS.register(
 export default function MarketInsight() {
   const { ideaid } = useParams();
   const [competitors, setCompetitors] = useState([]);
+  const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customerInterest, setCustomerInterest] = useState({});
 
@@ -29,15 +30,16 @@ export default function MarketInsight() {
     ).then((response) => {
       console.log(response.data);
       setCompetitors(response.data.competitors);
+      setTables(response.data.tables);
       const result_df = response.data.interest_over_time;
       const parsedResult = JSON.parse(result_df);
       console.log(parsedResult);
 
-      
+
       if (parsedResult && parsedResult.sum_frequency) {
         // Extract data from the parsed result
         const sumFrequencyData = parsedResult.sum_frequency;
-  
+
         // Convert Unix timestamps to a readable date format
         const dates = Object.keys(sumFrequencyData).map((timestamp) => new Date(Number(timestamp)).toLocaleDateString());
         console.log(dates)
@@ -53,7 +55,7 @@ export default function MarketInsight() {
             },
           ],
         };
-  
+
         setCustomerInterest(data);
       }
       setLoading(false);
@@ -62,7 +64,7 @@ export default function MarketInsight() {
       console.log(error)
     })
 
-    
+
 
 
 
@@ -94,7 +96,7 @@ export default function MarketInsight() {
   const lineChartOptions = {
     scales: {
       x: {
-                
+
       },
       y: {
         beginAtZero: true,
@@ -105,7 +107,7 @@ export default function MarketInsight() {
 
 
 
-  return ( loading ? (
+  return (loading ? (
     <div className="bg-[#efefef] min-h-screen flex items-center justify-center">
       <main className="bg-[#efefef] flex flex-col p-4 w-full">
         <Navbar link={"/dashboard"} />
@@ -121,7 +123,7 @@ export default function MarketInsight() {
         </div>
       </main>
     </div>
-  ) :  (
+  ) : (
     <div className="bg-[#efefef] flex flex-col p-4">
       <Navbar link={"/dashboard"} />
       <header className="bg-gray-500 text-white p-4 rounded-lg">
@@ -131,9 +133,9 @@ export default function MarketInsight() {
 
       <main className="flex-1 p-4">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
+          <div className="bg-gray-200 p-6 rounded-md shadow-md md:col-span-1 lg:col-span-1">
             <h2 className="text-black text-lg font-semibold mb-2">Competitors</h2>
             <div className="competitors-list-container max-h-48 overflow-y-auto">
               <ul className="list-none p-0">
@@ -147,22 +149,49 @@ export default function MarketInsight() {
           </div>
 
 
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-2">Market Size</h2>
-            <p className="text-black text-3xl font-bold">$5,678</p>
+          <div className="bg-gray-200 p-6 rounded-md shadow-md md:col-span-2 lg:col-span-2 relative">
+
+            <div class="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
+              <div class="flex flex-col justify-center h-full">
+                <div class="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
+                  <div class="p-3 h-full">
+                    <div class="overflow-x-auto h-full">
+                      <table class="table-auto w-full h-full">
+                        <thead class="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
+                          <tr>
+                            {tables[0].length > 0 && tables[0][0].map((header, index) => (
+                              <th key={index} class="p-2 whitespace-nowrap">
+                                <div class="font-semibold text-left">{header}</div>
+                              </th>
+                            ))}
+
+                          </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-100">
+                          {tables[0].slice(1).map((row, rowIndex) => (
+                            <tr key={rowIndex}>
+                              {row.map((cell, cellIndex) => (
+                                <td key={cellIndex} class="p-2 whitespace-nowrap">
+                                  <div class="flex items-center">
+                                    <div class="font-medium text-gray-800">{cell}</div>
+                                  </div>
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="absolute text-sm bottom-0 right-0 mb-1 mr-2 text-m text-gray-500">
+              source: Future Market Insights
+            </p>
           </div>
 
-
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-2">Market Growth</h2>
-            <p className="text-black text-3xl font-bold">6,789</p>
-          </div>
-
-
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-2">Return of Investment</h2>
-            <p className="text-black text-3xl font-bold">789</p>
-          </div>
         </div>
 
 
@@ -170,7 +199,7 @@ export default function MarketInsight() {
 
           <div className=" bg-gray-200 p-6 rounded-md shadow-md">
             <h2 className="text-black text-lg font-semibold mb-4">Domain Traffic</h2>
-            <Bar data={barChartData} options={barChartOptions} />
+
           </div>
 
 
