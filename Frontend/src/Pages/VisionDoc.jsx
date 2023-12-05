@@ -14,6 +14,7 @@ function VisionDoc() {
   const [loading, setLoading] = useState(false)
   const containerRef = useRef()
   const messageContainerRef = useRef()
+  const visionContainerRef = useRef()
   const message = useRef()
   const [blocks, setBlocks] = useState(["Start writing here..."])
 
@@ -37,7 +38,7 @@ function VisionDoc() {
   const formatResponse = (text, containerRef) => {
     const result = [];
     let count = 0;
-    const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 8) : 40;
+    const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 9) : 40;
 
     console.log(maxCount)
 
@@ -264,18 +265,19 @@ function VisionDoc() {
         </div>
 
         <div className="mb-4">
-          <div>
+          <div className="flex flex-row mb-2">
             <label className="font-bold">Subtasks</label>
+            {ideaInfo.subtask && <img src={researchIcon} alt="Logo" className=" rounded-lg hover:bg-gray-100 px-1 ml-2" height="10" width="30" onClick={()=>generateSubtasks()}/> }
           </div>
           <div className='outline-none flex-row'>
             {/* This is where you can start writing in block 2 */}
             {ideaInfo.subtask ? <>
-              <div contentEditable="true" className='outline-none flex-row'>
-                <p>{ideaInfo.subtask}</p>
+              <div contentEditable="true" className='outline-none flex-row' ref={visionContainerRef}>
+                <pre style={{"fontFamily":"Poppins, sans-serif"}}>{formatResponse(ideaInfo.subtask,visionContainerRef)}</pre>
               </div>
             </>:
             <>
-              <button className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row">
+              <button className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row" onClick={()=>generateSubtasks()}>
                 <img src={researchIcon} alt="Logo" className="rounded-lg  mr-2" height="20" width="20"/>
                 <p className='text-gray-500 text-sm'>Add Subtasks</p>
               </button>
