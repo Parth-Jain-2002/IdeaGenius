@@ -6,6 +6,9 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement,
 import Navbar from "../components/Layout/Navbar";
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
+import Lottie from "lottie-react";
+import animationData from "../assets/animations/MarketInsight.json";
+
 
 ChartJS.register(
   CategoryScale, LinearScale, BarElement, PointElement, LineElement, TimeScale, Title, Tooltip, Legend
@@ -103,7 +106,21 @@ export default function MarketInsight() {
 
 
   return ( loading ? (
-    <h1>Loading Market Insights</h1>
+    <div className="bg-[#efefef] min-h-screen flex items-center justify-center">
+      <main className="bg-[#efefef] flex flex-col p-4 w-full">
+        <Navbar link={"/dashboard"} />
+        <header className="bg-gray-500 text-white p-4 rounded-lg">
+          <h1 className="text-2xl font-bold">Market Insights for Idea {ideaid}</h1>
+        </header>
+        <div className="flex flex-col items-center">
+          <h1 className="text-3xl font-bold my-4">Loading Market Insights</h1>
+          <Lottie
+            className="w-full lg:w-1/2 xl:w-[40%]"
+            animationData={animationData}
+          />
+        </div>
+      </main>
+    </div>
   ) :  (
     <div className="bg-[#efefef] flex flex-col p-4">
       <Navbar link={"/dashboard"} />

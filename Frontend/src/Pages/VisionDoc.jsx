@@ -13,8 +13,9 @@ function VisionDoc() {
   const [chats, setChats] = useState([])
   const [loading, setLoading] = useState(false)
   const containerRef = useRef()
+  const messageContainerRef = useRef()
   const message = useRef()
-  const [blocks, setBlocks] = useState([" "])
+  const [blocks, setBlocks] = useState(["Start writing here..."])
 
 
   const getIdeaInfo = () => {
@@ -36,7 +37,7 @@ function VisionDoc() {
   const formatResponse = (text, containerRef) => {
     const result = [];
     let count = 0;
-    const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 10) : 20;
+    const maxCount = containerRef.current ? Math.floor(containerRef.current.offsetWidth / 8) : 40;
 
     console.log(maxCount)
 
@@ -79,7 +80,23 @@ function VisionDoc() {
     setLoading(true)
     console.log("Sending message")
     console.log(message.current.value)
-    
+    axios.post(`http://localhost:8000/idea_interface`,{
+        ideaid: ideaid,
+        userid: localStorage.getItem("ideagen_user_id"),
+        message: message.current.value
+    }
+    ).then((response) => {
+        console.log(response)
+        setChats([...chats,{
+            message: message.current.value,
+            response: response.data.response
+        }])
+        message.current.value = ""
+        setLoading(false)
+    }, (error) => {
+        console.log(error)
+        setLoading(false)
+    })
   }
 
   const generateTimeInsights = () => {
@@ -109,8 +126,41 @@ function VisionDoc() {
   }
 
   const generateSubtasks = () => {
-
+    axios.post(`http://localhost:8000/get_subtasks`, {
+      ideaid: ideaid,
+      userid: localStorage.getItem("ideagen_user_id")
+    }
+    ).then((response) => {
+      console.log(response)
+      getIdeaInfo()
+    }, (error) => {
+      console.log(error)
+    })
   }
+
+  const handleBlockChange = (event, index) => {
+    if(event.target.innerText !== ""){
+      return;
+    }
+  
+    // Your existing logic
+    if (blocks.length === 1) {
+      setBlocks(["Start writing here..."]);
+      return;
+    }
+    if (event.target.innerText === "") {
+      setBlocks((prevBlocks) => prevBlocks.filter((_, i) => i !== index));
+      console.log("I am here");
+    }
+  };
+
+  function scrollToBottom() {
+    messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chats]);
 
   useEffect(() => {
       getIdeaInfo()
@@ -124,6 +174,18 @@ function VisionDoc() {
             response: "Good"
         },
     ])
+
+    axios.get(`http://localhost:8000/get_idea_chat`,{
+      params:{
+          ideaid: ideaid,
+          userid: localStorage.getItem("ideagen_user_id")
+      }
+    }).then((response) => {
+      console.log(response)
+      setChats(response.data.data)
+    }, (error) => {
+      console.log(error)
+    })
   },[])
 
   return (
@@ -132,12 +194,19 @@ function VisionDoc() {
       <section className="grid grid-cols-4">
         <main className="col-span-3 min-h-[88vh] max-h-[88vh]">
       <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh] overflow-y-scroll">
-        <div className="mb-8 flex flex-row">
+        <div className="mb-8 flex flex-row justify-between">
           {/* This is where you can start writing in block 1 */}
-          <img src={visionIcon} alt="Logo" className="rounded-lg border-2 border-gray-300 bg-gray-100 p-1 mr-4" height="65" width="65" />
-          <div className="flex flex-col p-1">
-              <h3 className="text-2xl font-bold">{ideaid}</h3>
-              <p className="text-gray-500 text-lg">{ideaInfo.title}</p>
+          <div className="flex flex-row">
+            <img src={visionIcon} alt="Logo" className="rounded-lg border-2 border-gray-300 bg-gray-100 p-1 mr-4" height="65" width="65" />
+            <div className="flex flex-col p-1">
+                <h3 className="text-2xl font-bold">{ideaid}</h3>
+                <p className="text-gray-500 text-lg">{ideaInfo.title}</p>
+            </div>
+          </div>
+          <div className="flex flex-row align-end h-fit">
+            <button className="border-2 border-black bg-green-300 hover:bg-green-400 rounded-lg p-2 flex flex-row">
+              SAVE
+            </button>
           </div>
         </div>
         <div className="mb-4">
@@ -226,8 +295,8 @@ function VisionDoc() {
           </div>
           <div className='outline-none flex-row'>
             {blocks.map((block, index) => (
-              <div contentEditable="true" className='outline-none flex-row'>
-                <p>{block}</p>
+              <div className='outline-none flex-row'>
+                <p contentEditable="true" className="outline-none" onInput={(event) => handleBlockChange(event, index)}>{block}</p>
               </div>
             ))}
           </div>
@@ -239,7 +308,7 @@ function VisionDoc() {
           <div className="flex items-center space-x-2 p-4 bg-gray-100 rounded-lg mb-8">
             <h1 className="text-2xl font-bold">VisionX </h1>
           </div>
-          <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[63vh] min-h-[63vh]">
+          <section  className="flex flex-col space-y-4 overflow-y-scroll max-h-[63vh] min-h-[63vh]">
           {
             chats.length > 0 ? chats.map((chat, index) => (
               <>
@@ -247,7 +316,7 @@ function VisionDoc() {
                       <div className="flex-none">{/* <Avatar className="rounded-full" size="icon" /> */}</div>
                       <div className="ml-2 mr-2 text-right max-w-3xl w-full">
                           <div className="text-xs text-gray-500 px-1">{localStorage.getItem("ideagen_user_name")}</div>
-                          <div className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose">{chat.message}</div>
+                          <div className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose text-sm">{chat.message}</div>
                       </div>
                   </div>
                   <div className="flex items-start mb-4">
@@ -255,11 +324,11 @@ function VisionDoc() {
                       <div className="ml-2 mr-2 flex-grow max-w-3xl">
                           <div className="text-xs text-gray-500 px-1">VisionX</div>
                           <div
-                              className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose"
+                              className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose text-sm"
                               ref={containerRef}
                               style={{ whiteSpace: 'pre-wrap', overflowY: 'auto' }}
                           >
-                              <span dangerouslySetInnerHTML={{ __html: formatResponse(chat.response, containerRef) }} />
+                              <span dangerouslySetInnerHTML={{ __html: chat.response}} />
                           <div className="flex flex-row justify-center space-x-2 mt-2">
                             <button className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row" onClick={()=>navigator.clipboard.writeText(chat.response)}>
                               <span className="text-sm">Copy</span>
@@ -280,12 +349,13 @@ function VisionDoc() {
               </div>
             </>
           }
+          <div ref={messageContainerRef} />
           </section>
           <section className="flex flex-col space-y-4 ">
           <div className="mt-4 flex items-center space-x-2">
           <div className="flex w-full">
             <input
-                className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef]"
+                className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef] text-sm"
                 placeholder="Enter your message"
                 type="text"
                 ref={message}
