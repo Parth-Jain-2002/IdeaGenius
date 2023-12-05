@@ -33,6 +33,14 @@ const IdeaDashboard = ({topicid}) => {
     const handleIdeaRefinement = () => {
         navigate(`../idea/${topicid}`);
     }
+
+    const exploreMarketInsight = () => {
+        navigate(`/market-insight/${topicid}`)
+    }
+
+    const explorePeople = () => {
+        navigate(`/people/${topicid}`);
+    }
       
    return (
     <div className="w-full h-full p-4">
@@ -60,13 +68,13 @@ const IdeaDashboard = ({topicid}) => {
         <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg bg-gray-100">
             <h1 className="text-xl font-medium p-4 mt-1">Marketing Insights</h1>
             <div className="h-96 bg-gray-50"></div>
-            <button className="p-2 mb-2 ml-4 w-32 rounded-xl bg-blue-300">Explore More</button>
+            <button onClick={() => {exploreMarketInsight()}} className="p-2 mb-2 ml-4 w-32 rounded-xl bg-blue-300">Explore More</button>
 
         </div>
         <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg bg-gray-200">
             <h1 className="text-xl font-medium p-4 mt-1">Recommended People on Trumio</h1>
             <div className="h-96 bg-gray-50"></div>
-            <button className="p-2 mb-2 ml-4 w-32 rounded-xl bg-blue-300">Explore More</button>
+            <button onClick={() => {explorePeople()}} className="p-2 mb-2 ml-4 w-32 rounded-xl bg-blue-300">Explore More</button>
         </div>
       </div>
     </div>
