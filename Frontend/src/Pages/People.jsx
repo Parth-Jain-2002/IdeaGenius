@@ -12,6 +12,7 @@ import Navbar from "../components/Layout/Navbar"
 export default function People() {
     const [threads, setThreads] = useState([])
     const [topics, setTopics] = useState({})
+    const [peopleData, setPeopleData] = useState([{}]);
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { ideaid } = useParams()
 
@@ -52,31 +53,40 @@ export default function People() {
             console.log(error)
         })
     }
-
+    const getPeeps = async () => {
+      try {
+          const data = await getPeople();
+          setPeopleData(data);
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+  };
     useEffect(() => {        
         getThreads()
         getTopics()
-    },[ideaid])
+        getPeeps()
+    },[])
 
-    
-  // user id
-  const uid = localStorage.getItem("ideagen_user_id")
-  const getPeople = () => {
-    const obj= [
-    { id: 1, name: 'John Doe', jobTitle: 'Software Engineer', jobDescription: 'I am a software engineer and i engineer software', institution: 'Institute 1' },
-    { id: 2, name: 'Jane Smith', jobTitle: 'Product Manager', jobDescription: 'I am a product manager and i manage products', institution: 'Institute 2' },
-    { id: 3, name: 'Jack Black', jobTitle: 'UI/UX Designer', jobDescription: 'I am a UI/UX Designer and i design UI/UX', institution: 'Institute 3' },
-    { id: 4, name: 'Jill White', jobTitle: 'Frontend Developer', jobDescription: 'I am a frontend developer and i develop frontend', institution: 'Institute 4' },
-    { id: 5, name: 'James Brown', jobTitle: 'Backend Developer', jobDescription: 'I am a backend developer and i develop backend', institution: 'Institute 5' },
-    { id: 6, name: 'Jenny Green', jobTitle: 'Fullstack Developer', jobDescription: 'I am a fullstack developer and i develop fullstack software', institution: 'Institute 6' },
-  ];
-    obj.map((person) => {
-      console.log(person)
-    })
-    return obj
-  }
+  const getPeople = async () => {
+    try {
+        const response = await fetch(`http://localhost:8000/get_recommended_people`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                chat_id: ideaid
+            })
+        });
 
-    
+        const data = await response.json();
+        console.log(data.response);
+        return data.response;
+    } catch (error) {
+        console.log(error);
+    }
+  };
+   
 
   return (
     <section className="grid h-screen grid-cols-5">
@@ -98,9 +108,9 @@ export default function People() {
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
           {/* { "Idea 1":[], "Idea 2": ["dkfjdfjl","jjdofdsofn"]} */}
-          {Object.keys(topics).map((topic, index) => (
+          {topics?Object.keys(topics).map((topic, index) => (
                 <Collapsible title={topic} data={topics[topic]} chat={true}/>
-            ))}
+            )):null}
           {/* Add a new idea */}
           <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
@@ -118,15 +128,15 @@ export default function People() {
         <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden p-2">
           <h2 className="text-3xl mt-4 font-semibold">People you may know from alumni circle</h2>
           <div className='grid grid-cols-3 justify-center items-center'>
-            {getPeople().map((person) => (
-              <div className='p-4 h-full'>
+            {peopleData?peopleData.map((person) => (
+              <div className='p-4 h-full' key={person.name}>
                 <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
               </div>
-            ))}
+            )): null}
           </div>
-          <h2 className="text-3xl mt-8 font-semibold">People you may need for your student team</h2>
+          {/* <h2 className="text-3xl mt-8 font-semibold">People you may need for your student team</h2>
           <div className='grid grid-cols-3 justify-center items-center'>
-            {getPeople().map((person) => (
+            {peopleData.map((person) => (
               <div className='p-4 h-full'>
                 <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
               </div>
@@ -134,12 +144,12 @@ export default function People() {
           </div>
           <h2 className="text-3xl mt-4 font-semibold">People you may need for potential funding rounds</h2>
           <div className='grid grid-cols-3 justify-center items-center'>
-            {getPeople().map((person) => (
+            {peopleData.map((person) => (
               <div className='p-4 h-full'>
                 <PeopleCard name={person.name} jobTitle={person.jobTitle} jobDescription={person.jobDescription} institution={person.institution} />
               </div>
             ))}
-          </div>
+          </div> */}
         </section>
       </main>
     </section>

@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from pytrends.request import TrendReq
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs
 
 import requests
 from readability import Document
@@ -300,27 +302,32 @@ def get_thread(request):
 
 @csrf_exempt
 def get_threads(request):
-    userid = request.GET['userid']
-    ideaid = request.GET['ideaid']
+    try:
+        userid = request.GET['userid']
+        ideaid = request.GET['ideaid']
+        
+        userDoc = UserDoc.objects.get(userid=userid)
+        topics = userDoc.topics
+        chatids = topics[ideaid]
+
+        # Convert the chatids to UUID
+        print(chatids)
+        chatids = [chatid['chatid'] for chatid in chatids]
+        print(chatids)
+        chatids = [uuid.UUID(chatid) for chatid in chatids]
+        print(chatids)
+        threads = Thread.objects.filter(chatid__in=chatids)
+
+        # convert the chats to json
+        response = []
+        for thread in threads:
+            response.append({'title':thread.title, 'imgsrc':thread.imgsrc, 'url':thread.url, 'chatid':thread.chatid})
+
+        return JsonResponse({'data':response})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'data':[]})
     
-    userDoc = UserDoc.objects.get(userid=userid)
-    topics = userDoc.topics
-    chatids = topics[ideaid]
-
-    # Convert the chatids to UUID
-    print(chatids)
-    chatids = [chatid['chatid'] for chatid in chatids]
-    print(chatids)
-    chatids = [uuid.UUID(chatid) for chatid in chatids]
-    print(chatids)
-    threads = Thread.objects.filter(chatid__in=chatids)
-
-    # convert the chats to json
-    response = []
-    for thread in threads:
-        response.append({'title':thread.title, 'imgsrc':thread.imgsrc, 'url':thread.url, 'chatid':thread.chatid})
-
-    return JsonResponse({'data':response})
 
 def create_thread(url, userid):
     # get the title and image from the url
@@ -714,25 +721,8 @@ def select_idea(request):
 #------------------------------MARKET INSIGHTS---------------------------------------------
 #------------------------------------------------------------------------------------------
 
-def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
-    requests_args = {
-        'headers': {
-            "Host": "trends.google.com",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Alt-Used": "trends.google.com",
-            "Connection": "keep-alive",
-            "Referer": "https://trends.google.com/",
-            "Cookie": "__utma=10102256.2103152936.1701433524.1701607890.1701619645.5; __utmz=10102256.1701619645.5.5.utmcsr=trends.google.com|utmccn=(referral)|utmcmd=referral|utmcct=/; SID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKz4JpNzddEd6UNpmjYAUZAhA.; __Secure-1PSID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKz5vymTPiTm5P-aTnCLOo7mg.; __Secure-3PSID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKzV1jUHRGJD4--cZXaaywi4A.; HSID=AoFRtgASs2HSkWM6Z; SSID=A0vUE6uqpIZHv6LPI; APISID=W_X19jGuZATQSbE2/ArgJ3xN-ryKK1D2dx; SAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-1PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-3PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; OTZ=7318707_34_34__34_; AEC=Ackid1T5Y5GAftQMaxiiE6yijr0zTwITOvLFzTqgU11xe9w6w_E4jCDgzA; __Secure-1PSIDTS=sidts-CjIBPVxjSnNAwdXYnPBgz3yOUpGenMsf48llHQV2lyHdxmfgxUYWMarPrvDDM56z-q27mhAA; __Secure-3PSIDTS=sidts-CjIBPVxjSnNAwdXYnPBgz3yOUpGenMsf48llHQV2lyHdxmfgxUYWMarPrvDDM56z-q27mhAA; 1P_JAR=2023-12-04-03; NID=511=cGdCcTCt1v1eucBf_G0N2okWYs0UEDa3jrWEQTDJ_i84Hv8NaAasvMIbwRfW4BeE2uR6dpJWSFqPMVy-w1UbU4yKsUt-tVuGTGwAAKuxitDby3NYTHeVztT8IQipA8bjpxwaZRImOgnhVEQP_ZkaHmei5kYraw6x_XvkxWN0CXgbE8nFw-KxGoTGwhgjnDiPVYqnx4XB9xExB4yZ2RoL5--qri0YqYcfs2wmOQVvMo9kNsqaGPrfsd4AjuvBI9lTtiho5lsNzI6EP7DENs-tDAgPi71BiOQoYeFu3g1kOv0kqrMMh7R18zo8SofEw14rrZTBuYrQM52MRz1tqD9D1qVlxBfWE2HEboH5P3tQxQteAmvP6RMa015FM04B_jS5tuZAn2RSRXkJkZGdoVL7PwyIssTYExCgmlbGa3RXI74gwq4DOut6oiL_oGspylZ3w_hSPR4; SIDCC=ACA-OxMiIFu_W9__2xSewkGUp1OG0Mx7W3Zu3RUj7OG38HFSqEFQxJ9M8kJC0g2yXCpEdvuKD4k; __Secure-1PSIDCC=ACA-OxP9m_fL6PtSgeVOgYnnATJgsqWOAKISlUVENv0-pcuqDBtjBfbAHSNF9JW-n2AoGpPB3w; __Secure-3PSIDCC=ACA-OxN7CS8PpnCYnfXBCsacPcDmw4RuGA7YQwtBtwnP9CRPnHPuNUMpKkIcKEDX21r0XXiHRR0",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
-            "TE": "trailers"
-        }
-    }
-    
-    pytrends = TrendReq(requests_args=requests_args)
+def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
+    pytrends = TrendReq(retries=3)
 
     # Build payload
     pytrends.build_payload(
@@ -742,18 +732,46 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
         geo=geo,
         gprop=''
     )
-
-    
     interest_over_time_df = pytrends.interest_over_time()
 
+    interest_over_time_df['sum_frequency'] = interest_over_time_df[keywords].sum(axis=1)    
+    result_df = interest_over_time_df[['sum_frequency']]
+    return result_df
+
+
+def clean_google_url(google_url):
+    # Extract clean URL from Google's /url?q= prefix
+    match = re.search(r'/url\?q=(.+?)&', google_url)
+    return match.group(1) if match else google_url
+
+
+def get_competitors(description):
+    search_query = f"{description} top best"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
     
-
-    return interest_over_time_df
-
-
-
-
-
+    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+    
+    competitors = []
+    for url in urls:
+        
+        try:
+            response = requests.get(url, timeout=5)
+            # print(f"HTTP request successful for URL: {url}")
+            soup = BeautifulSoup(response.text, 'html.parser')
+            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+            for title in numbered_titles:
+                competitors.append(title.text.strip())
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+        
+    
+    competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
+    filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
+    final_competitors=list(set(filtered_competitors))
+    
+    return final_competitors
 
 @csrf_exempt
 def get_insights(request):    
@@ -763,30 +781,31 @@ def get_insights(request):
     idea = Topic(
         userid="ideagen_user_id",
         topicid="Streamline_Expense_Tracking",
+        title="Streamline_Expense_Tracking",
         description="Develop an intuitive web and mobile app for efficient expense tracking, categorization, and reporting, leveraging AI for smart insights and automated receipt scanning",
-        time_constraint_value=3,  
-        budget_constraint_value=10000,  
+        generated=True,
+        time_insight={},  
+        cost_insight={},  
         subtask={"Implement manual and automated expense entry and categorization.","Develop a user-friendly reporting system with customizable visualizations."},
         keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
     )
     
-    # keyword_list=idea.keywords.get('keywords', [])
-    # interest_over_time = get_google_trends_data(keyword_list)
+    description = idea.description
     
-    # print("Interest Over Time:")
-    # print(interest_over_time)  
+    competitors=get_competitors(description)    
+    
+    keyword_list=idea.keywords.get('keywords', [])
+    interest_over_time = get_google_trends_data(keyword_list)
+    
+    print("Interest Over Time:")
+    print(interest_over_time)  
     
     
 
-    return JsonResponse({'competitors':
-                            [{ 'name': 'Competitor 1', 'revenue': 1000000, 'employees': 50 },
-                            { 'name': 'Competitor 2', 'revenue': 800000, 'employees': 40 }],
-                        'trafficData': 
-                            [{"date": "2023-01-01", "visits": 1000},
-                            {"date": "2023-01-02", "visits": 1200},
-                            {"date": "2023-01-03", "visits": 800}]
-                        # 'interest_over_time': interest_over_time.to_json(),
-                        # 'keywords': keyword_list                             
+    return JsonResponse({
+        'competitors': competitors,
+        'interest_over_time': interest_over_time.to_json()
+        #                 'keywords': keyword_list                             
                         })
 
 #----------------------------------------------------------------------------------------
@@ -866,3 +885,89 @@ def get_time_insights(request):
 @csrf_exempt
 def get_subtasks(request):
     pass
+
+
+#----------------------------------------------------------------------------------------
+#--------------------------------RECOMMENDED PEOPLE--------------------------------------
+#----------------------------------------------------------------------------------------
+import pickle
+from scipy.spatial.distance import cosine
+from collections import Counter
+
+
+def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
+    user_counter = Counter()  # Counter to track user occurrences
+
+    for input_tag in input_tags:
+        input_embedding = tag_embeddings[input_tag]
+        
+        # Find users with similar tags
+        for user, user_tags in user_profiles.items():
+            user_embedding = [tag_embeddings[tag] for tag in user_tags]
+            
+            # Calculate similarity between input tag and user tags
+            similarity_scores = [1 - cosine(input_embedding, tag_embedding) for tag_embedding in user_embedding]
+            
+            # If at least one tag is similar, consider the user
+            user_counter[user] += sum(score > threshold for score in similarity_scores)
+
+    # Get users with the highest occurrences
+    top_users = user_counter.most_common()
+    return top_users
+
+def get_input_tags(chatid):
+    # Get the vectorstore path from the thread
+    thread = Thread.objects.get(chatid=chatid)
+    vectorstore_path = thread.vectorstore_path
+
+    # Use the vectorstore from the thread
+    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    print(db.similarity_search("Java", k=8))
+    retriever = db.as_retriever(search_kwargs={"k": 8})
+    # return retriever
+    # print("UserDocs")
+    # haha=UserDoc.objects.all()
+    # for i in haha:
+    #     print(i.topics)
+    # print("\n\nThreads")
+    # hehe=Thread.objects.all()
+    # for i in hehe:
+    #     print(i.chatid)
+    return ['Java', 'Web Development']
+
+@csrf_exempt
+def get_recommended_people(request):
+    try:
+        data = json.loads(request.body)
+        chatid = data['chat_id']
+        print(chatid)
+        # TODO: Get the tags from the chat
+        input_tags = get_input_tags(chatid)
+
+        # Assuming User Data comes from Some API
+        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/user_profiles.pkl', 'rb') as f:
+            user_profiles = pickle.load(f)
+        # Pre-computed tag embeddings for all users
+            # # Vector Embeddings for Tags
+            # tag_set = set(tag for tags in user_profiles.values() for tag in tags)
+            # tag_embeddings = {tag: embeddings.embed_query(tag) for tag in tag_set}
+        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/tag_embeddings.pkl', 'rb') as f:
+            tag_embeddings = pickle.load(f)
+        # Find the users based on the tags
+        top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
+        # print(top_users)
+
+        # Get the top 8 users
+        top_users = top_users[:8]
+
+        response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
+    { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },
+    { 'id': 3, 'name': 'Jack Black', 'jobTitle': 'UI/UX Designer', 'jobDescription': 'I am a UI/UX Designer and i design UI/UX', 'institution': 'Institute 3' },
+    { 'id': 4, 'name': 'Jill White', 'jobTitle': 'Frontend Developer', 'jobDescription': 'I am a frontend developer and i develop frontend', 'institution': 'Institute 4' },
+    { 'id': 5, 'name': 'James Brown', 'jobTitle': 'Backend Developer', 'jobDescription': 'I am a backend developer and i develop backend', 'institution': 'Institute 5' },
+    { 'id': 6, 'name': 'Jenny Green', 'jobTitle': 'Fullstack Developer', 'jobDescription': 'I am a fullstack developer and i develop fullstack software', 'institution': 'Institute 6' }]
+
+        return JsonResponse({'response':response})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'response':'Error'}, status=500)
