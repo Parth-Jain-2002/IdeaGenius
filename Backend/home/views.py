@@ -302,27 +302,32 @@ def get_thread(request):
 
 @csrf_exempt
 def get_threads(request):
-    userid = request.GET['userid']
-    ideaid = request.GET['ideaid']
+    try:
+        userid = request.GET['userid']
+        ideaid = request.GET['ideaid']
+        
+        userDoc = UserDoc.objects.get(userid=userid)
+        topics = userDoc.topics
+        chatids = topics[ideaid]
+
+        # Convert the chatids to UUID
+        print(chatids)
+        chatids = [chatid['chatid'] for chatid in chatids]
+        print(chatids)
+        chatids = [uuid.UUID(chatid) for chatid in chatids]
+        print(chatids)
+        threads = Thread.objects.filter(chatid__in=chatids)
+
+        # convert the chats to json
+        response = []
+        for thread in threads:
+            response.append({'title':thread.title, 'imgsrc':thread.imgsrc, 'url':thread.url, 'chatid':thread.chatid})
+
+        return JsonResponse({'data':response})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'data':[]})
     
-    userDoc = UserDoc.objects.get(userid=userid)
-    topics = userDoc.topics
-    chatids = topics[ideaid]
-
-    # Convert the chatids to UUID
-    print(chatids)
-    chatids = [chatid['chatid'] for chatid in chatids]
-    print(chatids)
-    chatids = [uuid.UUID(chatid) for chatid in chatids]
-    print(chatids)
-    threads = Thread.objects.filter(chatid__in=chatids)
-
-    # convert the chats to json
-    response = []
-    for thread in threads:
-        response.append({'title':thread.title, 'imgsrc':thread.imgsrc, 'url':thread.url, 'chatid':thread.chatid})
-
-    return JsonResponse({'data':response})
 
 def create_thread(url, userid):
     # get the title and image from the url
@@ -796,3 +801,89 @@ def get_time_insights(request):
 @csrf_exempt
 def get_subtasks(request):
     pass
+
+
+#----------------------------------------------------------------------------------------
+#--------------------------------RECOMMENDED PEOPLE--------------------------------------
+#----------------------------------------------------------------------------------------
+import pickle
+from scipy.spatial.distance import cosine
+from collections import Counter
+
+
+def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
+    user_counter = Counter()  # Counter to track user occurrences
+
+    for input_tag in input_tags:
+        input_embedding = tag_embeddings[input_tag]
+        
+        # Find users with similar tags
+        for user, user_tags in user_profiles.items():
+            user_embedding = [tag_embeddings[tag] for tag in user_tags]
+            
+            # Calculate similarity between input tag and user tags
+            similarity_scores = [1 - cosine(input_embedding, tag_embedding) for tag_embedding in user_embedding]
+            
+            # If at least one tag is similar, consider the user
+            user_counter[user] += sum(score > threshold for score in similarity_scores)
+
+    # Get users with the highest occurrences
+    top_users = user_counter.most_common()
+    return top_users
+
+def get_input_tags(chatid):
+    # Get the vectorstore path from the thread
+    thread = Thread.objects.get(chatid=chatid)
+    vectorstore_path = thread.vectorstore_path
+
+    # Use the vectorstore from the thread
+    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    print(db.similarity_search("Java", k=8))
+    retriever = db.as_retriever(search_kwargs={"k": 8})
+    # return retriever
+    # print("UserDocs")
+    # haha=UserDoc.objects.all()
+    # for i in haha:
+    #     print(i.topics)
+    # print("\n\nThreads")
+    # hehe=Thread.objects.all()
+    # for i in hehe:
+    #     print(i.chatid)
+    return ['Java', 'Web Development']
+
+@csrf_exempt
+def get_recommended_people(request):
+    try:
+        data = json.loads(request.body)
+        chatid = data['chat_id']
+        print(chatid)
+        # TODO: Get the tags from the chat
+        input_tags = get_input_tags(chatid)
+
+        # Assuming User Data comes from Some API
+        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/user_profiles.pkl', 'rb') as f:
+            user_profiles = pickle.load(f)
+        # Pre-computed tag embeddings for all users
+            # # Vector Embeddings for Tags
+            # tag_set = set(tag for tags in user_profiles.values() for tag in tags)
+            # tag_embeddings = {tag: embeddings.embed_query(tag) for tag in tag_set}
+        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/tag_embeddings.pkl', 'rb') as f:
+            tag_embeddings = pickle.load(f)
+        # Find the users based on the tags
+        top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
+        # print(top_users)
+
+        # Get the top 8 users
+        top_users = top_users[:8]
+
+        response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
+    { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },
+    { 'id': 3, 'name': 'Jack Black', 'jobTitle': 'UI/UX Designer', 'jobDescription': 'I am a UI/UX Designer and i design UI/UX', 'institution': 'Institute 3' },
+    { 'id': 4, 'name': 'Jill White', 'jobTitle': 'Frontend Developer', 'jobDescription': 'I am a frontend developer and i develop frontend', 'institution': 'Institute 4' },
+    { 'id': 5, 'name': 'James Brown', 'jobTitle': 'Backend Developer', 'jobDescription': 'I am a backend developer and i develop backend', 'institution': 'Institute 5' },
+    { 'id': 6, 'name': 'Jenny Green', 'jobTitle': 'Fullstack Developer', 'jobDescription': 'I am a fullstack developer and i develop fullstack software', 'institution': 'Institute 6' }]
+
+        return JsonResponse({'response':response})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'response':'Error'}, status=500)
