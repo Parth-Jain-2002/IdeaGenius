@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from pytrends.request import TrendReq
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs
 
 import requests
 from readability import Document
@@ -635,25 +637,8 @@ def select_idea(request):
 #------------------------------MARKET INSIGHTS---------------------------------------------
 #------------------------------------------------------------------------------------------
 
-def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
-    requests_args = {
-        'headers': {
-            "Host": "trends.google.com",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Alt-Used": "trends.google.com",
-            "Connection": "keep-alive",
-            "Referer": "https://trends.google.com/",
-            "Cookie": "__utma=10102256.2103152936.1701433524.1701607890.1701619645.5; __utmz=10102256.1701619645.5.5.utmcsr=trends.google.com|utmccn=(referral)|utmcmd=referral|utmcct=/; SID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKz4JpNzddEd6UNpmjYAUZAhA.; __Secure-1PSID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKz5vymTPiTm5P-aTnCLOo7mg.; __Secure-3PSID=dQguV1gyqwNcmyIOzEYtjy62nGxOQrfIpxvhluDcbfSAKyKzV1jUHRGJD4--cZXaaywi4A.; HSID=AoFRtgASs2HSkWM6Z; SSID=A0vUE6uqpIZHv6LPI; APISID=W_X19jGuZATQSbE2/ArgJ3xN-ryKK1D2dx; SAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-1PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; __Secure-3PAPISID=ifWPryWbLtGt8-FG/AX5E-fLh9HfZommYA; OTZ=7318707_34_34__34_; AEC=Ackid1T5Y5GAftQMaxiiE6yijr0zTwITOvLFzTqgU11xe9w6w_E4jCDgzA; __Secure-1PSIDTS=sidts-CjIBPVxjSnNAwdXYnPBgz3yOUpGenMsf48llHQV2lyHdxmfgxUYWMarPrvDDM56z-q27mhAA; __Secure-3PSIDTS=sidts-CjIBPVxjSnNAwdXYnPBgz3yOUpGenMsf48llHQV2lyHdxmfgxUYWMarPrvDDM56z-q27mhAA; 1P_JAR=2023-12-04-03; NID=511=cGdCcTCt1v1eucBf_G0N2okWYs0UEDa3jrWEQTDJ_i84Hv8NaAasvMIbwRfW4BeE2uR6dpJWSFqPMVy-w1UbU4yKsUt-tVuGTGwAAKuxitDby3NYTHeVztT8IQipA8bjpxwaZRImOgnhVEQP_ZkaHmei5kYraw6x_XvkxWN0CXgbE8nFw-KxGoTGwhgjnDiPVYqnx4XB9xExB4yZ2RoL5--qri0YqYcfs2wmOQVvMo9kNsqaGPrfsd4AjuvBI9lTtiho5lsNzI6EP7DENs-tDAgPi71BiOQoYeFu3g1kOv0kqrMMh7R18zo8SofEw14rrZTBuYrQM52MRz1tqD9D1qVlxBfWE2HEboH5P3tQxQteAmvP6RMa015FM04B_jS5tuZAn2RSRXkJkZGdoVL7PwyIssTYExCgmlbGa3RXI74gwq4DOut6oiL_oGspylZ3w_hSPR4; SIDCC=ACA-OxMiIFu_W9__2xSewkGUp1OG0Mx7W3Zu3RUj7OG38HFSqEFQxJ9M8kJC0g2yXCpEdvuKD4k; __Secure-1PSIDCC=ACA-OxP9m_fL6PtSgeVOgYnnATJgsqWOAKISlUVENv0-pcuqDBtjBfbAHSNF9JW-n2AoGpPB3w; __Secure-3PSIDCC=ACA-OxN7CS8PpnCYnfXBCsacPcDmw4RuGA7YQwtBtwnP9CRPnHPuNUMpKkIcKEDX21r0XXiHRR0",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
-            "TE": "trailers"
-        }
-    }
-    
-    pytrends = TrendReq(requests_args=requests_args)
+def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
+    pytrends = TrendReq(retries=3)
 
     # Build payload
     pytrends.build_payload(
@@ -663,18 +648,46 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
         geo=geo,
         gprop=''
     )
-
-    
     interest_over_time_df = pytrends.interest_over_time()
 
+    interest_over_time_df['sum_frequency'] = interest_over_time_df[keywords].sum(axis=1)    
+    result_df = interest_over_time_df[['sum_frequency']]
+    return result_df
+
+
+def clean_google_url(google_url):
+    # Extract clean URL from Google's /url?q= prefix
+    match = re.search(r'/url\?q=(.+?)&', google_url)
+    return match.group(1) if match else google_url
+
+
+def get_competitors(description):
+    search_query = f"{description} top best"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
     
-
-    return interest_over_time_df
-
-
-
-
-
+    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+    
+    competitors = []
+    for url in urls:
+        
+        try:
+            response = requests.get(url, timeout=5)
+            # print(f"HTTP request successful for URL: {url}")
+            soup = BeautifulSoup(response.text, 'html.parser')
+            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+            for title in numbered_titles:
+                competitors.append(title.text.strip())
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+        
+    
+    competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
+    filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
+    final_competitors=list(set(filtered_competitors))
+    
+    return final_competitors
 
 @csrf_exempt
 def get_insights(request):    
@@ -684,30 +697,31 @@ def get_insights(request):
     idea = Topic(
         userid="ideagen_user_id",
         topicid="Streamline_Expense_Tracking",
+        title="Streamline_Expense_Tracking",
         description="Develop an intuitive web and mobile app for efficient expense tracking, categorization, and reporting, leveraging AI for smart insights and automated receipt scanning",
-        time_constraint_value=3,  
-        budget_constraint_value=10000,  
+        generated=True,
+        time_insight={},  
+        cost_insight={},  
         subtask={"Implement manual and automated expense entry and categorization.","Develop a user-friendly reporting system with customizable visualizations."},
         keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
     )
     
-    # keyword_list=idea.keywords.get('keywords', [])
-    # interest_over_time = get_google_trends_data(keyword_list)
+    description = idea.description
     
-    # print("Interest Over Time:")
-    # print(interest_over_time)  
+    competitors=get_competitors(description)    
+    
+    keyword_list=idea.keywords.get('keywords', [])
+    interest_over_time = get_google_trends_data(keyword_list)
+    
+    print("Interest Over Time:")
+    print(interest_over_time)  
     
     
 
-    return JsonResponse({'competitors':
-                            [{ 'name': 'Competitor 1', 'revenue': 1000000, 'employees': 50 },
-                            { 'name': 'Competitor 2', 'revenue': 800000, 'employees': 40 }],
-                        'trafficData': 
-                            [{"date": "2023-01-01", "visits": 1000},
-                            {"date": "2023-01-02", "visits": 1200},
-                            {"date": "2023-01-03", "visits": 800}]
-                        # 'interest_over_time': interest_over_time.to_json(),
-                        # 'keywords': keyword_list                             
+    return JsonResponse({
+        'competitors': competitors,
+        'interest_over_time': interest_over_time.to_json()
+        #                 'keywords': keyword_list                             
                         })
 
 #----------------------------------------------------------------------------------------
