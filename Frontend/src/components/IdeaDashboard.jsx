@@ -50,10 +50,10 @@ const IdeaDashboard = ({topicid}) => {
           
           </div>
           {/* This is where you can start writing in block 1 */}
-        <div className="ml-96">  {topicDetails.generated ? (
-            <button onClick={() => {handleIdeaRefinement()}} className="px-2 py-1 bg-blue-300 rounded-lg">Refine Problem Statement</button>
+        <div className="w-1/3 flex justify-center items-center">  {topicDetails.generated ? (
+            <button onClick={() => {handleIdeaRefinement()}} className="px-4 py-2 bg-blue-300 rounded-lg">Refine Problem Statement</button>
           ) : (
-            <button onClick={() => {handleIdeaGeneration()}} className="px-2 py-1 bg-blue-300 rounded-lg">Generate Problem Statement</button>
+            <button onClick={() => {handleIdeaGeneration()}} className="px-4 py-2 bg-blue-300 rounded-lg">Generate Problem Statement</button>
           )}</div>
         
         </div>

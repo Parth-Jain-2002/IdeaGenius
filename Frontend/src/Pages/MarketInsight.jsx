@@ -133,7 +133,7 @@ export default function MarketInsight() {
 
       <main className="flex-1 p-4">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <div className="bg-gray-200 p-6 rounded-md shadow-md md:col-span-1 lg:col-span-1">
             <h2 className="text-black text-lg font-semibold mb-2">Competitors</h2>
@@ -151,29 +151,29 @@ export default function MarketInsight() {
 
           <div className="bg-gray-200 p-6 rounded-md shadow-md md:col-span-2 lg:col-span-2 relative">
 
-            <div class="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
-              <div class="flex flex-col justify-center h-full">
-                <div class="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
-                  <div class="p-3 h-full">
-                    <div class="overflow-x-auto h-full">
-                      <table class="table-auto w-full h-full">
-                        <thead class="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
+            <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
+              <div className="flex flex-col justify-center h-full">
+                <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
+                  <div className="p-3 h-full">
+                    <div className="overflow-x-auto h-full">
+                      <table className="table-auto w-full h-full">
+                        <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
                           <tr>
                             {tables[0].length > 0 && tables[0][0].map((header, index) => (
-                              <th key={index} class="p-2 whitespace-nowrap">
-                                <div class="font-semibold text-left">{header}</div>
+                              <th key={index} className="p-2 whitespace-nowrap">
+                                <div className="font-semibold text-left">{header}</div>
                               </th>
                             ))}
 
                           </tr>
                         </thead>
-                        <tbody class="text-sm divide-y divide-gray-100">
+                        <tbody className="text-sm divide-y divide-gray-100">
                           {tables[0].slice(1).map((row, rowIndex) => (
                             <tr key={rowIndex}>
                               {row.map((cell, cellIndex) => (
-                                <td key={cellIndex} class="p-2 whitespace-nowrap">
-                                  <div class="flex items-center">
-                                    <div class="font-medium text-gray-800">{cell}</div>
+                                <td key={cellIndex} className="p-2 whitespace-nowrap">
+                                  <div className="flex items-center">
+                                    <div className="font-medium text-gray-800">{cell}</div>
                                   </div>
                                 </td>
                               ))}
