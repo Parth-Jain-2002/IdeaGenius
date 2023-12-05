@@ -27,4 +27,6 @@ urlpatterns = [
     path('get_cost_insights',views.get_cost_insights, name='get_cost_insights'),
     path('get_time_insights',views.get_time_insights, name='get_time_insights'),
     path('get_subtasks',views.get_subtasks, name='get_subtasks'),
+
+    path('get_recommended_people', views.get_recommended_people, name='get_recommended_people'),
 ]
