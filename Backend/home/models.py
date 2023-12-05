@@ -41,3 +41,4 @@ class Topic(models.Model):
     # This is a JSON object that contains the following keywords: {keywords: ['Finance', 'Investment', 'Stocks']}
     keywords = models.JSONField(default=dict)
     chatid = models.UUIDField(default=uuid.uuid4)
+    visiondoctext = models.TextField(default="")

@@ -22,6 +22,7 @@ urlpatterns = [
     path('get_topic',views.get_topic, name='get_topic'),
     path('new_topic',views.new_topic, name='new_topic'),
     path('edit_topic',views.edit_topic, name='edit_topic'),
+    path('update_topic',views.update_topic, name='update_topic'),
     path('select_idea',views.select_idea, name='select_idea'),
 
     path('generate_idea',views.generate_idea, name='generate_idea'),

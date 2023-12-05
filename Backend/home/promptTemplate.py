@@ -79,7 +79,7 @@ def generate_cost_insights_prompt(idea):
     We need to generate cost insights for this idea. 
     """
 
-    prompt += "The cost should in rupees. Return the JSON object with the following fields: cost, explanation, and note(if any)"
+    prompt += "The cost should in rupees should be within proper double quotes. All property name should be within proper double quotes. Return the JSON object with the following fields: cost, explanation, and note(if any)"
 
     return prompt
 
@@ -93,6 +93,20 @@ def generate_time_insights_prompt(idea):
     We need to generate time insights for this idea. 
     """
 
-    prompt += "The time should in days. Return the JSON object with the following fields: time, explanation, and note(if any)"
+    prompt += "The time should in days and should be within proper double quotes. All property name should be within proper double quotes. Return the JSON object with the following fields: time, explanation, and note(if any)"
+
+    return prompt
+
+def generate_subtasks_prompt(idea):
+    prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
+    This is for a platform that enables alumni/clients to collaborate with college students on projects.
+    So, we are generating insights for the idea:
+
+    {idea_info(idea)}
+
+    We need to generate subtasks for this idea. 
+    """
+
+    prompt += "They should be meaningful and clear> Justify if you made any assumptions."
 
     return prompt
