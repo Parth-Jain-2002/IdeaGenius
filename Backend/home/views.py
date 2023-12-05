@@ -945,20 +945,21 @@ def get_recommended_people(request):
         input_tags = get_input_tags(chatid)
 
         # Assuming User Data comes from Some API
-        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/user_profiles.pkl', 'rb') as f:
+        with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)
         # Pre-computed tag embeddings for all users
             # # Vector Embeddings for Tags
             # tag_set = set(tag for tags in user_profiles.values() for tag in tags)
             # tag_embeddings = {tag: embeddings.embed_query(tag) for tag in tag_set}
-        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/tag_embeddings.pkl', 'rb') as f:
+        with open ('home/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
         # print(top_users)
 
-        # Get the top 8 users
-        top_users = top_users[:8]
+        # Get the top 6 users
+        # should be a multiple of 3 to look good in the UI
+        top_users = top_users[:6]
 
         response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
     { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },
