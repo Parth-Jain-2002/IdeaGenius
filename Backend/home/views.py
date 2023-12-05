@@ -723,7 +723,7 @@ def select_idea(request):
 #------------------------------------------------------------------------------------------
 
 def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
-    pytrends = TrendReq(retries=3)
+    pytrends = TrendReq(retries=4)
 
     # Build payload
     pytrends.build_payload(
@@ -740,11 +740,55 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
     return result_df
 
 
-def clean_google_url(google_url):
-    # Extract clean URL from Google's /url?q= prefix
+def clean_google_url(google_url):    
     match = re.search(r'/url\?q=(.+?)&', google_url)
     return match.group(1) if match else google_url
 
+
+def get_competitor_revenue(competitors):
+    competitor_revenue=[]
+    
+    for competitor in competitors:        
+        search_query = f"{competitor} annual revenue growjo"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = requests.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')        
+        all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]
+        filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
+        
+        if len(filtered_urls) > 0:
+            try:
+                response = requests.get(filtered_urls[0], timeout=10)                
+                soup = BeautifulSoup(response.text, 'html.parser')
+                all_li_tags = soup.find_all('li')
+                
+                for li_tag in all_li_tags:
+                    
+                    
+                    if 'estimated annual revenue is currently' in li_tag.get_text():
+                        
+                        revenue_match = re.search(r'\$\d+(?:,\d{3})*(?:\.\d+)?[BMK]?', li_tag.get_text())
+
+                        if revenue_match:
+                            revenue_data = revenue_match.group(0)
+                            competitor_revenue.append(revenue_data)
+                            
+                        else:
+                            competitor_revenue.append(0)
+                
+                
+            except Exception as e:
+                print(f"Error fetching data from {filtered_urls[0]}: {e}")
+                competitor_revenue.append(0)
+        else:
+            competitor_revenue.append(0)
+               
+    final_competitor = [comp for comp, rev in zip(competitors, competitor_revenue) if rev != 0]
+    final_competitor_revenue = [rev for rev in competitor_revenue if rev != 0]
+    
+    
+    
+    return final_competitor,final_competitor_revenue
 
 def get_competitors(description):
     search_query = f"{description} top best"
@@ -766,13 +810,15 @@ def get_competitors(description):
                 competitors.append(title.text.strip())
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
-        
+       
     
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
-    final_competitors=list(set(filtered_competitors))
+    unique_competitors=list(set(filtered_competitors))
     
-    return final_competitors
+    print(unique_competitors)
+    
+    return unique_competitors
 
 
 def get_tables(description):
@@ -783,7 +829,7 @@ def get_tables(description):
     all_urls = [clean_google_url(a) for a in search_results]
     filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
     
-    print(filtered_urls)
+    
     tables=[]
     images=[]
     for url in filtered_urls:        
@@ -807,8 +853,6 @@ def get_tables(description):
             print(f"Error fetching data from {url}: {e}")
         
     
-    print(tables,images)
-    
     return tables,images
 
 @csrf_exempt
@@ -830,9 +874,10 @@ def get_insights(request):
     
     description = idea.description
     
-    competitors=get_competitors(description)
+    unique_competitors=get_competitors(description)
+    competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
     tables,images =get_tables(description)    
-    
+    print(competitors,competitor_revenue)
     keyword_list=idea.keywords.get('keywords', [])
     interest_over_time = get_google_trends_data(keyword_list)
     
@@ -845,7 +890,8 @@ def get_insights(request):
         'competitors': competitors,
         'interest_over_time': interest_over_time.to_json(),
         'images': images,
-        'tables': tables
+        'tables': tables,
+        'competitor_revenue': competitor_revenue
         #                 'keywords': keyword_list                             
                         })
 
