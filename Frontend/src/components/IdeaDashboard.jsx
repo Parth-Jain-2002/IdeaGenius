@@ -59,18 +59,18 @@ const IdeaDashboard = ({topicid}) => {
           </div>
           {/* This is where you can start writing in block 1 */}
         <div className="ml-96">  {topicDetails.generated ? (
-            <button onClick={() => {handleIdeaRefinement()}} className="px-2 py-1 bg-blue-300 rounded-lg">Refine Problem Statement</button>
+            <button onClick={() => {handleIdeaRefinement()}} className="px-3 py-2 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Refine Problem Statement</button>
           ) : (
-            <button onClick={() => {handleIdeaGeneration()}} className="px-2 py-1 bg-blue-300 rounded-lg">Generate Problem Statement</button>
+            <button onClick={() => {handleIdeaGeneration()}} className="px-3 py-2 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Generate Problem Statement</button>
           )}</div>
         
         </div>
       </div>
       <div className="flex w-full mt-6">
-        <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg bg-gray-100">
+        <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg ">
             <h1 className="text-xl font-medium p-4 mt-1">Marketing Insights</h1>
-            <div className="h-96 bg-gray-50"></div>
-            <button onClick={() => {exploreMarketInsight()}} className="p-2 mb-2 ml-4 w-32 rounded-xl bg-blue-300">Explore More</button>
+            <div className="h-96 "></div>
+            <button onClick={() => {exploreMarketInsight()}} className="p-2 mb-2 ml-4 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Explore More</button>
 
         </div>
         <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
@@ -95,7 +95,7 @@ const IdeaDashboard = ({topicid}) => {
                 />
               </div>
             </div>
-            <a className="p-2 mb-2 w-32 rounded-xl bg-blue-300 ml-auto mr-4 text-center" href={`/people/${topicid}`}>Explore More</a>
+            <a className="p-2 mb-2 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white  ml-auto mr-4 text-center" href={`/people/${topicid}`}>Explore More</a>
         </div>
       </div>
     </div>

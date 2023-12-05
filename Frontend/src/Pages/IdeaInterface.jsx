@@ -87,7 +87,7 @@ export default function IdeaInterface() {
             }
             ).then((response) => {
                 let ideas = response.data.response
-                //console.log("ideas : ", ideas)
+                console.log("ideas : ", ideas)
                 //console.log(typeof(ideas))
                 setInitialIdeas(JSON.parse(ideas))
                 // Replace the "Generating ideas..." message with the initial ideas
