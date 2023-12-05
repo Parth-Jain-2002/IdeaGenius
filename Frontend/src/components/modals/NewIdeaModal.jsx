@@ -34,7 +34,7 @@ const NewIdeaModal = ({ onClose, topics, getTopics }) => {
     
     axios.post(`http://localhost:8000/new_topic`, {
         userid: localStorage.getItem('ideagen_user_id'),
-        title: title,
+        ideaid: title,
         description: description,
         }).then((response) => {
             //console.log(response)
@@ -61,7 +61,7 @@ const NewIdeaModal = ({ onClose, topics, getTopics }) => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-600 text-left">Title</label>
+        <label className="block text-sm font-medium text-gray-600 text-left">Name</label>
         <input
           type="text"
           value={title}

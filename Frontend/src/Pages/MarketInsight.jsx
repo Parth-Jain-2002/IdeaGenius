@@ -5,7 +5,7 @@ import { Line, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend, TimeScale } from 'chart.js'
 import Navbar from "../components/Layout/Navbar";
 import 'chartjs-adapter-date-fns';
-import { enUS } from 'date-fns/locale';
+//import { enUS } from 'date-fns/locale';
 import Lottie from "lottie-react";
 import animationData from "../assets/animations/MarketInsight.json";
 

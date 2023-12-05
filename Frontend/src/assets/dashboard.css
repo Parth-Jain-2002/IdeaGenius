@@ -22,7 +22,7 @@
 .dashboard .container .hex::before {
   content: "";
   display: block;
-  background: linear-gradient(to right bottom, #cffffe, #fff);
+  background: #fce8bd;
   padding-top: 86.6%;
   /* 100%*cos(30) */
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);

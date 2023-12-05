@@ -9,6 +9,7 @@ export default function ChatInterface() {
     // Get chat id from url
     const {chatid} = useParams()
     const containerRef = useRef()
+    const messageContainerRef = useRef()
     const message = useRef()
     const [chats, setChats] = useState([])
     const [chatInfo, setChatInfo] = useState({})
@@ -79,6 +80,14 @@ export default function ChatInterface() {
             handleChat();
         }
     };
+
+    function scrollToBottom() {
+        messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chats]);
         
     useEffect(() => {
         setChats([
@@ -207,6 +216,7 @@ export default function ChatInterface() {
                     ""
                 )}
             </div>
+            <div ref={messageContainerRef} />
         </section>
         <section className="flex flex-col space-y-4">
           <div className="mt-4 flex items-center space-x-2">

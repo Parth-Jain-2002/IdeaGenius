@@ -16,7 +16,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -434,6 +434,90 @@ def chat_interface(request):
 
     return JsonResponse({'response':response})
 
+@csrf_exempt
+def get_idea_chat(request):
+    ideaid = request.GET['ideaid']
+    userid = request.GET['userid']
+
+    # Get the chatid from the topic
+    topic = Topic.objects.get(userid=userid, topicid=ideaid)
+    chatid = topic.chatid
+
+    if chatid == "":
+        return JsonResponse({'data':[]})
+
+    chats = Chat.objects.filter(chatid=chatid)
+    
+    # convert the chats to json
+    response = []
+    for chat in chats:
+        response.append({'message':chat.message, 'response':chat.response})
+
+    return JsonResponse({'data':response})
+
+
+@csrf_exempt
+def idea_interface(request):
+    data = json.loads(request.body.decode('utf-8'))
+    print(data)
+    message = data['message']
+    ideaid = data['ideaid']
+    userid = data['userid']
+
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+    chatid = idea.chatid
+
+    thread = Thread.objects.filter(chatid=chatid)
+    # If the queryset is empty, then create a new thread
+    if not thread:
+        print("Thread does not exist")
+        thread = Thread.objects.create(userid=userid, chatid=chatid)
+        vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
+        thread.vectorstore_path = vectorstore_path
+        # Update the vectorstore path in the database
+        thread.save()
+
+    chat = ''
+    prompt = ''
+    try:
+        # Get the last chat from the database according to timestamp
+        chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
+
+        # Prompt
+        prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
+    except:
+        prompt = "What is your response to this query: " + message + "?"
+
+    prompt= idea_info(idea) + prompt
+
+    # Use the vectorstore from the thread
+    thread = Thread.objects.get(chatid=chatid)
+    vectorstore_path = thread.vectorstore_path
+    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+    response = qa({"query": prompt})
+    print(response)
+    response = response['result']
+
+    # Add the response to the vectorstore
+    word = response.split()
+    word_array = []
+    for i in range(0, len(word), 200):
+        word_array.append(" ".join(word[i:i+200]))
+
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(word_array)
+    db.add_documents(texts)
+    db.persist()
+
+    # Save the chat in the database
+    Chat.objects.create(userid=thread.userid, message=message, response=response, chatid=chatid)
+
+    return JsonResponse({'response':response})
+
 #------------------------------------------------------------------------------------------
 @csrf_exempt
 def get_topics(request):
@@ -459,7 +543,7 @@ def get_topic(request):
 def new_topic(request):
     data = json.loads(request.body.decode('utf-8'))
     userid = data['userid']
-    topic = data['title']
+    topic = data['ideaid']
     description = data['description']
 
     # Create a new topic in the database
@@ -469,7 +553,7 @@ def new_topic(request):
     user.topics = topics
     user.save()
 
-    Topic.objects.create(userid=userid, topicid=topic, description=description, time_constraint_value=0, budget_constraint_value=0, subtask="", keywords={"keywords":[]})
+    Topic.objects.create(userid=userid, topicid=topic, title="", description=description, generated=False, time_insight={}, cost_insight={}, subtask="", keywords={})
 
     return JsonResponse({'response':'Success'})
 
@@ -771,9 +855,11 @@ def get_insights(request):
 
 def validate_cost_insights(response):
     try:
+        print(response)
         # Find the first "{" and the last "}" in response
         response = response[response.find("{"):response.rfind("}")+1]
         response = json.loads(response)
+        print(response)
         if 'cost' in response and 'explanation' in response:
             return response 
         else:
@@ -841,7 +927,23 @@ def get_time_insights(request):
 
 @csrf_exempt
 def get_subtasks(request):
-    pass
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    print("I am here")
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.subtask = ""
+
+    prompt = generate_subtasks_prompt(topic)
+    
+    response = llm(prompt)
+    topic.subtask = response
+    topic.save()
+    
+    return JsonResponse({'response':"Success"})
 
 
 #----------------------------------------------------------------------------------------
@@ -902,20 +1004,21 @@ def get_recommended_people(request):
         input_tags = get_input_tags(chatid)
 
         # Assuming User Data comes from Some API
-        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/user_profiles.pkl', 'rb') as f:
+        with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)
         # Pre-computed tag embeddings for all users
             # # Vector Embeddings for Tags
             # tag_set = set(tag for tags in user_profiles.values() for tag in tags)
             # tag_embeddings = {tag: embeddings.embed_query(tag) for tag in tag_set}
-        with open ('C:/Users/devan/Desktop/My Folder/IdeaGenius/Backend/home/tag_embeddings.pkl', 'rb') as f:
+        with open ('home/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
         # print(top_users)
 
-        # Get the top 8 users
-        top_users = top_users[:8]
+        # Get the top 6 users
+        # should be a multiple of 3 to look good in the UI
+        top_users = top_users[:6]
 
         response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
     { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },

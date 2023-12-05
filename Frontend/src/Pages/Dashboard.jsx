@@ -65,8 +65,8 @@ export default function ResearchBank() {
     }
 
   return (
-    <section className="grid h-screen text-black grid-cols-5">
-      <aside className="flex flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] dark:bg-zinc-900 ">
+    <section className="grid h-full text-black grid-cols-5">
+      <aside className="flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] dark:bg-zinc-900 ">
         <div className="flex items-center space-x-2">
           <img
             alt="Logo"
@@ -83,12 +83,12 @@ export default function ResearchBank() {
         </div>
         <div className="space-y-4 mt-20 text-center">
           <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
-          <Accordion className="rounded-lg w-64 border-2" >
+          <Accordion className="rounded-lg w-64 ">
    
           {Object.keys(topics).map((topic, index) => (
-             <AccordionItem className="border-y-2" >
+             <AccordionItem className="" >
 
-             <AccordionItemHeading  className="hover:bg-gray-300">
+             <AccordionItemHeading  className="hover:bg-gray-200 rounded-lg">
               <AccordionItemButton className="text-black p-2 font-medium  flex justify-start " >
 
                 <img src={folderIcon} alt="Folder icon" className="h-4 w-4 my-auto mr-4" />
@@ -97,24 +97,24 @@ export default function ResearchBank() {
               </AccordionItemButton>
                  
              </AccordionItemHeading>
-             <AccordionItemPanel className="  " >
+             <AccordionItemPanel className=" ml-6 " >
              
                 { topic === "Miscellaneous" ? (
                  <Link to={ `../research/${topic}`}>
-                 <div className='flex justify-start text-sm flex-row p-2 hover:bg-gray-200'>
+                 <div className='flex justify-start rounded-lg text-sm flex-row p-2 hover:bg-gray-200'>
                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
                  Research Bank
                  </div>
                  </Link>
                 ) : (
                   <><Link to={ `../vision-doc/${topic}`}>
-                  <div className='flex  justify-start flex-row text-sm p-2 hover:bg-gray-200'>
+                  <div className='flex  justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200'>
                   <img src={visionDocIcon} alt="Vision doc icon" className="h-4 w-4 mr-2" />
                   Vision Doc
                   </div>
                   </Link>
                   <Link to={ `../research/${topic}`}>
-                  <div className='flex justify-start flex-row p-2 text-sm hover:bg-gray-200'>
+                  <div className='flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200'>
                   <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
                   Research Bank
                   </div>
@@ -145,20 +145,20 @@ export default function ResearchBank() {
           Upgrade
         </button>
       </aside>
-      <main className="flex flex-col bg-white col-span-4 p-4">
+      <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
         
         <Navbar />
   
 {currentTopic === "" || currentTopic === "Miscellaneous" ? (
   <div className="w-full h-full">
-    <div className="flex border-2 border-[#faad14] justify-start space-x-8 mt-4 rounded-lg bg-white w-[95%] h-48 shadow-md mb-4">
+    <div className="flex border-2 justify-start space-x-8 rounded-lg bg-white w-[95%] h-48  mb-4">
   <Lottie
        animationData={animationdata}
        className=" h-full"
      />
      <div className=" p-4 my-auto ">
        <h1 className="text-6xl my-auto font-semibold                                                                                                                      ">IdeaX Hub </h1>
-     <h2 class=" mt-8  font-medium text-[#597ef7] text-xl dark:text-gray-400">Refine, Explore, and cultivate groundbreaking ideas.</h2>
+     <h2 class=" mt-6  font-medium text-[#597ef7] text-xl dark:text-gray-400">Refine, Explore, and cultivate groundbreaking ideas.</h2>
 
     
 </div> 
@@ -168,7 +168,7 @@ export default function ResearchBank() {
 {/* <div className="grid grid-cols-4 gap-10 mt-10"> */}
   <div className="dashboard relative mx-auto">
     <div class="container">
-      <div class="hex pos0">
+      <div class="hex pos0 ">
         <span className="content">
           <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
           <div className="flex justify-center w-full mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
@@ -238,36 +238,10 @@ export default function ResearchBank() {
 </div>
   
 ) : (
-  <div>
+
     <IdeaDashboard topicid={currentTopic}/>
-  </div>
+
 )}
-
-
-   
-      
-
-     {/* <IdeaDashboard/> */}
-     {/* <div className="grid mt-52 grid-cols-3 gap-6">
-     {Object.keys(topics).map((topic, index) => (
-              
-
-<div class="p-4 border-2 ">
-    
-
-  
-   
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{topic}</h5>
-      
-        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-     
-       
-</div>
-
-
-            ))}
-    
-     </div> */}
       </main>
     </section>
   )
