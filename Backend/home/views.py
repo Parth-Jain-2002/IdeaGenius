@@ -838,16 +838,25 @@ def get_input_tags(chatid):
 
     # Use the vectorstore from the thread
     db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    print(db.similarity_search("Java", k=8))
     retriever = db.as_retriever(search_kwargs={"k": 8})
-
+    # return retriever
+    # print("UserDocs")
+    # haha=UserDoc.objects.all()
+    # for i in haha:
+    #     print(i.topics)
+    # print("\n\nThreads")
+    # hehe=Thread.objects.all()
+    # for i in hehe:
+    #     print(i.chatid)
     return ['Java', 'Web Development']
 
 @csrf_exempt
 def get_recommended_people(request):
     try:
-        data = json.loads(request.body.decode('utf-8'))
+        data = json.loads(request.body)
         chatid = data['chat_id']
-
+        print(chatid)
         # TODO: Get the tags from the chat
         input_tags = get_input_tags(chatid)
 
@@ -862,7 +871,7 @@ def get_recommended_people(request):
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
-        print(top_users)
+        # print(top_users)
 
         # Get the top 8 users
         top_users = top_users[:8]
