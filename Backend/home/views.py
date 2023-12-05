@@ -1001,35 +1001,33 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
     top_users = user_counter.most_common()
     return top_users
 
-def get_input_tags(chatid):
+def get_input_tags(topicid):
     # Get the vectorstore path from the thread
-    thread = Thread.objects.get(chatid=chatid)
-    vectorstore_path = thread.vectorstore_path
-
-    # Use the vectorstore from the thread
-    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
-    print(db.similarity_search("Java", k=8))
-    retriever = db.as_retriever(search_kwargs={"k": 8})
-    # return retriever
-    # print("UserDocs")
-    # haha=UserDoc.objects.all()
-    # for i in haha:
-    #     print(i.topics)
-    # print("\n\nThreads")
-    # hehe=Thread.objects.all()
-    # for i in hehe:
-    #     print(i.chatid)
-    return ['Java', 'Web Development']
+    try:
+        topic=Topic.objects.get(topicid=topicid)
+        # topic.keywords['keywords']=['Java', 'Web Development']
+        users=UserDoc.objects.all()
+        # print all users
+        for user in users:
+            print(user.topics, user.userid, user.email, user.name)
+        print(topic.keywords)
+        return topic.keywords['keywords']
+    
+        return ['Java', 'Web Development']
+    except Exception as e:
+        print(e)
+        return ['Java', 'Web Development']
 
 @csrf_exempt
 def get_recommended_people(request):
     try:
-        data = json.loads(request.body)
-        chatid = data['chat_id']
-        print(chatid)
+        data = json.loads(request.body.decode('utf-8'))
+        # print("data= ",request.body.decode('utf-8'))
+        ideaid = data['ideaid']
+        # print(ideaid)
         # TODO: Get the tags from the chat
-        input_tags = get_input_tags(chatid)
-
+        input_tags = get_input_tags(ideaid)
+        print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
         with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)
@@ -1046,15 +1044,21 @@ def get_recommended_people(request):
         # Get the top 6 users
         # should be a multiple of 3 to look good in the UI
         top_users = top_users[:6]
-
-        response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
-    { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },
-    { 'id': 3, 'name': 'Jack Black', 'jobTitle': 'UI/UX Designer', 'jobDescription': 'I am a UI/UX Designer and i design UI/UX', 'institution': 'Institute 3' },
-    { 'id': 4, 'name': 'Jill White', 'jobTitle': 'Frontend Developer', 'jobDescription': 'I am a frontend developer and i develop frontend', 'institution': 'Institute 4' },
-    { 'id': 5, 'name': 'James Brown', 'jobTitle': 'Backend Developer', 'jobDescription': 'I am a backend developer and i develop backend', 'institution': 'Institute 5' },
-    { 'id': 6, 'name': 'Jenny Green', 'jobTitle': 'Fullstack Developer', 'jobDescription': 'I am a fullstack developer and i develop fullstack software', 'institution': 'Institute 6' }]
-
+        top_users = [user[0] for user in top_users]
+        users = UserDoc.objects.filter(userid__in=top_users)
+        response=[]
+        for user in users:
+            response.append({'id':user.userid, 'name':user.name, 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1'})
         return JsonResponse({'response':response})
+            
+    #     response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
+    # { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },
+    # { 'id': 3, 'name': 'Jack Black', 'jobTitle': 'UI/UX Designer', 'jobDescription': 'I am a UI/UX Designer and i design UI/UX', 'institution': 'Institute 3' },
+    # { 'id': 4, 'name': 'Jill White', 'jobTitle': 'Frontend Developer', 'jobDescription': 'I am a frontend developer and i develop frontend', 'institution': 'Institute 4' },
+    # { 'id': 5, 'name': 'James Brown', 'jobTitle': 'Backend Developer', 'jobDescription': 'I am a backend developer and i develop backend', 'institution': 'Institute 5' },
+    # { 'id': 6, 'name': 'Jenny Green', 'jobTitle': 'Fullstack Developer', 'jobDescription': 'I am a fullstack developer and i develop fullstack software', 'institution': 'Institute 6' }]
+
+    #     return JsonResponse({'response':response})
     except Exception as e:
         print(e)
         return JsonResponse({'response':'Error'}, status=500)

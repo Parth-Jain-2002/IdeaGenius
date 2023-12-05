@@ -38,31 +38,32 @@ export default function People() {
         })
     }
 
-    const getThreads = () => {
-      axios.get(`http://localhost:8000/get_threads`,{
-            params:{
-                userid: localStorage.getItem("ideagen_user_id"),
-                ideaid: ideaid
-            }
-        }
-        ).then((response) => {
-            console.log(response)
-            console.log(response.data.data)
-            setThreads(response.data.data)
-        }, (error) => {
-            console.log(error)
-        })
-    }
+    // const getThreads = () => {
+    //   axios.get(`http://localhost:8000/get_threads`,{
+    //         params:{
+    //             userid: localStorage.getItem("ideagen_user_id"),
+    //             ideaid: ideaid
+    //         }
+    //     }
+    //     ).then((response) => {
+    //         console.log(response)
+    //         console.log(response.data.data)
+    //         setThreads(response.data.data)
+    //     }, (error) => {
+    //         console.log(error)
+    //     })
+    // }
     const getPeeps = async () => {
       try {
           const data = await getPeople();
           setPeopleData(data);
+          console.log("ideaid: ",ideaid)
       } catch (error) {
           console.error('Error fetching data:', error);
       }
   };
     useEffect(() => {        
-        getThreads()
+        // getThreads()
         getTopics()
         getPeeps()
     },[])
@@ -75,7 +76,7 @@ export default function People() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                chat_id: ideaid
+                ideaid: ideaid,
             })
         });
 
