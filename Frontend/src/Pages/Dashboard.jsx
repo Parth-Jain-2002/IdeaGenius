@@ -1,6 +1,4 @@
 import imagem from "../assets/images/IdeaGenLogo.png";
-import ResearchCard from "../components/ResearchCard";
-import Collapsible from "../components/Collapsible";
 import axios from "axios";
 import Lottie from "lottie-react";
 import { Link } from 'react-router-dom';
@@ -46,7 +44,7 @@ export default function ResearchBank() {
 
   const getTopics = () => {
     axios
-      .get(`http://localhost:8000/get_topics`, {
+      .get(`http://localhost:8000/get_topics_details`, {
         params: {
           userid: localStorage.getItem("ideagen_user_id"),
         },
@@ -124,7 +122,7 @@ export default function ResearchBank() {
                     </Link>
                   ) : (
                     <>
-                      <Link to={`../vision-doc/${topic}`}>
+                      {topics[topic].generated == true && <Link to={`../vision-doc/${topic}`}>
                         <div className="flex  justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200">
                           <img
                             src={visionDocIcon}
@@ -133,7 +131,7 @@ export default function ResearchBank() {
                           />
                           Vision Doc
                         </div>
-                      </Link>
+                      </Link>}
                       <Link to={`../research/${topic}`}>
                         <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
                           <img
@@ -210,118 +208,54 @@ export default function ResearchBank() {
         totalSlides={5}
         className="w-full h-2/3"
       >
-        <Slider className="w-full h-full border-2 rounded-3xl">
-          <Slide index={0} className="w-full h-full">
-            <div className="flex w-full h-full">
-            <div className="w-1/3 h-full py-16 ">
-            <Lottie animationData={loadingAnimation}/>
-            </div>
-            <div className="w-2/3 px-10 h-full py-24">
-            <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
-          <div className="flex justify-center w-52 mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
-            <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
-            New Idea
-          </div>
-            </div>
+      <div className="flex w-full border-2 rounded-3xl ">
+        <div className="w-1/3 h-full py-16 ">
+          <Lottie animationData={loadingAnimation}/>
         </div>
+        <Slider className="w-2/3 h-full my-auto">
+          <Slide index={0} className="w-full h-full">
+            <div className="w-full px-[20%] h-full py-24 flex justify-center items-center flex-col">
+              <h1 className="text-center w-52 font-normal text-lg">Create New Ideas by</h1>
+              <div className="flex justify-center w-52 mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black mt-2">
+                <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
+                New Idea
+              </div>
+            </div>
           </Slide>
           <Slide index={1} className="w-full h-full">
-            <div className="flex w-full h-full">
-            <div className="w-1/3 h-full py-16 ">
-            <Lottie animationData={loadingAnimation}/>
+            <div className="w-full px-[20%] h-full py-24 flex justify-center items-center flex-col">
+              <h1 className="text-center w-52 font-normal text-lg">Click any existing idea from left panel to open "Idea Dashboard" or go to its "Vision Doc" or "Research Bank"</h1>
             </div>
-            <div className="w-2/3 px-[20%] h-full py-24">
-            <h1 className="text-center w-52 font-normal text-sm">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
-        
-            </div>
-        </div>
           </Slide>
           <Slide index={2} className="w-full h-full">
-            <div className="flex w-full h-full">
-            <div className="w-1/3 h-full py-16 ">
-            <Lottie animationData={loadingAnimation}/>
+            <div className="w-full px-[20%] h-full py-24 flex justify-center items-center flex-col">
+              <h1 className="text-center w-52 font-normal text-lg">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
             </div>
-            <div className="w-2/3 px-[20%] h-full py-24">
-            <h1 className="text-center w-52 font-normal text-sm">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
-        
-            </div>
-        </div>
           </Slide>
           <Slide index={3} className="w-full h-full">
-            <div className="flex w-full h-full">
-            <div className="w-1/3 h-full py-16 ">
-            <Lottie animationData={loadingAnimation}/>
+            <div className="w-full px-[20%] h-full py-24 flex justify-center items-center flex-col">
+              <h1 className="text-center w-52 font-normal text-lg">You can have AI generated problem statements for any idea according to your research bank and requirements</h1>
             </div>
-            <div className="w-2/3 px-[20%] h-full py-24">
-            <h1 className="text-center font-normal text-sm">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
-        
-            </div>
-        </div>
           </Slide>
           <Slide index={4} className="w-full h-full">
-            <div className="flex w-full h-full">
-            <div className="w-1/3 h-full py-16 ">
-            <Lottie animationData={loadingAnimation}/>
+            <div className="w-full px-[20%] h-full py-24 flex justify-center items-center flex-col">
+              <h1 className="text-center w-52 font-normal text-lg">Refine, analyze and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
             </div>
-            <div className="w-2/3 px-[20%] h-full py-24">
-            <h1 className="text-center font-normal text-sm">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
-       
-            </div>
-        </div>
           </Slide>
           
         </Slider>
+        </div>
         <div className="flex mt-3 justify-between">
         <ButtonBack className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]">Back</ButtonBack>
         <ButtonNext className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]">Next</ButtonNext></div>
        
       </CarouselProvider>
-      {/* <div class="hex pos0 ">
-        <span className="content">
-          <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
-          <div className="flex justify-center w-full mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
-            <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
-            New Idea
-          </div>
-        </span>
-      </div>
-      <div class="hex pos1">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
-        </span>
-      </div>
-      <div class="hex pos2">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
-        </span>
-      </div>
-      <div class="hex pos3">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
-        </span>
-      </div>
-      <div class="hex pos4">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
-        </span>
-      </div> */}
-   
-
-    {/* <svg style={{position:'absolute', visibility:'hidden'}} width="0" height="0">
-      <defs>
-            <filter id="goo">
-            
-                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-            </filter>
-        </defs>
-    </svg> */}
 
   </div> 
 
   
   
 
-            {/* </div> */}
           </div>
         ) : (
           <IdeaDashboard topicid={currentTopic} />
