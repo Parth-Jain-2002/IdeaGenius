@@ -8,7 +8,6 @@ import axios from "axios";
 import Navbar from "../components/Layout/Navbar";
 
 export default function IdeaInterface() {
-  // Get chat id from url
   const { ideaid } = useParams();
   const containerRef = useRef();
   const message = useRef();

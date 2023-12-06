@@ -214,7 +214,6 @@ export default function ChatInterface() {
                   <>
                     <div className="flex items-start mb-4">
                       <div className="flex-none">
-                        {/* <Avatar className="rounded-full" size="icon" /> */}
                       </div>
                       <div className="ml-auto mr-2 text-right max-w-3xl">
                         <div className="text-sm text-gray-500">User</div>
@@ -225,7 +224,6 @@ export default function ChatInterface() {
                     </div>
                     <div className="flex items-start mb-4">
                       <div className="flex-none">
-                        {/* <Avatar className="rounded-full" size="icon" /> */}
                       </div>
                       <div className="ml-2 mr-2 flex-grow max-w-3xl">
                         <div className="text-sm text-gray-500">AI</div>

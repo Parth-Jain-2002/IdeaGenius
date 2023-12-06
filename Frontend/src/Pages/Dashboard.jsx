@@ -1,6 +1,4 @@
 import imagem from "../assets/images/IdeaGenLogo.png";
-import ResearchCard from "../components/ResearchCard";
-import Collapsible from "../components/Collapsible";
 import axios from "axios";
 import Lottie from "lottie-react";
 import { Link } from 'react-router-dom';
@@ -252,52 +250,12 @@ export default function ResearchBank() {
         <ButtonNext className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]">Next</ButtonNext></div>
        
       </CarouselProvider>
-      {/* <div class="hex pos0 ">
-        <span className="content">
-          <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
-          <div className="flex justify-center w-full mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
-            <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
-            New Idea
-          </div>
-        </span>
-      </div>
-      <div class="hex pos1">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
-        </span>
-      </div>
-      <div class="hex pos2">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
-        </span>
-      </div>
-      <div class="hex pos3">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
-        </span>
-      </div>
-      <div class="hex pos4">
-        <span className="content">
-          <h1 className="text-center font-normal text-sm">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
-        </span>
-      </div> */}
-   
-
-    {/* <svg style={{position:'absolute', visibility:'hidden'}} width="0" height="0">
-      <defs>
-            <filter id="goo">
-            
-                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-            </filter>
-        </defs>
-    </svg> */}
 
   </div> 
 
   
   
 
-            {/* </div> */}
           </div>
         ) : (
           <IdeaDashboard topicid={currentTopic} />
