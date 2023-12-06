@@ -732,7 +732,7 @@ def select_idea(request):
 #------------------------------------------------------------------------------------------
 
 def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
-    pytrends = TrendReq(retries=4)
+    pytrends = TrendReq(retries=5)
 
     # Build payload
     pytrends.build_payload(
@@ -765,7 +765,7 @@ def get_competitor_revenue(competitors):
         all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]
         filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
         
-        if len(filtered_urls) > 0:
+        if len(filtered_urls) > 0 and filtered_urls[0]!="https://growjo.com/":
             try:
                 response = requests.get(filtered_urls[0], timeout=10)                
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -806,7 +806,7 @@ def get_competitors(description):
     soup = BeautifulSoup(response.text, 'html.parser')
     
     urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
-    
+    print(urls)
     competitors = []
     for url in urls:
         
@@ -832,10 +832,10 @@ def get_competitors(description):
 
 def get_tables(description):
     search_query = f"{description} future market insights"
-    search_results = list(search(search_query, num=10, stop=10, pause=2))
-    
-    
-    all_urls = [clean_google_url(a) for a in search_results]
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')        
+    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
     filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
     
     
@@ -882,7 +882,7 @@ def get_insights(request):
     )
     
     description = idea.description
-    
+    print(description)
     unique_competitors=get_competitors(description)
     competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
     tables,images =get_tables(description)    

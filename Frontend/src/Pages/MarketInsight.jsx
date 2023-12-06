@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,12 +13,14 @@ import {
   Tooltip,
   Legend,
   TimeScale,
+  ArcElement,
 } from "chart.js";
 import Navbar from "../components/Layout/Navbar";
 import "chartjs-adapter-date-fns";
 //import { enUS } from 'date-fns/locale';
 import Lottie from "lottie-react";
 import animationData from "../assets/animations/MarketInsight.json";
+import randomcolor from 'randomcolor';
 
 ChartJS.register(
   CategoryScale,
@@ -26,6 +28,7 @@ ChartJS.register(
   BarElement,
   PointElement,
   LineElement,
+  ArcElement,
   TimeScale,
   Title,
   Tooltip,
@@ -38,6 +41,25 @@ export default function MarketInsight() {
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customerInterest, setCustomerInterest] = useState({});
+  const [competitorChart, setCompetitorChart] = useState({});
+
+  const parseRevenue = (revenueString) => {
+    // Remove commas
+    const withoutCommas = revenueString.replace(/,/g, '');
+
+    // Extract numerical part
+    const numericPart = withoutCommas.slice(1, -1);
+    console.log(numericPart);
+    // Convert to numeric value based on the last character (B, M, K)
+    const multiplier = {
+      'B': 1e9,
+      'M': 1e6,
+      'K': 1e3,
+    }[withoutCommas.slice(-1).toUpperCase()] || 1;
+    console.log(multiplier);
+    console.log(parseFloat(numericPart));
+    return parseFloat(numericPart) * multiplier;
+  };
 
   useEffect(() => {
     axios
@@ -49,9 +71,25 @@ export default function MarketInsight() {
           console.log(response.data);
           setCompetitors(response.data.competitors);
           setTables(response.data.tables);
+
+          const revenueStrings = response.data.competitor_revenue;
+          const revenueData = revenueStrings.map(parseRevenue);
+          console.log(revenueData);
+          const competitorData = response.data.competitors
+          const competitorLength = response.data.competitors.length
+          const CompetitorChartData = {
+            labels: competitorData,
+            datasets: [{
+              data: revenueData,
+              backgroundColor: randomcolor({ count: competitorLength }),
+            }],
+          };
+
+          setCompetitorChart(CompetitorChartData);
+
           const result_df = response.data.interest_over_time;
           const parsedResult = JSON.parse(result_df);
-          console.log(parsedResult);
+
 
           if (parsedResult && parsedResult.sum_frequency) {
             // Extract data from the parsed result
@@ -61,7 +99,7 @@ export default function MarketInsight() {
             const dates = Object.keys(sumFrequencyData).map((timestamp) =>
               new Date(Number(timestamp)).toLocaleDateString()
             );
-            console.log(dates);
+
             const data = {
               labels: dates,
               datasets: [
@@ -98,11 +136,10 @@ export default function MarketInsight() {
     ],
   };
 
-  const barChartOptions = {
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
+  const pieChartOptions = {
+    // Set to false to allow the chart to overflow the container
+    legend: {
+      position: 'bottom', // Position legend below the chart
     },
   };
 
@@ -143,104 +180,85 @@ export default function MarketInsight() {
       </header>
 
       <main className="flex-1 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gray-200 p-6 rounded-md shadow-md md:col-span-1 lg:col-span-1">
-            <h2 className="text-black text-lg font-semibold mb-2">
-              Competitors
-            </h2>
-            <div className="competitors-list-container max-h-48 overflow-y-auto">
-              <ul className="list-none p-0">
-                {competitors.map((competitor, index) => (
-                  <li
-                    key={index}
-                    className="border border-gray-500 p-2 mb-2 rounded-lg"
-                  >
-                    {competitor}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="bg-gray-200 p-6 rounded-md shadow-md md:col-span-2 lg:col-span-2 relative">
-            <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
-              <div className="flex flex-col justify-center h-full">
-                <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
-                  <div className="p-3 h-full">
-                    <div className="overflow-x-auto h-full">
-                      <table className="table-auto w-full h-full">
-                        <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
-                          <tr>
-                            {tables[0].length > 0 &&
-                              tables[0][0].map((header, index) => (
-                                <th
-                                  key={index}
-                                  className="p-2 whitespace-nowrap"
-                                >
-                                  <div className="font-semibold text-left">
-                                    {header}
-                                  </div>
-                                </th>
-                              ))}
-                          </tr>
-                        </thead>
-                        <tbody className="text-sm divide-y divide-gray-100">
-                          {tables[0].slice(1).map((row, rowIndex) => (
-                            <tr key={rowIndex}>
-                              {row.map((cell, cellIndex) => (
-                                <td
-                                  key={cellIndex}
-                                  className="p-2 whitespace-nowrap"
-                                >
-                                  <div className="flex items-center">
-                                    <div className="font-medium text-gray-800">
-                                      {cell}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+          <div className="md:grid-cols-1">
+            <div className="bg-gray-200 p-6 rounded-md shadow-md relative mb-4 max-h-48">
+              <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
+                <div className="flex flex-col justify-center h-full">
+                  <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
+                    <div className="p-3 h-full">
+                      <div className="overflow-x-auto h-full">
+                        <table className="table-auto w-full h-full">
+                          <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
+                            <tr>
+                              {tables[0].length > 0 &&
+                                tables[0][0].map((header, index) => (
+                                  <th
+                                    key={index}
+                                    className="p-2 whitespace-nowrap"
+                                  >
+                                    <div className="font-semibold text-left">
+                                      {header}
                                     </div>
-                                  </div>
-                                </td>
-                              ))}
+                                  </th>
+                                ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="text-sm divide-y divide-gray-100">
+                            {tables[0].slice(1).map((row, rowIndex) => (
+                              <tr key={rowIndex}>
+                                {row.map((cell, cellIndex) => (
+                                  <td
+                                    key={cellIndex}
+                                    className="p-2 whitespace-nowrap"
+                                  >
+                                    <div className="flex items-center">
+                                      <div className="font-medium text-gray-800">
+                                        {cell}
+                                      </div>
+                                    </div>
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <p className="absolute text-sm bottom-0 right-0 mb-1 mr-2 text-m text-gray-500">
+                source: Future Market Insights
+              </p>
+            </div>
+            <div className=" bg-gray-200 p-6 rounded-md shadow-md">
+              <h2 className="text-black text-lg font-semibold mb-4">
+                Competitors in the Market
+              </h2>
+              <Pie data={competitorChart} options={pieChartOptions} />
+            </div>
+          </div>
+
+          <div className="md:grid-cols-1 gap-4">
+            <div className="bg-gray-200 p-6 rounded-md shadow-md mb-4">
+              <h2 className="text-black text-lg font-semibold mb-4">
+                Customer Interest Trends
+              </h2>
+              <Line data={customerInterest} options={lineChartOptions} />
             </div>
 
-            <p className="absolute text-sm bottom-0 right-0 mb-1 mr-2 text-m text-gray-500">
-              source: Future Market Insights
-            </p>
-          </div>
-        </div>
+            <div className=" bg-gray-200 p-6 rounded-md shadow-md">
+              <h2 className="text-black text-lg font-semibold mb-4">
+                Flowchart Images
+              </h2>
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          <div className=" bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">
-              Domain Traffic
-            </h2>
+
           </div>
 
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">
-              Customer Interest Trends
-            </h2>
-            <Line data={customerInterest} options={lineChartOptions} />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          <div className=" bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">
-              Flowchart Images
-            </h2>
-          </div>
-
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">TAM & SAM</h2>
-          </div>
-        </div>
+        </div>               
       </main>
     </div>
   );
