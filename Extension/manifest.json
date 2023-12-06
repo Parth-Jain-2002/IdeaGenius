@@ -1,32 +1,22 @@
 {
-    "name": "IdeaGenius",
-    "version": "0.0.1",
-    "manifest_version": 2,
-    "permissions": [
-      "activeTab",
-      "tabs",
-      "storage",
-      "scripting",
-      "<all_urls>"
-    ],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "browser_action": {
-      "default_popup": "index.html",
-      "default_title": "IdeaGenius"
-    },
-    "content_scripts": [
-      {
-        "all_frames": true,
-        "matches": [
-            "<all_urls>"
-        ],
-        "js": [
-            "content.js"
-        ]
-      }
-    ],
-    "description": "IdeaGenius is a chrome extension that helps you generate ideas for your next project.",
-    "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
-  }
+  "name": "IdeaGenius",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "permissions": ["activeTab", "tabs", "storage", "scripting", "<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "IdeaGenius"
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "description": "IdeaGenius is a chrome extension that helps you generate ideas for your next project.",
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
+}

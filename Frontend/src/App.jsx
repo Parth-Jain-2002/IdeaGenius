@@ -34,7 +34,6 @@ export default function App() {
             <Route path="/research/:ideaid" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
             <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface/></ProtectedRoute>} />
-
             <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
             <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc/></ProtectedRoute>} />
             <Route path="/people/:ideaid" element={<ProtectedRoute><People/></ProtectedRoute>} />
