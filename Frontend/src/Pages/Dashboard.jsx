@@ -1,7 +1,7 @@
-import imagem from "../assets/images/IdeaGenLogo.png"
-import ResearchCard from "../components/ResearchCard"
-import Collapsible from "../components/Collapsible"
-import axios from "axios"
+import imagem from "../assets/images/IdeaGenLogo.png";
+import ResearchCard from "../components/ResearchCard";
+import Collapsible from "../components/Collapsible";
+import axios from "axios";
 import Lottie from "lottie-react";
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react"
@@ -23,14 +23,13 @@ import {
   AccordionItemHeading,
   AccordionItemButton,
   AccordionItemPanel,
-  AccordionItemState
-} from 'react-accessible-accordion';
+  AccordionItemState,
+} from "react-accessible-accordion";
 
 // Demo styles, see 'Styles' section below for some notes on use.
-import 'react-accessible-accordion/dist/fancy-example.css';
+import "react-accessible-accordion/dist/fancy-example.css";
 
-import '../assets/dashboard.css';
-
+import "../assets/dashboard.css";
 
 export default function ResearchBank() {
     const [topics, setTopics] = useState([])
@@ -41,23 +40,27 @@ export default function ResearchBank() {
       setIsModalOpen(true)
     }
 
-    const closeModal = () => {
-      setIsModalOpen(false)
-    }
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
-    const getTopics = () => {
-      axios.get(`http://localhost:8000/get_topics`,{
-            params:{
-                userid : localStorage.getItem("ideagen_user_id")
-            }
+  const getTopics = () => {
+    axios
+      .get(`http://localhost:8000/get_topics`, {
+        params: {
+          userid: localStorage.getItem("ideagen_user_id"),
+        },
+      })
+      .then(
+        (response) => {
+          console.log(response);
+          setTopics(response.data.topics);
+        },
+        (error) => {
+          console.log(error);
         }
-        ).then((response) => {
-            console.log(response)
-            setTopics(response.data.topics)
-        }, (error) => {
-            console.log(error)
-        })
-    }
+      );
+  };
 
     useEffect(() => {        
         getTopics();
@@ -91,71 +94,95 @@ export default function ResearchBank() {
           <h1 className="text-2xl font-bold text-black">IDEAGEN</h1>
         </div>
         <div className="space-y-4 mt-20 text-center">
-          <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">My Ideas</h2>
+          <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">
+            My Ideas
+          </h2>
           <Accordion className="rounded-lg w-64 ">
-   
-          {Object.keys(topics).map((topic, index) => (
-             <AccordionItem className="" >
-
-             <AccordionItemHeading  className="hover:bg-gray-200 rounded-lg">
-              <AccordionItemButton className="text-black p-2 font-medium  flex justify-start " >
-
-                <img src={folderIcon} alt="Folder icon" className="h-4 w-4 my-auto mr-4" />
-              {topic}
-
-              </AccordionItemButton>
-                 
-             </AccordionItemHeading>
-             <AccordionItemPanel className=" ml-6 " >
-             
-                { topic === "Miscellaneous" ? (
-                 <Link to={ `../research/${topic}`}>
-                 <div className='flex justify-start rounded-lg text-sm flex-row p-2 hover:bg-gray-200'>
-                 <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
-                 Research Bank
-                 </div>
-                 </Link>
-                ) : (
-                  <><Link to={ `../vision-doc/${topic}`}>
-                  <div className='flex  justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200'>
-                  <img src={visionDocIcon} alt="Vision doc icon" className="h-4 w-4 mr-2" />
-                  Vision Doc
-                  </div>
-                  </Link>
-                  <Link to={ `../research/${topic}`}>
-                  <div className='flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200'>
-                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
-                  Research Bank
-                  </div>
-                  
-                  </Link>
-                  <button onClick={() => setCurrentTopic(topic)} className='flex  w-full justify-start flex-row p-2 text-sm hover:bg-gray-200'>
-                  <img src={researchIcon} alt="Research bank icon" className="h-4 w-4 mr-2" />
-                  Idea Dashboard
-                  </button></>
-                )}
-               
-                
-             </AccordionItemPanel>
-           
-         </AccordionItem>
-                
+            {Object.keys(topics).map((topic, index) => (
+              <AccordionItem className="">
+                <AccordionItemHeading className="hover:bg-gray-200 rounded-lg">
+                  <AccordionItemButton className="text-black p-2 font-medium  flex justify-start ">
+                    <img
+                      src={folderIcon}
+                      alt="Folder icon"
+                      className="h-4 w-4 my-auto mr-4"
+                    />
+                    {topic}
+                  </AccordionItemButton>
+                </AccordionItemHeading>
+                <AccordionItemPanel className=" ml-6 ">
+                  {topic === "Miscellaneous" ? (
+                    <Link to={`../research/${topic}`}>
+                      <div className="flex justify-start rounded-lg text-sm flex-row p-2 hover:bg-gray-200">
+                        <img
+                          src={researchIcon}
+                          alt="Research bank icon"
+                          className="h-4 w-4 mr-2"
+                        />
+                        Research Bank
+                      </div>
+                    </Link>
+                  ) : (
+                    <>
+                      <Link to={`../vision-doc/${topic}`}>
+                        <div className="flex  justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200">
+                          <img
+                            src={visionDocIcon}
+                            alt="Vision doc icon"
+                            className="h-4 w-4 mr-2"
+                          />
+                          Vision Doc
+                        </div>
+                      </Link>
+                      <Link to={`../research/${topic}`}>
+                        <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
+                          <img
+                            src={researchIcon}
+                            alt="Research bank icon"
+                            className="h-4 w-4 mr-2"
+                          />
+                          Research Bank
+                        </div>
+                      </Link>
+                      <button
+                        onClick={() => setCurrentTopic(topic)}
+                        className="flex  w-full justify-start flex-row p-2 text-sm hover:bg-gray-200"
+                      >
+                        <img
+                          src={researchIcon}
+                          alt="Research bank icon"
+                          className="h-4 w-4 mr-2"
+                        />
+                        Idea Dashboard
+                      </button>
+                    </>
+                  )}
+                </AccordionItemPanel>
+              </AccordionItem>
             ))}
-</Accordion>
-         
-          <button className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200" onClick={openModal}>
+          </Accordion>
+
+          <button
+            className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200"
+            onClick={openModal}
+          >
             <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
             New Idea
           </button>
-          {isModalOpen && <NewIdeaModal onClose={closeModal} topics={Object.keys(topics)} getTopics={getTopics}/>}
+          {isModalOpen && (
+            <NewIdeaModal
+              onClose={closeModal}
+              topics={Object.keys(topics)}
+              getTopics={getTopics}
+            />
+          )}
         </div>
         <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
-            <IconLightningbolt className="h-5 w-5 mr-2" />
+          <IconLightningbolt className="h-5 w-5 mr-2" />
           Upgrade
         </button>
       </aside>
       <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
-        
         <Navbar />
   
 {currentTopic === "" || currentTopic === "Miscellaneous" ? (
@@ -294,21 +321,15 @@ export default function ResearchBank() {
   
   
 
-{/* </div> */}
-
-
-</div>
-  
-) : (
-
-    <IdeaDashboard topicid={currentTopic}/>
-
-)}
+            {/* </div> */}
+          </div>
+        ) : (
+          <IdeaDashboard topicid={currentTopic} />
+        )}
       </main>
     </section>)
   )
           }
-
 
 function IconLightningbolt(props) {
   return (
@@ -327,8 +348,5 @@ function IconLightningbolt(props) {
       <path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973" />
       <path d="m13 12-3 5h4l-3 5" />
     </svg>
-  )
+  );
 }
-
-
-

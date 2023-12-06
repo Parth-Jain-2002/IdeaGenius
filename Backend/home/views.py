@@ -37,6 +37,7 @@ from PIL import Image
 
 from .models import UserAction, Chat, UserDoc, Thread, Topic
 
+# load llm and embeddings
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
 
@@ -61,6 +62,7 @@ def ai_response(request):
     response['message'] = 'This is the ai_response page'
     return JsonResponse(response)
 
+# Function for summarizing the text
 def summarize(url, chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -75,6 +77,7 @@ def summarize(url, chatid):
     print(ai_summary)
     return ai_summary['result']
 
+# Function for actionable insights from the text
 def insights(url,chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -88,6 +91,7 @@ def insights(url,chatid):
     print(ai_insights['result'])
     return ai_insights['result']
 
+# Function for deep diving into the text
 def deep_dive(url,chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -101,6 +105,7 @@ def deep_dive(url,chatid):
     
     return ai_deep_dive['result']
 
+# Function for adding the text to the research bank
 def add_to_research_bank(url,chatid):
     # scrape the url
     summary = scrape(url)
@@ -143,7 +148,7 @@ def download(video_id: str) -> str:
 
     return f'audio/{video_id}.m4a'
     
-
+# Function for scraping the url
 def scrape(url):
     # if the url contains youtube, then call other function
     if 'youtube' in url:
@@ -160,6 +165,7 @@ def scrape(url):
 
     return summary
 
+# Function for scraping the youtube url
 def scrape_youtube(video_url):
      # Extract video ID from the URL
     video_id = video_url.split('v=')[1].split('&')[0]
@@ -209,6 +215,7 @@ def test(request):
     return JsonResponse({'response':response})
 
 
+# Function for summarizing the document
 def summarize_document(document):
     # document can be pdf, docx, txt, etc.
     documents = []
@@ -233,6 +240,7 @@ def summarize_document(document):
     # TODO: Create a vectorstore from the document and then create a QA chain
     return ai_summary
     
+
 def visual_answering_data(image, question):
     response = visual_summary(image)
 
@@ -724,7 +732,7 @@ def select_idea(request):
 #------------------------------------------------------------------------------------------
 
 def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
-    pytrends = TrendReq(retries=3)
+    pytrends = TrendReq(retries=4)
 
     # Build payload
     pytrends.build_payload(
@@ -741,11 +749,55 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
     return result_df
 
 
-def clean_google_url(google_url):
-    # Extract clean URL from Google's /url?q= prefix
+def clean_google_url(google_url):    
     match = re.search(r'/url\?q=(.+?)&', google_url)
     return match.group(1) if match else google_url
 
+
+def get_competitor_revenue(competitors):
+    competitor_revenue=[]
+    
+    for competitor in competitors:        
+        search_query = f"{competitor} annual revenue growjo"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = requests.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')        
+        all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]
+        filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
+        
+        if len(filtered_urls) > 0:
+            try:
+                response = requests.get(filtered_urls[0], timeout=10)                
+                soup = BeautifulSoup(response.text, 'html.parser')
+                all_li_tags = soup.find_all('li')
+                
+                for li_tag in all_li_tags:
+                    
+                    
+                    if 'estimated annual revenue is currently' in li_tag.get_text():
+                        
+                        revenue_match = re.search(r'\$\d+(?:,\d{3})*(?:\.\d+)?[BMK]?', li_tag.get_text())
+
+                        if revenue_match:
+                            revenue_data = revenue_match.group(0)
+                            competitor_revenue.append(revenue_data)
+                            
+                        else:
+                            competitor_revenue.append(0)
+                
+                
+            except Exception as e:
+                print(f"Error fetching data from {filtered_urls[0]}: {e}")
+                competitor_revenue.append(0)
+        else:
+            competitor_revenue.append(0)
+               
+    final_competitor = [comp for comp, rev in zip(competitors, competitor_revenue) if rev != 0]
+    final_competitor_revenue = [rev for rev in competitor_revenue if rev != 0]
+    
+    
+    
+    return final_competitor,final_competitor_revenue
 
 def get_competitors(description):
     search_query = f"{description} top best"
@@ -767,13 +819,15 @@ def get_competitors(description):
                 competitors.append(title.text.strip())
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
-        
+       
     
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
-    final_competitors=list(set(filtered_competitors))
+    unique_competitors=list(set(filtered_competitors))
     
-    return final_competitors
+    print(unique_competitors)
+    
+    return unique_competitors
 
 
 def get_tables(description):
@@ -784,7 +838,7 @@ def get_tables(description):
     all_urls = [clean_google_url(a) for a in search_results]
     filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
     
-    print(filtered_urls)
+    
     tables=[]
     images=[]
     for url in filtered_urls:        
@@ -808,8 +862,6 @@ def get_tables(description):
             print(f"Error fetching data from {url}: {e}")
         
     
-    print(tables,images)
-    
     return tables,images
 
 @csrf_exempt
@@ -831,9 +883,10 @@ def get_insights(request):
     
     description = idea.description
     
-    competitors=get_competitors(description)
+    unique_competitors=get_competitors(description)
+    competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
     tables,images =get_tables(description)    
-    
+    print(competitors,competitor_revenue)
     keyword_list=idea.keywords.get('keywords', [])
     interest_over_time = get_google_trends_data(keyword_list)
     
@@ -846,7 +899,8 @@ def get_insights(request):
         'competitors': competitors,
         'interest_over_time': interest_over_time.to_json(),
         'images': images,
-        'tables': tables
+        'tables': tables,
+        'competitor_revenue': competitor_revenue
         #                 'keywords': keyword_list                             
                         })
 
@@ -1001,60 +1055,40 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
     top_users = user_counter.most_common()
     return top_users
 
-def get_input_tags(chatid):
-    # Get the vectorstore path from the thread
-    thread = Thread.objects.get(chatid=chatid)
-    vectorstore_path = thread.vectorstore_path
-
-    # Use the vectorstore from the thread
-    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
-    print(db.similarity_search("Java", k=8))
-    retriever = db.as_retriever(search_kwargs={"k": 8})
-    # return retriever
-    # print("UserDocs")
-    # haha=UserDoc.objects.all()
-    # for i in haha:
-    #     print(i.topics)
-    # print("\n\nThreads")
-    # hehe=Thread.objects.all()
-    # for i in hehe:
-    #     print(i.chatid)
-    return ['Java', 'Web Development']
+def get_input_tags(topicid):
+    try:
+        topic=Topic.objects.get(topicid=topicid)
+        print(topic.keywords)
+        return topic.keywords['keywords']
+    except Exception as e:
+        print(e)
+        return ['Error']
 
 @csrf_exempt
 def get_recommended_people(request):
     try:
-        data = json.loads(request.body)
-        chatid = data['chat_id']
-        print(chatid)
-        # TODO: Get the tags from the chat
-        input_tags = get_input_tags(chatid)
-
+        data = json.loads(request.body.decode('utf-8'))
+        ideaid = data['ideaid']
+        input_tags = get_input_tags(ideaid)
+        print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
         with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)
         # Pre-computed tag embeddings for all users
-            # # Vector Embeddings for Tags
-            # tag_set = set(tag for tags in user_profiles.values() for tag in tags)
-            # tag_embeddings = {tag: embeddings.embed_query(tag) for tag in tag_set}
         with open ('home/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
-        # print(top_users)
 
         # Get the top 6 users
-        # should be a multiple of 3 to look good in the UI
         top_users = top_users[:6]
-
-        response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },
-    { 'id': 2, 'name': 'Jane Smith', 'jobTitle': 'Product Manager', 'jobDescription': 'I am a product manager and i manage products', 'institution': 'Institute 2' },
-    { 'id': 3, 'name': 'Jack Black', 'jobTitle': 'UI/UX Designer', 'jobDescription': 'I am a UI/UX Designer and i design UI/UX', 'institution': 'Institute 3' },
-    { 'id': 4, 'name': 'Jill White', 'jobTitle': 'Frontend Developer', 'jobDescription': 'I am a frontend developer and i develop frontend', 'institution': 'Institute 4' },
-    { 'id': 5, 'name': 'James Brown', 'jobTitle': 'Backend Developer', 'jobDescription': 'I am a backend developer and i develop backend', 'institution': 'Institute 5' },
-    { 'id': 6, 'name': 'Jenny Green', 'jobTitle': 'Fullstack Developer', 'jobDescription': 'I am a fullstack developer and i develop fullstack software', 'institution': 'Institute 6' }]
-
+        top_users = [user[0] for user in top_users]
+        users = UserDoc.objects.filter(userid__in=top_users)
+        response=[]
+        for user in users:
+            response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': 'I am a software engineer and i engineer software', 'institution': user.institution})
         return JsonResponse({'response':response})
+
     except Exception as e:
         print(e)
         return JsonResponse({'response':'Error'}, status=500)
