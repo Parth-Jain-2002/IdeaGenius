@@ -46,7 +46,7 @@ export default function ResearchBank() {
 
   const getTopics = () => {
     axios
-      .get(`http://localhost:8000/get_topics`, {
+      .get(`http://localhost:8000/get_topics_details`, {
         params: {
           userid: localStorage.getItem("ideagen_user_id"),
         },
@@ -124,7 +124,7 @@ export default function ResearchBank() {
                     </Link>
                   ) : (
                     <>
-                      <Link to={`../vision-doc/${topic}`}>
+                      {topics[topic].generated == true && <Link to={`../vision-doc/${topic}`}>
                         <div className="flex  justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200">
                           <img
                             src={visionDocIcon}
@@ -133,7 +133,7 @@ export default function ResearchBank() {
                           />
                           Vision Doc
                         </div>
-                      </Link>
+                      </Link>}
                       <Link to={`../research/${topic}`}>
                         <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
                           <img

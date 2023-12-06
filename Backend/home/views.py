@@ -534,6 +534,17 @@ def get_topics(request):
 
     return JsonResponse({'topics':user.topics})
 
+@csrf_exempt
+def get_topics_details(request):
+    userid = request.GET['userid']
+    topics = Topic.objects.filter(userid=userid)
+
+    response = {}
+    response["Miscellaneous"] = {'title':"Miscellaneous", 'description':"Miscellaneous", 'generated':False, 'time_insight':{}, 'cost_insight':{}, 'subtask':"", 'keywords':{}, 'chatid':"", 'visiondoctext':""}
+    for topic in topics:
+        response[topic.topicid] = {'title':topic.title, 'description':topic.description, 'generated':topic.generated, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext}
+
+    return JsonResponse({'topics':response})
 
 @csrf_exempt
 def get_topic(request):
