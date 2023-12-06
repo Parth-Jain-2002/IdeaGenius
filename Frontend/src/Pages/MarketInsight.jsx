@@ -42,6 +42,7 @@ export default function MarketInsight() {
   const [loading, setLoading] = useState(true);
   const [customerInterest, setCustomerInterest] = useState({});
   const [competitorChart, setCompetitorChart] = useState({});
+  const [images, setImages] = useState([]);
 
   const parseRevenue = (revenueString) => {
     // Remove commas
@@ -71,6 +72,7 @@ export default function MarketInsight() {
           console.log(response.data);
           setCompetitors(response.data.competitors);
           setTables(response.data.tables);
+          setImages(response.data.images);
 
           const revenueStrings = response.data.competitor_revenue;
           const revenueData = revenueStrings.map(parseRevenue);
@@ -123,7 +125,7 @@ export default function MarketInsight() {
       );
   }, [ideaid]);
 
-    
+
   const lineChartOptions = {
     scales: {
       x: {},
@@ -230,16 +232,23 @@ export default function MarketInsight() {
               <Line data={customerInterest} options={lineChartOptions} />
             </div>
 
-            <div className=" bg-gray-200 p-6 rounded-md shadow-md">
-              <h2 className="text-black text-lg font-semibold mb-4">
-                Flowchart Images
-              </h2>
-            </div>
+
+            {images.slice(0, 2).map((image, index) => (
+              <div key={index} className=" bg-gray-200 p-6 rounded-md shadow-md mb-4">
+                <img
+                  src={image}
+                  alt={`Market Insights`}
+                  className="rounded-lg w-full"
+
+                />
+              </div>
+            ))}
+
 
 
           </div>
 
-        </div>               
+        </div>
       </main>
     </div>
   );
