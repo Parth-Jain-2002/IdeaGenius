@@ -2,6 +2,7 @@ from langchain.embeddings import HuggingFaceHubEmbeddings
 from scipy.spatial.distance import cosine
 from collections import Counter
 import pickle
+from faker import Faker
 # Assuming you have set up the Hugging Face API token as an environment variable
 huggingfacehub_api_token = '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'
 
@@ -50,14 +51,19 @@ user_ids_mapping=[{'userid': '6cac9199-db67-4b01-9aac-d3c62d3ae645'},
 {'userid': '3f2a4771-90e6-47c4-b83c-8c24dbe81ba0'},
 {'userid': 'b1bce31b-8889-415b-9c23-6c98f2888de5'}]
 
-user_id_mapping_dict = {f"user{i}": user_id['userid'] for i,user_id in enumerate(user_ids_mapping)}
-print(user_id_mapping_dict)
+# user_id_mapping_dict = {f"user{i}": user_id['userid'] for i,user_id in enumerate(user_ids_mapping)}
+# print(user_id_mapping_dict)
 
-# Replace keys in the original user_profiles dictionary
-updated_user_profiles = {
-    user_id_mapping_dict[user_id]: tags for user_id, tags in user_profiles.items()
-}
-print(updated_user_profiles)
+# # Replace keys in the original user_profiles dictionary
+# updated_user_profiles = {
+#     user_id_mapping_dict[user_id]: tags for user_id, tags in user_profiles.items()
+# }
+# print(updated_user_profiles)
+fake=Faker()
+new_obj={}
+for user_data in user_ids_mapping:
+    new_obj[user_data['userid']] = [fake.job(), fake.company()]
+print(new_obj)
 # # Step 2: Create HuggingFaceHubEmbeddings instance
 # embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2", task="feature-extraction", huggingfacehub_api_token=huggingfacehub_api_token)
 
@@ -69,8 +75,8 @@ print(updated_user_profiles)
 #     user_profiles = pickle.load(f)
 # print(user_profiles)
 
-with open('user_profiles.pkl', 'wb') as f:
-    pickle.dump(updated_user_profiles, f)
+# with open('user_profiles.pkl', 'wb') as f:
+#     pickle.dump(updated_user_profiles, f)
 
 # import random
 # import uuid
