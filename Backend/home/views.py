@@ -1051,27 +1051,17 @@ def get_input_tags(topicid):
     # Get the vectorstore path from the thread
     try:
         topic=Topic.objects.get(topicid=topicid)
-        # topic.keywords['keywords']=['Java', 'Web Development']
-        users=UserDoc.objects.all()
-        # print all users
-        for user in users:
-            print(user.topics, user.userid, user.email, user.name)
         print(topic.keywords)
         return topic.keywords['keywords']
-    
-        return ['Java', 'Web Development']
     except Exception as e:
         print(e)
-        return ['Java', 'Web Development']
+        return ['Error']
 
 @csrf_exempt
 def get_recommended_people(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
-        # print("data= ",request.body.decode('utf-8'))
         ideaid = data['ideaid']
-        # print(ideaid)
-        # TODO: Get the tags from the chat
         input_tags = get_input_tags(ideaid)
         print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
@@ -1085,7 +1075,6 @@ def get_recommended_people(request):
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
-        # print(top_users)
 
         # Get the top 6 users
         # should be a multiple of 3 to look good in the UI
@@ -1094,7 +1083,7 @@ def get_recommended_people(request):
         users = UserDoc.objects.filter(userid__in=top_users)
         response=[]
         for user in users:
-            response.append({'id':user.userid, 'name':user.name, 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1'})
+            response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': 'I am a software engineer and i engineer software', 'institution': user.institution})
         return JsonResponse({'response':response})
             
     #     response=[{ 'id': 1, 'name': 'John Doe', 'jobTitle': 'Software Engineer', 'jobDescription': 'I am a software engineer and i engineer software', 'institution': 'Institute 1' },

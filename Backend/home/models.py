@@ -27,6 +27,8 @@ class UserDoc(models.Model):
     userid = models.CharField(max_length=50)
     email = models.CharField(max_length=255, default="", unique=True)
     name = models.CharField(max_length=255, default="")
+    institution = models.CharField(max_length=255, default="")
+    jobtitle = models.CharField(max_length=255, default="")
     topics = models.JSONField(default=dict)
 
 class Topic(models.Model):
