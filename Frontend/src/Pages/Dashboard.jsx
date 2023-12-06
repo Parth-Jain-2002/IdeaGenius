@@ -205,8 +205,8 @@ export default function ResearchBank() {
    {/* <div className="dashboard relative mx-auto"> */}
  
     <CarouselProvider
-        // naturalSlideWidth={100}
-        // naturalSlideHeight={40}
+        naturalSlideWidth={100}
+        naturalSlideHeight={40}
         totalSlides={5}
         className="w-full h-2/3"
       >
