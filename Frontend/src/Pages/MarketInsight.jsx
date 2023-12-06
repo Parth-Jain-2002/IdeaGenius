@@ -123,26 +123,7 @@ export default function MarketInsight() {
       );
   }, [ideaid]);
 
-  const barChartData = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-      {
-        label: "Customer Interest",
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const pieChartOptions = {
-    // Set to false to allow the chart to overflow the container
-    legend: {
-      position: 'bottom', // Position legend below the chart
-    },
-  };
-
+    
   const lineChartOptions = {
     scales: {
       x: {},
@@ -182,7 +163,7 @@ export default function MarketInsight() {
       <main className="flex-1 p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
           <div className="md:grid-cols-1">
-            <div className="bg-gray-200 p-6 rounded-md shadow-md relative mb-4 max-h-48">
+            <div className="bg-gray-200 p-6 rounded-md shadow-md relative mb-4">
               <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
                 <div className="flex flex-col justify-center h-full">
                   <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
@@ -237,7 +218,7 @@ export default function MarketInsight() {
               <h2 className="text-black text-lg font-semibold mb-4">
                 Competitors in the Market
               </h2>
-              <Pie data={competitorChart} options={pieChartOptions} />
+              <Pie data={competitorChart} />
             </div>
           </div>
 
