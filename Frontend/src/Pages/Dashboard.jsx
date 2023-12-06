@@ -11,8 +11,12 @@ import IdeaDashboard from "../components/IdeaDashboard"
 import Navbar from "../components/Layout/Navbar"
 import folderIcon from '../assets/images/folder_icon.png';
 import animationdata from "../assets//animations/Animation - 1701635048705.json"
+import loadingAnimation from "../assets//animations/Animation - 1701802141018.json"
 import researchIcon from '../assets/images/research_bank_icon.png';
 import visionDocIcon from '../assets/images/vision_doc_icon.png';
+
+import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import {
   Accordion,
   AccordionItem,
@@ -32,7 +36,7 @@ export default function ResearchBank() {
     const [topics, setTopics] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [currentTopic, setCurrentTopic] = useState("")
-   
+    const [loading, setLoading] = useState(true);
     const openModal = () => {
       setIsModalOpen(true)
     }
@@ -56,15 +60,20 @@ export default function ResearchBank() {
     }
 
     useEffect(() => {        
-        getTopics()
+        getTopics();
+        setLoading(false);
     },[])
 
-    const handleclick = (topic) => {
-      setCurrentTopic(topic);
-      console.log("current topic : ", currentTopic);
-    }
 
-  return (
+
+  return ( loading ? (
+    <div className="w-full h-full">
+      <Lottie
+            className="w-full h-full"
+            animationData={loadingAnimation}
+          />
+    </div>
+  ) : (
     <section className="grid h-full text-black grid-cols-5">
       <aside className="flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] dark:bg-zinc-900 ">
         <div className="flex items-center space-x-2">
@@ -151,24 +160,96 @@ export default function ResearchBank() {
   
 {currentTopic === "" || currentTopic === "Miscellaneous" ? (
   <div className="w-full h-full">
-    <div className="flex border-2 justify-start space-x-8 rounded-lg bg-white w-[95%] h-48  mb-4">
+    <div className="flex  justify-start space-x-8 rounded-lg bg-white w-[95%] h-28  mb-4">
   <Lottie
        animationData={animationdata}
        className=" h-full"
      />
      <div className=" p-4 my-auto ">
-       <h1 className="text-6xl my-auto font-semibold                                                                                                                      ">IdeaX Hub </h1>
-     <h2 class=" mt-6  font-medium text-[#597ef7] text-xl dark:text-gray-400">Refine, Explore, and cultivate groundbreaking ideas.</h2>
+       <h1 className="text-4xl my-auto font-semibold                                                                                                                      ">IdeaX Hub </h1>
+     <h2 class=" mt-2  font-medium text-[#597ef7] text-lg dark:text-gray-400">Refine, Explore, and cultivate groundbreaking ideas.</h2>
 
     
 </div> 
 
 </div>
 
-{/* <div className="grid grid-cols-4 gap-10 mt-10"> */}
-  <div className="dashboard relative mx-auto">
-    <div class="container">
-      <div class="hex pos0 ">
+ <div className="w-full h-full p-4"> 
+   {/* <div className="dashboard relative mx-auto"> */}
+ 
+    <CarouselProvider
+        naturalSlideWidth={100}
+        naturalSlideHeight={40}
+        totalSlides={5}
+        className="w-full h-2/3"
+      >
+        <Slider className="w-full h-full border-2 rounded-3xl">
+          <Slide index={0} className="w-full h-full">
+            <div className="flex w-full h-full">
+            <div className="w-1/3 h-full py-16 ">
+            <Lottie animationData={loadingAnimation}/>
+            </div>
+            <div className="w-2/3 px-10 h-full py-24">
+            <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
+          <div className="flex justify-center w-52 mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
+            <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
+            New Idea
+          </div>
+            </div>
+        </div>
+          </Slide>
+          <Slide index={1} className="w-full h-full">
+            <div className="flex w-full h-full">
+            <div className="w-1/3 h-full py-16 ">
+            <Lottie animationData={loadingAnimation}/>
+            </div>
+            <div className="w-2/3 px-[20%] h-full py-24">
+            <h1 className="text-center w-52 font-normal text-sm">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
+        
+            </div>
+        </div>
+          </Slide>
+          <Slide index={2} className="w-full h-full">
+            <div className="flex w-full h-full">
+            <div className="w-1/3 h-full py-16 ">
+            <Lottie animationData={loadingAnimation}/>
+            </div>
+            <div className="w-2/3 px-[20%] h-full py-24">
+            <h1 className="text-center w-52 font-normal text-sm">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+        
+            </div>
+        </div>
+          </Slide>
+          <Slide index={3} className="w-full h-full">
+            <div className="flex w-full h-full">
+            <div className="w-1/3 h-full py-16 ">
+            <Lottie animationData={loadingAnimation}/>
+            </div>
+            <div className="w-2/3 px-[20%] h-full py-24">
+            <h1 className="text-center font-normal text-sm">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
+        
+            </div>
+        </div>
+          </Slide>
+          <Slide index={4} className="w-full h-full">
+            <div className="flex w-full h-full">
+            <div className="w-1/3 h-full py-16 ">
+            <Lottie animationData={loadingAnimation}/>
+            </div>
+            <div className="w-2/3 px-[20%] h-full py-24">
+            <h1 className="text-center font-normal text-sm">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
+       
+            </div>
+        </div>
+          </Slide>
+          
+        </Slider>
+        <div className="flex mt-3 justify-between">
+        <ButtonBack className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]">Back</ButtonBack>
+        <ButtonNext className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]">Next</ButtonNext></div>
+       
+      </CarouselProvider>
+      {/* <div class="hex pos0 ">
         <span className="content">
           <h1 className="text-center mb-2 font-normal text-lg">Create New Ideas by </h1>
           <div className="flex justify-center w-full mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
@@ -196,40 +277,21 @@ export default function ResearchBank() {
         <span className="content">
           <h1 className="text-center font-normal text-sm">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
         </span>
-      </div>
-    </div>
+      </div> */}
+   
 
-    <svg style={{position:'absolute', visibility:'hidden'}} width="0" height="0">
+    {/* <svg style={{position:'absolute', visibility:'hidden'}} width="0" height="0">
       <defs>
             <filter id="goo">
-              {/* <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />     */}
-                {/* <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" /> */}
+            
                 <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
             </filter>
         </defs>
-    </svg>
+    </svg> */}
 
-  </div>
+  </div> 
 
-  {/* <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
-    <h1 className="text-center mb-2 font-normal text-md">Create New Ideas by </h1>
-    <div className="flex justify-center w-2/3 mx-auto border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black">
-      <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
-      New Idea
-    </div>
-  </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
-  <h1 className="text-center font-normal text-md">Click any existing idea from left panel to open "Idea Dashboard" or go to it's "Vision Doc" or "Research Bank"</h1>
-  </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
-  <h1 className="text-center font-normal text-md">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
-  </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
-  <h1 className="text-center font-normal text-md">You can have AI generated problem statements for any idea according to your research bank and reuirements</h1>
-  </div>
-  <div className="w-56 h-5w-56 bg-white border-2 p-4 font-serif bg-gradient-to-br to-white from-blue-100 shadow-xl rounded-2xl flex flex-col justify-center items-center">
-  <h1 className="text-center font-normal text-md">Refine, analyse and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
-  </div> */}
+  
   
 
 {/* </div> */}
@@ -243,7 +305,7 @@ export default function ResearchBank() {
 
 )}
       </main>
-    </section>
+    </section>)
   )
           }
 
