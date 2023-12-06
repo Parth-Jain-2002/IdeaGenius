@@ -208,6 +208,7 @@ export default function ResearchBank() {
         naturalSlideWidth={100}
         naturalSlideHeight={40}
         totalSlides={5}
+        isPlaying={true}
         className="w-full h-2/3"
       >
         <Slider className="w-full h-full border-2 rounded-3xl">
