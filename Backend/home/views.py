@@ -74,7 +74,7 @@ def summarize(url, chatid):
     query_to_ask = "Summarize this in 5 ordered list points"
     ai_summary = qa({"query": query_to_ask})
     
-    print(ai_summary)
+    # print(ai_summary)
     return ai_summary['result']
 
 # Function for actionable insights from the text
@@ -88,7 +88,7 @@ def insights(url,chatid):
     # actionable insights from the text
     query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
     ai_insights = qa({"query": query_to_ask})
-    print(ai_insights['result'])
+    # print(ai_insights['result'])
     return ai_insights['result']
 
 # Function for deep diving into the text
@@ -121,7 +121,7 @@ def add_to_research_bank(url,chatid):
     # Split the text into chunks of 1000 characters
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     texts = text_splitter.create_documents(text_array)
-    print(texts)
+    # print(texts)
     db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
 
     # save vectorstore
@@ -258,7 +258,7 @@ def visual_summary(image):
     predictions = model.generate(**inputs, max_new_tokens=512)
 
     response = processor.decode(predictions[0], skip_special_tokens=True)
-    print(response)
+    # print(response)
     return response
 
 def perform_task(url, action, chatid):
@@ -320,11 +320,8 @@ def get_threads(request):
         chatids = topics[ideaid]
 
         # Convert the chatids to UUID
-        print(chatids)
         chatids = [chatid['chatid'] for chatid in chatids]
-        print(chatids)
         chatids = [uuid.UUID(chatid) for chatid in chatids]
-        print(chatids)
         threads = Thread.objects.filter(chatid__in=chatids)
 
         # convert the chats to json
@@ -951,7 +948,6 @@ def get_insights(request):
 
 def validate_cost_insights(response):
     try:
-        print(response)
         # Find the first "{" and the last "}" in response
         response = response[response.find("{"):response.rfind("}")+1]
         response = json.loads(response)
@@ -1027,8 +1023,6 @@ def get_subtasks(request):
     userid = data['userid']
     topicid = data['ideaid']
 
-    print("I am here")
-
     # Get the topic from the database
     topic = Topic.objects.get(userid=userid, topicid=topicid)
     topic.subtask = ""
@@ -1052,8 +1046,6 @@ def update_topic(request):
     visiondoctext = data['visiondoctext']
     time_insight = data['time_insight']
     cost_insight = data['cost_insight']
-
-    print(visiondoctext)
 
     # Get the topic from the database
     topic = Topic.objects.get(userid=userid, topicid=topicid)
@@ -1099,7 +1091,7 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        print(topic.keywords)
+        # print(topic.keywords)
         return topic.keywords['keywords']
     except Exception as e:
         print(e)
@@ -1111,7 +1103,7 @@ def get_recommended_people(request):
         data = json.loads(request.body.decode('utf-8'))
         ideaid = data['ideaid']
         input_tags = get_input_tags(ideaid)
-        print("input tags: ", input_tags)
+        # print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
         with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)

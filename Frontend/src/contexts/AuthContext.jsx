@@ -31,7 +31,7 @@ export default function AuthProvider({ children }) {
       })
       .then(
         (response) => {
-          console.log(response);
+          //console.log(response);
         },
         (error) => {
           console.log(error);
@@ -98,7 +98,7 @@ export default function AuthProvider({ children }) {
         })
         .then(
           (response) => {
-            console.log(response);
+            // console.log(response);
           },
           (error) => {
             console.log(error);

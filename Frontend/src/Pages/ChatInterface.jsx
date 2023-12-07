@@ -23,7 +23,7 @@ export default function ChatInterface() {
       ? Math.floor(containerRef.current.offsetWidth / 9.5)
       : 70;
 
-    console.log(maxCount);
+    // console.log(maxCount);
 
     for (let i = 0; i < text.length; i++) {
       result.push(text[i]);
@@ -55,8 +55,8 @@ export default function ChatInterface() {
 
   const handleChat = () => {
     setLoading(true);
-    console.log("Sending message");
-    console.log(message.current.value);
+    // console.log("Sending message");
+    // console.log(message.current.value);
     axios
       .post(`http://localhost:8000/chat_interface`, {
         chat_id: chatid,
@@ -64,7 +64,7 @@ export default function ChatInterface() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setChats([
             ...chats,
             {
@@ -116,7 +116,7 @@ export default function ChatInterface() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setChats(response.data.data);
         },
         (error) => {
@@ -132,7 +132,7 @@ export default function ChatInterface() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setChatInfo(response.data);
         },
         (error) => {
@@ -148,7 +148,7 @@ export default function ChatInterface() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setTopics(response.data.topics);
         },
         (error) => {

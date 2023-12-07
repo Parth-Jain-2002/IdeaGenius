@@ -61,7 +61,7 @@ export default function People() {
     try {
       const data = await getPeople();
       setPeopleData(data);
-      console.log("ideaid: ", ideaid);
+      // console.log("ideaid: ", ideaid);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -88,7 +88,7 @@ export default function People() {
       );
 
       const data = await response.json();
-      console.log(data.response);
+      // console.log(data.response);
       return data.response;
     } catch (error) {
       console.log(error);
