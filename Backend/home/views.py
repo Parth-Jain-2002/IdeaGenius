@@ -741,8 +741,9 @@ def select_idea(request):
 #------------------------------MARKET INSIGHTS---------------------------------------------
 #------------------------------------------------------------------------------------------
 
-def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
-    pytrends = TrendReq(retries=5)
+def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):     
+    print(keywords)
+    pytrends = TrendReq(retries=5, hl='en-US', tz=360)
 
     # Build payload
     pytrends.build_payload(
@@ -756,7 +757,7 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
 
     interest_over_time_df['sum_frequency'] = interest_over_time_df[keywords].sum(axis=1)    
     result_df = interest_over_time_df[['sum_frequency']]
-    return result_df
+    return result_df   
 
 
 def clean_google_url(google_url):    
@@ -766,7 +767,7 @@ def clean_google_url(google_url):
 
 def get_competitor_revenue(competitors):
     competitor_revenue=[]
-    
+    visited=set()
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
@@ -782,29 +783,33 @@ def get_competitor_revenue(competitors):
         filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
         
         if len(filtered_urls) > 0 and filtered_urls[0]!="https://growjo.com/":
-            try:
-                response = session.get(filtered_urls[0], timeout=10)                
-                soup = BeautifulSoup(response.text, 'html.parser')
-                all_li_tags = soup.find_all('li')
-                
-                for li_tag in all_li_tags:
-                    
-                    
-                    if 'estimated annual revenue is currently' in li_tag.get_text():
-                        
-                        revenue_match = re.search(r'\$\d+(?:,\d{3})*(?:\.\d+)?[BMK]?', li_tag.get_text())
-
-                        if revenue_match:
-                            revenue_data = revenue_match.group(0)
-                            competitor_revenue.append(revenue_data)
-                            
-                        else:
-                            competitor_revenue.append(0)
-                
-                
-            except Exception as e:
-                print(f"Error fetching data from {filtered_urls[0]}: {e}")
+            if filtered_urls[0] in visited:
                 competitor_revenue.append(0)
+            else:
+                visited.add(filtered_urls[0])                
+                try:
+                    response = session.get(filtered_urls[0], timeout=10)                
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    all_li_tags = soup.find_all('li')
+                    
+                    for li_tag in all_li_tags:
+                        
+                        
+                        if 'estimated annual revenue is currently' in li_tag.get_text():
+                            
+                            revenue_match = re.search(r'\$\d+(?:,\d{3})*(?:\.\d+)?[BMK]?', li_tag.get_text())
+
+                            if revenue_match:
+                                revenue_data = revenue_match.group(0)
+                                competitor_revenue.append(revenue_data)
+                                
+                            else:
+                                competitor_revenue.append(0)
+                    
+                    
+                except Exception as e:
+                    print(f"Error fetching data from {filtered_urls[0]}: {e}")
+                    competitor_revenue.append(0)
         else:
             competitor_revenue.append(0)
                
@@ -935,20 +940,21 @@ def get_images(keywords):
 
 @csrf_exempt
 def get_insights(request):    
-    data = json.loads(request.body.decode('utf-8'))    
-    ideaid = data['idea_id'] 
-      
-    idea = Topic(
-        userid="ideagen_user_id",
-        topicid="Streamline_Expense_Tracking",
-        title="Streamline_Expense_Tracking",
-        description="Develop an intuitive web and mobile app for efficient expense tracking, categorization, and reporting, leveraging AI for smart insights and automated receipt scanning",
-        generated=True,
-        time_insight={},  
-        cost_insight={},  
-        subtask={"Implement manual and automated expense entry and categorization.","Develop a user-friendly reporting system with customizable visualizations."},
-        keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
-    )
+    data = json.loads(request.body.decode('utf-8'))   
+    userid = data['userid'] 
+    ideaid = data['ideaid']    
+    
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+    
+    print(idea.description)
+    
+    if len(idea.keywords)==0 or 'google_search_keywords' not in idea.keywords:
+        print(1)
+    
+    if len(idea.market_insights)!=0 and json.loads(idea.market_insights).get('keywords',[])==idea.keywords['google_search_keywords']:
+        print("Market Insights already fetched!")
+        return JsonResponse(json.loads(idea.market_insights))
+    
     
     description = idea.description    
     unique_competitors=get_competitors(description)
@@ -956,21 +962,29 @@ def get_insights(request):
     tables =get_tables(description)  
     
     print(competitors,competitor_revenue)
-    keyword_list=idea.keywords.get('keywords', [])
+    keyword_list=idea.keywords.get('google_search_keywords', [])
     images =get_images(keyword_list)  
     interest_over_time = get_google_trends_data(keyword_list)
     
-    
-    
-
+    response = {
+        'competitors': competitors,
+        'interest_over_time': interest_over_time.to_json(),
+        'images': images,
+        'tables': tables,
+        'competitor_revenue': competitor_revenue,
+        'keywords': keyword_list                             
+    }
+        
+    idea.market_insights = json.dumps(response)
+    idea.save()
     return JsonResponse({
         'competitors': competitors,
         'interest_over_time': interest_over_time.to_json(),
         'images': images,
         'tables': tables,
-        'competitor_revenue': competitor_revenue
-        #                 'keywords': keyword_list                             
-                        })
+        'competitor_revenue': competitor_revenue,
+        'keywords': keyword_list                             
+    })
 
 #----------------------------------------------------------------------------------------
 #-----------------------------------VISION DOC-------------------------------------------
