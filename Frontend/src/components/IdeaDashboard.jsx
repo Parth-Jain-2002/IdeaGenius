@@ -17,6 +17,7 @@ import {
 
 const IdeaDashboard = ({ topicid }) => {
   const [topicDetails, setTopicDetails] = useState([]);
+  const [peopleData, setPeopleData] = useState([{}]);
   const navigate = useNavigate();
   const getTopics = () => {
     axios
@@ -37,8 +38,41 @@ const IdeaDashboard = ({ topicid }) => {
       );
   };
 
+  const getPeople = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/get_recommended_people`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ideaid: topicid,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      // console.log(data.response);
+      return data.response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getPeeps = async () => {
+    try {
+      const data = await getPeople();
+      setPeopleData(data.slice(0,3));
+      // console.log("ideaid: ", ideaid);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
     getTopics();
+    getPeeps();
   }, [topicid]);
 
     const handleIdeaGeneration = () => {
@@ -58,12 +92,12 @@ const IdeaDashboard = ({ topicid }) => {
       
    return (
     <div className="w-full h-full p-4">
-      <div className="flex items-center justify-between px-10 py-4 dark:bg-gray-900 rounded-3xl border-2 border-black bg-[#efefef]">
+      <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-black bg-gray-100">
         <div className=" flex flex-col justify-between w-full">
           <div className="flex flex-col">
             <div className="flex flex-row justify-between mb-1">
               <h3 className="text-2xl font-bold">{topicid}</h3>
-              <div className="self-end items-center bg-gray-200 flex flex-row hover:bg-white px-2 rounded-full">
+              <div className="self-end items-center bg-gray-300 flex flex-row hover:bg-white px-2 rounded-full">
                 {" "}
                 <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
                 {topicDetails.generated ? (
@@ -80,7 +114,7 @@ const IdeaDashboard = ({ topicid }) => {
                     onClick={() => {
                       handleIdeaGeneration();
                     }}
-                    className="px-2 py-2 font-bold text-gray-700 text-bold rounded-lg"
+                    className="px-2 py-2 font-bold text-gray-700 rounded-lg"
                   >
                     Generate Idea
                   </button>
@@ -136,24 +170,16 @@ const IdeaDashboard = ({ topicid }) => {
         <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
             <h1 className="text-xl font-medium px-4 py-2">Recommended People on Trumio</h1>
             <div className=" px-4">
-              <div className="my-1">
-                <PeopleCard.Small
-                  name="John Doe"
-                  jobTitle="Software Engineer"
-                />
-              </div>
-              <div className="my-1">
-                <PeopleCard.Small
-                  name="Jack Black"
-                  jobTitle="UI/UX Designer"
-                />
-              </div>
-              <div className="my-1">
-                <PeopleCard.Small
-                  name="Jill White"
-                  jobTitle="Frontend Developer"
-                />
-              </div>
+              {peopleData
+              ? peopleData.map((person) => (
+                  <div className="my-1" key={person.name}>
+                    <PeopleCard.Small
+                      name={person.name}
+                      jobTitle={person.jobTitle}
+                    />
+                  </div>
+                ))
+              : null}
             </div>
             <a className="p-2 mb-2 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white  ml-auto mr-4 text-center" href={`/people/${topicid}`}>Explore More</a>
         </div>
