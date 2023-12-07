@@ -1,7 +1,6 @@
 // PeopleCard.jsx
 
 import React from "react";
-//import './PeopleCard.css';
 
 const PeopleCard = ({ name, jobTitle, jobDescription, institution }) => {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;

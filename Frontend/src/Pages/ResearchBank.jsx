@@ -31,7 +31,7 @@ export default function ResearchBank() {
       })
       .then(
         (response) => {
-          console.log(response);
+          //console.log(response);
           setTopics(response.data.topics);
         },
         (error) => {
@@ -50,8 +50,8 @@ export default function ResearchBank() {
       })
       .then(
         (response) => {
-          console.log(response);
-          console.log(response.data.data);
+          //console.log(response);
+          //console.log(response.data.data);
           setThreads(response.data.data);
         },
         (error) => {

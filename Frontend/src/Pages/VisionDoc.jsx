@@ -1,25 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import logo from "../assets/images/IdeaGenLogo.png";
-import redoIcon from "../assets/images/redo_icon.png";
 import visionIcon from "../assets/images/vision_icon.png";
 import researchIcon from "../assets/images/research_bank_icon.png";
 import axios from "axios";
 import Navbar from "../components/Layout/Navbar";
 
 function VisionDoc() {
+  // Destructing the chat id from the url
   const { ideaid } = useParams();
+
+  // State variables
   const [ideaInfo, setIdeaInfo] = useState({});
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [block, setBlock] = useState("Start writing here...");
+
+  // Refs for DOM elements
   const containerRef = useRef();
   const messageContainerRef = useRef();
   const visionContainerRef = useRef();
   const message = useRef();
-  const [block, setBlock] = useState("Start writing here...");
 
+  // Function to get the chat info
   const getIdeaInfo = () => {
-    console.log(ideaid);
+    //console.log(ideaid);
     axios
       .get(`http://localhost:8000/get_topic`, {
         params: {
@@ -29,7 +33,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          //console.log(response);
           setIdeaInfo(response.data);
           setBlock(
             response.data.visiondoctext
@@ -50,7 +54,7 @@ function VisionDoc() {
       ? Math.floor(containerRef.current.offsetWidth / 8.5)
       : 40;
 
-    console.log(maxCount);
+    // console.log(maxCount);
 
     for (let i = 0; i < text.length; i++) {
       result.push(text[i]);
@@ -89,8 +93,8 @@ function VisionDoc() {
 
   const handleChat = () => {
     setLoading(true);
-    console.log("Sending message");
-    console.log(message.current.value);
+    // console.log("Sending message");
+    // console.log(message.current.value);
     axios
       .post(`http://localhost:8000/idea_interface`, {
         ideaid: ideaid,
@@ -99,7 +103,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setChats([
             ...chats,
             {
@@ -125,7 +129,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           getIdeaInfo();
         },
         (error) => {
@@ -142,7 +146,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           getIdeaInfo();
         },
         (error) => {
@@ -159,7 +163,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           getIdeaInfo();
         },
         (error) => {
@@ -186,7 +190,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           getIdeaInfo();
         },
         (error) => {
@@ -215,7 +219,7 @@ function VisionDoc() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setChats(response.data.data);
         },
         (error) => {
@@ -465,7 +469,7 @@ function VisionDoc() {
                 className="outline-none flex-row"
                 contentEditable="true"
                 onInput={(event) => {
-                  console.log(event.target.innerText);
+                  // console.log(event.target.innerText);
                   if (event.target.innerText.length == 0) {
                     setBlock("Start writing here...");
                     ideaInfo.visiondoctext = "Start writing here...";

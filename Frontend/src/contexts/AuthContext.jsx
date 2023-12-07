@@ -31,7 +31,7 @@ export default function AuthProvider({ children }) {
       })
       .then(
         (response) => {
-          console.log(response);
+          //console.log(response);
         },
         (error) => {
           console.log(error);
@@ -82,7 +82,7 @@ export default function AuthProvider({ children }) {
       const user_email = user.email;
       const user_displayName = user.displayName;
 
-      console.log(user_id);
+      //console.log(user_id);
 
       localStorage.setItem("ideagen_logged_in", true);
       localStorage.setItem("ideagen_user_id", user_id);
@@ -97,7 +97,7 @@ export default function AuthProvider({ children }) {
         })
         .then(
           (response) => {
-            console.log(response);
+            // console.log(response);
           },
           (error) => {
             console.log(error);

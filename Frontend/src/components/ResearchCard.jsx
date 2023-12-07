@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Replace with your routing library and correct import
+import { Link } from "react-router-dom"; 
 import three_dots from "../assets/images/three_dot_icon.png";
 import EditFormChat from "./modals/EditFormChat";
 
@@ -69,7 +69,6 @@ const ResearchCard = ({
       />
       <h3
         className="text-lg font-medium mt-2 text-center"
-        //onMouseEnter={(e) => e.target.innerText = title}
         onMouseLeave={(e) => (e.target.innerText = parseText(title))}
       >
         {parseText(title)}
@@ -81,7 +80,6 @@ const ResearchCard = ({
         {parseUrl(url)}
       </Link>
       <div className="absolute bottom-3 right-3 flex">
-        {/* Use a suitable Tailwind CSS icon here */}
         <Link to={`../chat/${chatid}`}>
           <IconResearch className="h-6 w-6 p-1 rounded-full hover:bg-gray-200" />
         </Link>

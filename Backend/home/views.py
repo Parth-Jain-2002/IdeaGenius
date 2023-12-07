@@ -74,7 +74,7 @@ def summarize(url, chatid):
     query_to_ask = "Summarize this in 5 ordered list points"
     ai_summary = qa({"query": query_to_ask})
     
-    print(ai_summary)
+    # print(ai_summary)
     return ai_summary['result']
 
 # Function for actionable insights from the text
@@ -88,7 +88,7 @@ def insights(url,chatid):
     # actionable insights from the text
     query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
     ai_insights = qa({"query": query_to_ask})
-    print(ai_insights['result'])
+    # print(ai_insights['result'])
     return ai_insights['result']
 
 # Function for deep diving into the text
@@ -121,7 +121,7 @@ def add_to_research_bank(url,chatid):
     # Split the text into chunks of 1000 characters
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     texts = text_splitter.create_documents(text_array)
-    print(texts)
+    # print(texts)
     db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
 
     # save vectorstore
@@ -258,7 +258,7 @@ def visual_summary(image):
     predictions = model.generate(**inputs, max_new_tokens=512)
 
     response = processor.decode(predictions[0], skip_special_tokens=True)
-    print(response)
+    # print(response)
     return response
 
 def perform_task(url, action, chatid):
@@ -320,11 +320,8 @@ def get_threads(request):
         chatids = topics[ideaid]
 
         # Convert the chatids to UUID
-        print(chatids)
         chatids = [chatid['chatid'] for chatid in chatids]
-        print(chatids)
         chatids = [uuid.UUID(chatid) for chatid in chatids]
-        print(chatids)
         threads = Thread.objects.filter(chatid__in=chatids)
 
         # convert the chats to json
@@ -743,7 +740,7 @@ def select_idea(request):
 #------------------------------------------------------------------------------------------
 
 def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
-    pytrends = TrendReq(retries=4)
+    pytrends = TrendReq(retries=5)
 
     # Build payload
     pytrends.build_payload(
@@ -776,7 +773,7 @@ def get_competitor_revenue(competitors):
         all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]
         filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
         
-        if len(filtered_urls) > 0:
+        if len(filtered_urls) > 0 and filtered_urls[0]!="https://growjo.com/":
             try:
                 response = requests.get(filtered_urls[0], timeout=10)                
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -817,7 +814,7 @@ def get_competitors(description):
     soup = BeautifulSoup(response.text, 'html.parser')
     
     urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
-    
+   
     competitors = []
     for url in urls:
         
@@ -836,22 +833,21 @@ def get_competitors(description):
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
     unique_competitors=list(set(filtered_competitors))
     
-    print(unique_competitors)
+    
     
     return unique_competitors
 
 
 def get_tables(description):
     search_query = f"{description} future market insights"
-    search_results = list(search(search_query, num=10, stop=10, pause=2))
-    
-    
-    all_urls = [clean_google_url(a) for a in search_results]
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')        
+    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
     filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
     
     
-    tables=[]
-    images=[]
+    tables=[]    
     for url in filtered_urls:        
         try:
             response = requests.get(url, timeout=5)            
@@ -864,16 +860,48 @@ def get_tables(description):
                     columns = row.find_all(['th', 'td'])
                     row_data = [column.get_text(strip=True) for column in columns]
                     table_content.append(row_data)
-                tables.append(table_content)
+                tables.append(table_content)           
             
-            image_urls = [urljoin(url, img['src']) for img in soup.find_all('img')]
-            images.extend(image_urls)
             
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
         
     
-    return tables,images
+    return tables
+
+
+def get_images(keywords):
+    search_query = f"{keywords} Fact MR"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')        
+    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.factmr.com"]    
+    
+    
+    images=[]    
+    for url in filtered_urls:        
+        try:
+            response = requests.get(url, timeout=5)            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            all_images = []
+            
+            for img_tag in soup.find_all('img', src=True):
+                src = img_tag['src']
+                if src.startswith("https://www.factmr.com/images/reports"):
+                    all_images.append(src)
+                    
+            images.extend(all_images)
+
+                     
+            
+            
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+        
+    
+    return images
 
 @csrf_exempt
 def get_insights(request):    
@@ -892,17 +920,16 @@ def get_insights(request):
         keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
     )
     
-    description = idea.description
-    
+    description = idea.description    
     unique_competitors=get_competitors(description)
     competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
-    tables,images =get_tables(description)    
+    tables =get_tables(description)  
+    
     print(competitors,competitor_revenue)
     keyword_list=idea.keywords.get('keywords', [])
+    images =get_images(keyword_list)  
     interest_over_time = get_google_trends_data(keyword_list)
     
-    # print("Interest Over Time:")
-    # print(interest_over_time)  
     
     
 
@@ -921,7 +948,6 @@ def get_insights(request):
 
 def validate_cost_insights(response):
     try:
-        print(response)
         # Find the first "{" and the last "}" in response
         response = response[response.find("{"):response.rfind("}")+1]
         response = json.loads(response)
@@ -997,8 +1023,6 @@ def get_subtasks(request):
     userid = data['userid']
     topicid = data['ideaid']
 
-    print("I am here")
-
     # Get the topic from the database
     topic = Topic.objects.get(userid=userid, topicid=topicid)
     topic.subtask = ""
@@ -1022,8 +1046,6 @@ def update_topic(request):
     visiondoctext = data['visiondoctext']
     time_insight = data['time_insight']
     cost_insight = data['cost_insight']
-
-    print(visiondoctext)
 
     # Get the topic from the database
     topic = Topic.objects.get(userid=userid, topicid=topicid)
@@ -1066,7 +1088,7 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        print(topic.keywords)
+        # print(topic.keywords)
         return topic.keywords['keywords']
     except Exception as e:
         print(e)
@@ -1078,7 +1100,7 @@ def get_recommended_people(request):
         data = json.loads(request.body.decode('utf-8'))
         ideaid = data['ideaid']
         input_tags = get_input_tags(ideaid)
-        print("input tags: ", input_tags)
+        # print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
         with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)

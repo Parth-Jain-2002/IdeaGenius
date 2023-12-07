@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import visionIcon from "../assets/images/vision_icon.png";
 import { useNavigate } from "react-router-dom";
-//import Navbar from '../components/Layout/Navbar';
 import PeopleCard from "../components/PeopleCard";
 
 const IdeaDashboard = ({ topicid }) => {
@@ -18,7 +17,7 @@ const IdeaDashboard = ({ topicid }) => {
       })
       .then(
         (response) => {
-          console.log("response:", response.data);
+          //console.log("response:", response.data);
           setTopicDetails(response.data);
         },
         (error) => {
@@ -66,7 +65,6 @@ const IdeaDashboard = ({ topicid }) => {
               </p>
             </div>
           </div>
-          {/* This is where you can start writing in block 1 */}
           <div className="w-1/3 flex justify-center items-center">
             {" "}
             {topicDetails.generated ? (
