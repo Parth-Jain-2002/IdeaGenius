@@ -1045,7 +1045,7 @@ import pickle
 from scipy.spatial.distance import cosine
 from collections import Counter
 
-
+# Helper functions
 def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
     user_counter = Counter()  # Counter to track user occurrences
 
@@ -1058,14 +1058,11 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
             
             # Calculate similarity between input tag and user tags
             similarity_scores = [1 - cosine(input_embedding, tag_embedding) for tag_embedding in user_embedding]
-            
-            # If at least one tag is similar, consider the user
             user_counter[user] += sum(score > threshold for score in similarity_scores)
 
-    # Get users with the highest occurrences
     top_users = user_counter.most_common()
     return top_users
-
+# Helper functions
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
