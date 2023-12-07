@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import visionIcon from "../assets/images/vision_icon.png";
+import chatIcon from "../assets/images/chat_icon.png";
 import { useNavigate } from "react-router-dom";
 import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
@@ -81,7 +81,7 @@ const IdeaDashboard = ({ topicid }) => {
         navigate(`../idea/${topicid}`);
     }
     const handleIdeaRefinement = () => {
-        navigate(`../idea/${topicid}`);
+        navigate(`../vision-doc/${topicid}`);
     }
 
     const exploreMarketInsight = () => {
@@ -94,45 +94,40 @@ const IdeaDashboard = ({ topicid }) => {
       
    return (
     <div className="w-full h-full p-4">
-      <div className="flex items-center justify-between p-2 dark:bg-gray-900 rounded-md ">
-        <div className=" flex flex-row justify-between w-full items-center">
-          <div className="flex flex-row">
-            {" "}
-            <img
-              src={visionIcon}
-              alt="Logo"
-              className="rounded-lg border-2 border-gray-300 bg-gray-100 p-1 mr-2"
-              height="65"
-              width="68"
-            />
-            <div className="flex flex-col p-1">
+      <div className="flex items-center justify-between px-10 py-4 dark:bg-gray-900 rounded-3xl border-2 border-black bg-[#efefef]">
+        <div className=" flex flex-col justify-between w-full">
+          <div className="flex flex-col">
+            <div className="flex flex-row justify-between mb-1">
               <h3 className="text-2xl font-bold">{topicid}</h3>
-              <p className="text-gray-500 text-sm">
+              <div className="self-end items-center bg-gray-200 flex flex-row hover:bg-white px-2 rounded-full">
+                {" "}
+                <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
+                {topicDetails.generated ? (
+                  <button
+                    onClick={() => {
+                      handleIdeaRefinement();
+                    }}
+                    className="px-2 py-1 font-bold text-gray-700 rounded-lg"
+                  >
+                    Refine Idea
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      handleIdeaGeneration();
+                    }}
+                    className="px-2 py-2 font-bold text-gray-700 text-bold rounded-lg"
+                  >
+                    Generate Idea
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-row p-1">
+              <p className="text-gray-500 text-base">
                 {topicDetails.description}
               </p>
             </div>
-          </div>
-          <div className="w-1/3 flex justify-center items-center">
-            {" "}
-            {topicDetails.generated ? (
-              <button
-                onClick={() => {
-                  handleIdeaRefinement();
-                }}
-                className="px-4 py-2 bg-blue-300 rounded-lg"
-              >
-                Refine Problem Statement
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  handleIdeaGeneration();
-                }}
-                className="px-4 py-2 bg-blue-300 rounded-lg"
-              >
-                Generate Problem Statement
-              </button>
-            )}
           </div>
         </div>
       </div>
