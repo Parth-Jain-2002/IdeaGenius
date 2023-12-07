@@ -71,7 +71,7 @@ export default function IdeaInterface() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           navigate(`/dashboard`);
         },
         (error) => {

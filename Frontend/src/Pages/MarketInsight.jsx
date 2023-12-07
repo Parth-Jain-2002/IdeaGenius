@@ -46,12 +46,12 @@ export default function MarketInsight() {
       })
       .then(
         (response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setCompetitors(response.data.competitors);
           setTables(response.data.tables);
           const result_df = response.data.interest_over_time;
           const parsedResult = JSON.parse(result_df);
-          console.log(parsedResult);
+          // console.log(parsedResult);
 
           if (parsedResult && parsedResult.sum_frequency) {
             // Extract data from the parsed result
@@ -61,7 +61,7 @@ export default function MarketInsight() {
             const dates = Object.keys(sumFrequencyData).map((timestamp) =>
               new Date(Number(timestamp)).toLocaleDateString()
             );
-            console.log(dates);
+            // console.log(dates);
             const data = {
               labels: dates,
               datasets: [
