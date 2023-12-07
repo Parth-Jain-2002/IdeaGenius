@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import logo from "../assets/images/IdeaGenLogo.png";
-import redoIcon from "../assets/images/redo_icon.png";
 import visionIcon from "../assets/images/vision_icon.png";
 import researchIcon from "../assets/images/research_bank_icon.png";
 import axios from "axios";
