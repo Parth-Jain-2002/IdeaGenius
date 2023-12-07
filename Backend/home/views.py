@@ -1130,7 +1130,7 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        if(len(topic.keywords['keywords'])==0):
+        if(len(topic.keywords)==0 or len(topic.keywords['keywords'])==0 ):
             load_dummy_data(topicid)
         print("Topic keywords: ", topic.keywords['keywords'])
         return topic.keywords['keywords']
