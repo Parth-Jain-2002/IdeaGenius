@@ -17,7 +17,42 @@ import {
 
 const IdeaDashboard = ({ topicid }) => {
   const [topicDetails, setTopicDetails] = useState([]);
+  const [peopleData, setPeopleData] = useState([{}]);
   const navigate = useNavigate();
+  const getPeople = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/get_recommended_people`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ideaid: topicid,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      // console.log(data.response);
+      return data.response;
+    } catch (error) {
+      console.log(error);
+    }
+  }; 
+  const getPeeps = async () => {
+    try {
+      const data = await getPeople();
+      const top3People = data.slice(0, 3); // Get the first 3 elements
+    
+      setPeopleData(top3People);
+
+      // console.log("ideaid: ", ideaid);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const getTopics = () => {
     axios
       .get(`http://localhost:8000/get_topic`, {
@@ -39,6 +74,7 @@ const IdeaDashboard = ({ topicid }) => {
 
   useEffect(() => {
     getTopics();
+    getPeeps();
   }, [topicid]);
 
     const handleIdeaGeneration = () => {
@@ -141,24 +177,18 @@ const IdeaDashboard = ({ topicid }) => {
         <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
             <h1 className="text-xl font-medium px-4 py-2">Recommended People on Trumio</h1>
             <div className=" px-4">
-              <div className="my-1">
+            {peopleData
+              ? peopleData.map((person) => (
+                <div className="my-1" key={person.name}>
                 <PeopleCard.Small
-                  name="John Doe"
-                  jobTitle="Software Engineer"
+                  name={person.name}
+                  jobTitle={person.jobTitle}
                 />
-              </div>
-              <div className="my-1">
-                <PeopleCard.Small
-                  name="Jack Black"
-                  jobTitle="UI/UX Designer"
-                />
-              </div>
-              <div className="my-1">
-                <PeopleCard.Small
-                  name="Jill White"
-                  jobTitle="Frontend Developer"
-                />
-              </div>
+                  </div>
+                 
+   ))
+              : null}
+          
             </div>
             <a className="p-2 mb-2 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white  ml-auto mr-4 text-center" href={`/people/${topicid}`}>Explore More</a>
         </div>
