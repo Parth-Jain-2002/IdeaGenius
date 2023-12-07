@@ -76,7 +76,7 @@ def summarize(url, chatid):
     query_to_ask = "Summarize this in 5 ordered list points"
     ai_summary = qa({"query": query_to_ask})
     
-    print(ai_summary)
+    # print(ai_summary)
     return ai_summary['result']
 
 # Function for actionable insights from the text
@@ -90,7 +90,7 @@ def insights(url,chatid):
     # actionable insights from the text
     query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
     ai_insights = qa({"query": query_to_ask})
-    print(ai_insights['result'])
+    # print(ai_insights['result'])
     return ai_insights['result']
 
 # Function for deep diving into the text
@@ -123,7 +123,7 @@ def add_to_research_bank(url,chatid):
     # Split the text into chunks of 1000 characters
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     texts = text_splitter.create_documents(text_array)
-    print(texts)
+    # print(texts)
     db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
 
     # save vectorstore
@@ -260,7 +260,7 @@ def visual_summary(image):
     predictions = model.generate(**inputs, max_new_tokens=512)
 
     response = processor.decode(predictions[0], skip_special_tokens=True)
-    print(response)
+    # print(response)
     return response
 
 def perform_task(url, action, chatid):
@@ -322,11 +322,8 @@ def get_threads(request):
         chatids = topics[ideaid]
 
         # Convert the chatids to UUID
-        print(chatids)
         chatids = [chatid['chatid'] for chatid in chatids]
-        print(chatids)
         chatids = [uuid.UUID(chatid) for chatid in chatids]
-        print(chatids)
         threads = Thread.objects.filter(chatid__in=chatids)
 
         # convert the chats to json
@@ -981,7 +978,6 @@ def get_insights(request):
 
 def validate_cost_insights(response):
     try:
-        print(response)
         # Find the first "{" and the last "}" in response
         response = response[response.find("{"):response.rfind("}")+1]
         response = json.loads(response)
@@ -1057,8 +1053,6 @@ def get_subtasks(request):
     userid = data['userid']
     topicid = data['ideaid']
 
-    print("I am here")
-
     # Get the topic from the database
     topic = Topic.objects.get(userid=userid, topicid=topicid)
     topic.subtask = ""
@@ -1083,8 +1077,6 @@ def update_topic(request):
     time_insight = data['time_insight']
     cost_insight = data['cost_insight']
 
-    print(visiondoctext)
-
     # Get the topic from the database
     topic = Topic.objects.get(userid=userid, topicid=topicid)
     topic.title = title
@@ -1104,8 +1096,20 @@ def update_topic(request):
 import pickle
 from scipy.spatial.distance import cosine
 from collections import Counter
+from faker import Faker
+#load dummy data
+def load_dummy_data(topidid):
+    print("Loading dummy data")
+    fake=Faker()
+    topic=Topic.objects.get(topicid=topidid)
+    topic.keywords={'keywords': ['C++', 'Python']}
+    topic.save()
+    with open ('home/user_profiles.pkl', 'rb') as f:
+        user_profiles = pickle.load(f)
+    for i,key in enumerate(user_profiles.keys()):
+        UserDoc.objects.get_or_create(userid=key, name=f"User{i}", email=f"user{i}@example.com",jobtitle=fake.job(), institution=fake.company(), topics={'Miscellaneous':[]})
 
-
+# Helper functions
 def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
     user_counter = Counter()  # Counter to track user occurrences
 
@@ -1118,22 +1122,22 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
             
             # Calculate similarity between input tag and user tags
             similarity_scores = [1 - cosine(input_embedding, tag_embedding) for tag_embedding in user_embedding]
-            
-            # If at least one tag is similar, consider the user
             user_counter[user] += sum(score > threshold for score in similarity_scores)
 
-    # Get users with the highest occurrences
     top_users = user_counter.most_common()
     return top_users
-
+# Helper functions
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        print(topic.keywords)
+        if(len(topic.keywords['keywords'])==0):
+            load_dummy_data(topicid)
+        print("Topic keywords: ", topic.keywords['keywords'])
         return topic.keywords['keywords']
+
     except Exception as e:
         print(e)
-        return ['Error']
+        return ["Error"]
 
 @csrf_exempt
 def get_recommended_people(request):
@@ -1141,7 +1145,7 @@ def get_recommended_people(request):
         data = json.loads(request.body.decode('utf-8'))
         ideaid = data['ideaid']
         input_tags = get_input_tags(ideaid)
-        print("input tags: ", input_tags)
+        # print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
         with open ('home/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)

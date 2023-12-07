@@ -31,7 +31,7 @@ export default function AuthProvider({ children }) {
       })
       .then(
         (response) => {
-          console.log(response);
+          //console.log(response);
         },
         (error) => {
           console.log(error);
@@ -81,13 +81,14 @@ export default function AuthProvider({ children }) {
       const user_id = user.uid;
       const user_email = user.email;
       const user_displayName = user.displayName;
-
+      const user_pic = user.photoURL;
       console.log(user_id);
 
       localStorage.setItem("ideagen_logged_in", true);
       localStorage.setItem("ideagen_user_id", user_id);
       localStorage.setItem("ideagen_user_email", user_email);
       localStorage.setItem("ideagen_user_name", user_displayName);
+      localStorage.setItem("ideagen_user_pic", user_pic);
 
       await axios
         .post("http://localhost:8000/new_user", {
@@ -97,7 +98,7 @@ export default function AuthProvider({ children }) {
         })
         .then(
           (response) => {
-            console.log(response);
+            // console.log(response);
           },
           (error) => {
             console.log(error);
@@ -114,6 +115,7 @@ export default function AuthProvider({ children }) {
       localStorage.setItem("ideagen_user_id", "");
       localStorage.setItem("ideagen_user_email", "");
       localStorage.setItem("ideagen_user_name", "");
+      localStorage.setItem("ideagen_user_pic", "");
     });
   }
 

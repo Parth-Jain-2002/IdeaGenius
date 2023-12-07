@@ -17,7 +17,7 @@ const IdeaDashboard = ({ topicid }) => {
       })
       .then(
         (response) => {
-          console.log("response:", response.data);
+          //console.log("response:", response.data);
           setTopicDetails(response.data);
         },
         (error) => {
