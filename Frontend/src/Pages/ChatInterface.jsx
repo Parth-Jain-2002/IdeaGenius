@@ -159,7 +159,7 @@ export default function ChatInterface() {
 
   return (
     <section className="grid h-screen grid-cols-5">
-      <aside className="flex flex-col items-center justify-between p-4 bg-[#efefef] dark:bg-zinc-900 border-r">
+      <aside className="flex flex-col items-center justify-between p-4 bg-[#efefef] border-r">
         <div className="flex items-center space-x-2">
           <img
             alt="Logo"
@@ -189,8 +189,8 @@ export default function ChatInterface() {
       <main className="flex flex-col col-span-4 p-4">
         <Navbar />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh]">
-          <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md">
-            <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
+          <div className="p-4 bg-white rounded-md shadow-md">
+            <div className="flex items-center justify-between p-2 bg-gray-200 rounded-md mb-4">
               <div className="items-center">
                 <h3 className="text-lg font-semibold ml-4">{chatInfo.title}</h3>
                 <span className="text-sm text-gray-500 ml-4">
@@ -217,7 +217,7 @@ export default function ChatInterface() {
                       </div>
                       <div className="ml-auto mr-2 text-right max-w-3xl">
                         <div className="text-sm text-gray-500">User</div>
-                        <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-3 mt-1 leading-loose">
+                        <div className="bg-gray-200 rounded-xl px-5 py-3 mt-1 leading-loose">
                           {chat.message}
                         </div>
                       </div>
@@ -228,7 +228,7 @@ export default function ChatInterface() {
                       <div className="ml-2 mr-2 flex-grow max-w-3xl">
                         <div className="text-sm text-gray-500">AI</div>
                         <div
-                          className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-3 mt-1 leading-loose"
+                          className="bg-blue-100 rounded-xl px-5 py-3 mt-1 leading-loose"
                           ref={containerRef}
                           style={{ whiteSpace: "pre-wrap", overflowY: "auto" }}
                         >
@@ -260,7 +260,7 @@ export default function ChatInterface() {
                 onKeyPress={handleKeyPress}
               />
               <button
-                className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
+                className="p-2 rounded-full bg-gray-300 "
                 onClick={() => handleChat()}
                 disabled={loading}
               >
