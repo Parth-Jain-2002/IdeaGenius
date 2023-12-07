@@ -71,16 +71,16 @@ PeopleCard.Small = ({ name, jobTitle }) => {
   const url = `https://source.unsplash.com/150x150/?user&${randomSeed}`;
   return (
     <div className="relative transition-transform rounded-xl overflow-hidden shadow-lg bg-white hover:shadow-2xl hover:-translate-y-1">
-      <div className="p-4 flex-row flex items-center">
+      <div className="p-4 flex-row flex justify-evenly">
         <img
-          className="w-24 h-24 mx-2 rounded-full object-cover border-4 border-white"
+          className="w-14 h-14 mx-2 rounded-full object-cover border-4 border-white"
           src={url}
           alt={`Profile of ${name}`}
         />
         <div className="flex flex-1 flex-col justify-between">
-          <span className="font-bold text-xl">{name}</span>
-          <span className="text-gray-700">{jobTitle}</span>
-          <button className="group border border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white px-3 rounded-full leading-loose flex flex-row justify-center items-center mt-2">
+          <span className="font-semibold text-lg">{name}</span>
+          <span className="text-gray-700 text-sm">{jobTitle}</span>
+          <button className="group border  border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white px-3 rounded-full text-sm leading-loose flex flex-row justify-center items-center mt-2">
             <svg
               width="24"
               height="24"
