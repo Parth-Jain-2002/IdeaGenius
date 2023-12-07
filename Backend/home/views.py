@@ -859,7 +859,7 @@ def get_competitors(description):
     return unique_competitors
 
 
-def get_tables(description):
+def get_tables(description, keywords):
     
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=0.5)
@@ -894,7 +894,33 @@ def get_tables(description):
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
         
+    search_query = ", ".join(keywords)+ " futuremarketinsights"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = session.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')        
+    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
     
+    
+      
+    for url in filtered_urls:        
+        try:
+            response = session.get(url, timeout=5)            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            first_table = soup.find('table')
+            table_content = []
+            if first_table:
+                for row in first_table.find_all('tr'):
+                    columns = row.find_all(['th', 'td'])
+                    row_data = [column.get_text(strip=True) for column in columns]
+                    table_content.append(row_data)
+                tables.append(table_content)           
+            
+            
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+            
     return tables
 
 
@@ -956,13 +982,14 @@ def get_insights(request):
         return JsonResponse(json.loads(idea.market_insights))
     
     
-    description = idea.description    
+    description = idea.description 
+    keyword_list=idea.keywords.get('google_search_keywords', [])   
     unique_competitors=get_competitors(description)
     competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
-    tables =get_tables(description)  
+    tables =get_tables(description, keyword_list)  
     
     print(competitors,competitor_revenue)
-    keyword_list=idea.keywords.get('google_search_keywords', [])
+    
     images =get_images(keyword_list)  
     interest_over_time = get_google_trends_data(keyword_list)
     
