@@ -539,9 +539,9 @@ def get_topics_details(request):
     topics = Topic.objects.filter(userid=userid)
 
     response = {}
-    response["Miscellaneous"] = {'title':"Miscellaneous", 'description':"Miscellaneous", 'generated':False, 'time_insight':{}, 'cost_insight':{}, 'subtask':"", 'keywords':{}, 'chatid':"", 'visiondoctext':""}
+    response["Miscellaneous"] = {'title':"Miscellaneous", 'description':"Miscellaneous", 'generated':False, 'time_insight':{}, 'cost_insight':{}, 'subtask':"", 'keywords':{}, 'chatid':"", 'visiondoctext':"", 'market_insights': {}}
     for topic in topics:
-        response[topic.topicid] = {'title':topic.title, 'description':topic.description, 'generated':topic.generated, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext}
+        response[topic.topicid] = {'title':topic.title, 'description':topic.description, 'generated':topic.generated, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext, 'market_insights': topic.market_insights}
 
     return JsonResponse({'topics':response})
 
@@ -553,8 +553,8 @@ def get_topic(request):
     print(topicid)
 
     topic = Topic.objects.get(userid=userid, topicid=topicid)
-    response = {'title':topic.title, 'description':topic.description, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'generated':topic.generated,
-    'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext}
+    response = {'title':topic.title, 'description':topic.description, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'generated':topic.generated, 
+    'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext, 'market_insights': topic.market_insights}
 
     return JsonResponse(response)
 
@@ -572,7 +572,7 @@ def new_topic(request):
     user.topics = topics
     user.save()
 
-    Topic.objects.create(userid=userid, topicid=topic, title="", description=description, generated=False, time_insight={}, cost_insight={}, subtask="", keywords={})
+    Topic.objects.create(userid=userid, topicid=topic, title="", description=description, generated=False, time_insight={}, cost_insight={}, subtask="", keywords={}, market_insights={})
 
     return JsonResponse({'response':'Success'})
 
