@@ -1066,6 +1066,18 @@ def update_topic(request):
 import pickle
 from scipy.spatial.distance import cosine
 from collections import Counter
+from faker import Faker
+#load dummy data
+def load_dummy_data(topidid):
+    print("Loading dummy data")
+    fake=Faker()
+    topic=Topic.objects.get(topicid=topidid)
+    topic.keywords={'keywords': ['C++', 'Python']}
+    topic.save()
+    with open ('home/user_profiles.pkl', 'rb') as f:
+        user_profiles = pickle.load(f)
+    for i,key in enumerate(user_profiles.keys()):
+        UserDoc.objects.get_or_create(userid=key, name=f"User{i}", email=f"user{i}@example.com",jobtitle=fake.job(), institution=fake.company(), topics={'Miscellaneous':[]})
 
 # Helper functions
 def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
@@ -1088,11 +1100,14 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        # print(topic.keywords)
+        if(len(topic.keywords['keywords'])==0):
+            load_dummy_data(topicid)
+        print("Topic keywords: ", topic.keywords['keywords'])
         return topic.keywords['keywords']
+
     except Exception as e:
         print(e)
-        return ['Error']
+        return ["Error"]
 
 @csrf_exempt
 def get_recommended_people(request):

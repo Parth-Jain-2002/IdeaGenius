@@ -42,21 +42,21 @@ export default function People() {
       );
   };
 
-  // const getThreads = () => {
-  //   axios.get(`http://localhost:8000/get_threads`,{
-  //         params:{
-  //             userid: localStorage.getItem("ideagen_user_id"),
-  //             ideaid: ideaid
-  //         }
-  //     }
-  //     ).then((response) => {
-  //         console.log(response)
-  //         console.log(response.data.data)
-  //         setThreads(response.data.data)
-  //     }, (error) => {
-  //         console.log(error)
-  //     })
-  // }
+  const getThreads = () => {
+    axios.get(`http://localhost:8000/get_threads`,{
+          params:{
+              userid: localStorage.getItem("ideagen_user_id"),
+              ideaid: ideaid
+          }
+      }
+      ).then((response) => {
+          console.log(response)
+          console.log(response.data.data)
+          setThreads(response.data.data)
+      }, (error) => {
+          console.log(error)
+      })
+  }
   const getPeeps = async () => {
     try {
       const data = await getPeople();
@@ -67,7 +67,7 @@ export default function People() {
     }
   };
   useEffect(() => {
-    // getThreads()
+    getThreads()
     getTopics();
     getPeeps();
   }, []);
