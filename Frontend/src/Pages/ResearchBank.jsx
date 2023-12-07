@@ -67,7 +67,7 @@ export default function ResearchBank() {
 
   return (
     <section className="grid h-screen grid-cols-5">
-      <aside className="flex flex-col items-center justify-between p-10 bg-[#f8f9fb] dark:bg-zinc-900 ">
+      <aside className="flex flex-col items-center justify-between p-10 bg-[#f8f9fb] ">
         <div className="flex items-center space-x-2">
           <img
             alt="Logo"

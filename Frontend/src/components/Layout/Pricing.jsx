@@ -5,10 +5,10 @@ export default function Pricing() {
     <section class="bg-[#f4f7fa] ">
       <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
         <div class=" mb-8 lg:mb-16">
-          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 ">
             Pricing
           </h2>
-          <p class="text-gray-500 mt-4 text-justify sm:text-xl dark:text-gray-400">
+          <p class="text-gray-500 mt-4 text-justify sm:text-xl ">
             Choose a plan that aligns with your project needs, whether you're a
             solo entrepreneur, a student team, or a corporate innovator. Enjoy
             the freedom to scale resources as your project evolves, ensuring a
@@ -18,21 +18,21 @@ export default function Pricing() {
           </p>
         </div>
         <div class="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
-          <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
+          <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow xl:p-8 ">
             <h3 class="mb-4 text-2xl font-semibold">Free</h3>
-            <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
+            <p class="font-light text-gray-500 sm:text-lg ">
             Spark ideas with us for smooth ideation and market research
             </p>
             <div class="flex justify-center items-baseline my-8">
               <span class="mr-2 text-5xl font-extrabold">$0</span>
-              <span class="text-gray-500 dark:text-gray-400">/month</span>
+              <span class="text-gray-500 ">/month</span>
             </div>
 
             <ul role="list" class="mb-8 space-y-4 text-left text-sm">
               <li><span className="font-semibold text-base">Free</span> Includes:</li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +47,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +62,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +96,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -120,21 +120,21 @@ export default function Pricing() {
             </a>
           </div>
 
-          <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
+          <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow xl:p-8 ">
             <h3 class="mb-4 text-2xl font-semibold">Starter</h3>
-            <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
+            <p class="font-light text-gray-500 sm:text-lg ">
             Best option for personal use & for your next project.
             </p>
             <div class="flex justify-center items-baseline my-8">
               <span class="mr-2 text-5xl font-extrabold">$15</span>
-              <span class="text-gray-500 dark:text-gray-400">/month</span>
+              <span class="text-gray-500 ">/month</span>
             </div>
 
             <ul role="list" class="mb-8 space-y-4 text-left text-sm">
               <li className="text-base">Everything in <span className="font-semibold">Free</span>, plus:</li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +149,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +164,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +181,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -222,21 +222,21 @@ export default function Pricing() {
             </a>
           </div>
 
-          <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
+          <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow xl:p-8 ">
             <h3 class="mb-4 text-2xl font-semibold">Company</h3>
-            <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
+            <p class="font-light text-gray-500 sm:text-lg ">
               Relevant for multiple users, extended & premium support.
             </p>
             <div class="flex justify-center items-baseline my-8">
               <span class="mr-2 text-5xl font-extrabold">$120</span>
-              <span class="text-gray-500 dark:text-gray-400">/month</span>
+              <span class="text-gray-500 ">/month</span>
             </div>
 
             <ul role="list" class="mb-8 space-y-4 text-left text-sm">
             <li className="text-base">Everything in <span className="font-semibold">Starter</span>, plus:</li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -255,7 +255,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +271,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +288,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -305,7 +305,7 @@ export default function Pricing() {
               </li>
               <li class="flex items-center space-x-3">
                 <svg
-                  class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+                  class="flex-shrink-0 w-5 h-5 text-green-500 "
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"

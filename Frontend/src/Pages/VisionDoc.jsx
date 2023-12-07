@@ -511,11 +511,11 @@ function VisionDoc() {
                     <div className="flex-none">
                       {/* <Avatar className="rounded-full" size="icon" /> */}
                     </div>
-                    <div className="ml-2 mr-2 text-right max-w-3xl w-full">
+                    <div className="ml-auto mr-2 text-right max-w-3xl">
                       <div className="text-xs text-gray-500 px-1">
                         {localStorage.getItem("ideagen_user_name")}
                       </div>
-                      <div className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-1 mt-1 leading-loose text-sm">
+                      <div className="bg-blue-100 rounded-xl px-5 py-1 mt-1 leading-loose text-sm">
                         {chat.message}
                       </div>
                     </div>
@@ -527,7 +527,7 @@ function VisionDoc() {
                     <div className="ml-2 mr-2 flex-grow max-w-3xl">
                       <div className="text-xs text-gray-500 px-1">VisionX</div>
                       <div
-                        className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-1 mt-1 leading-loose text-sm"
+                        className="bg-gray-200 rounded-xl px-5 py-1 mt-1 leading-loose text-sm"
                         ref={containerRef}
                         style={{ whiteSpace: "pre-wrap", overflowY: "auto" }}
                       >
@@ -536,7 +536,7 @@ function VisionDoc() {
                         />
                         <div className="flex flex-row justify-center space-x-2 mt-2">
                           <button
-                            className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row"
+                            className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row"
                             onClick={() =>
                               navigator.clipboard.writeText(chat.response)
                             }
@@ -544,7 +544,7 @@ function VisionDoc() {
                             <span className="text-sm">Copy</span>
                           </button>
                           <button
-                            className="bg-gray-100 dark:bg-zinc-700 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row"
+                            className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row"
                             onClick={() => {
                               setBlock(block + "\n" + chat.response);
                             }}
@@ -577,7 +577,7 @@ function VisionDoc() {
                   onKeyPress={handleKeyPress}
                 />
                 <button
-                  className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
+                  className="p-2 rounded-full bg-gray-300 "
                   onClick={() => handleChat()}
                   disabled={loading}
                 >
