@@ -1114,6 +1114,8 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
     user_counter = Counter()  # Counter to track user occurrences
 
     for input_tag in input_tags:
+        if input_tag not in tag_embeddings:
+            tag_embeddings[input_tag] = embeddings.embed_query(input_tag)
         input_embedding = tag_embeddings[input_tag]
         
         # Find users with similar tags
@@ -1158,7 +1160,8 @@ def get_recommended_people(request):
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
-
+        with open ('home/tag_embeddings.pkl', 'wb') as f:
+            pickle.dump(tag_embeddings, f)
         # Get the top 6 users
         top_users = top_users[:6]
         top_users = [user[0] for user in top_users]
