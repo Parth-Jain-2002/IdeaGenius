@@ -94,12 +94,12 @@ const IdeaDashboard = ({ topicid }) => {
       
    return (
     <div className="w-full h-full p-4">
-      <div className="flex items-center justify-between px-10 py-4 dark:bg-gray-900 rounded-3xl border-2 border-black bg-[#efefef]">
+      <div className="flex items-center justify-between px-10 py-4 dark:bg-gray-900 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
         <div className=" flex flex-col justify-between w-full">
           <div className="flex flex-col">
             <div className="flex flex-row justify-between mb-1">
-              <h3 className="text-2xl font-bold">{topicid}</h3>
-              <div className="self-end items-center bg-gray-200 flex flex-row hover:bg-white px-2 rounded-full">
+              <h3 className="text-2xl font-semibold">{topicid}</h3>
+              <div className="self-end items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg">
                 {" "}
                 <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
                 {topicDetails.generated ? (
@@ -107,7 +107,7 @@ const IdeaDashboard = ({ topicid }) => {
                     onClick={() => {
                       handleIdeaRefinement();
                     }}
-                    className="px-2 py-1 font-bold text-gray-700 rounded-lg"
+                    className="px-2 py-1 font-semibold text-black"
                   >
                     Refine Idea
                   </button>
@@ -124,7 +124,7 @@ const IdeaDashboard = ({ topicid }) => {
               </div>
             </div>
             <div className="flex flex-row p-1">
-              <p className="text-gray-500 text-base">
+              <p className="text-gray-600 text-base ">
                 {topicDetails.description}
               </p>
             </div>
@@ -145,16 +145,16 @@ const IdeaDashboard = ({ topicid }) => {
      
       
         <Slider className="w-full h-full rounded-lg my-auto">
-          <Slide index={0} className="w-full  justify-center rounded-lg bg-gray-200 h-full">
+          <Slide index={0} className="w-full  justify-center rounded-lg bg-blue-200 h-full">
            <h1 className="mx-[45%] mt-[20%]">Slide 1</h1>
           </Slide>
-          <Slide index={1} className="w-full rounded-lg bg-gray-300 h-full">
+          <Slide index={1} className="w-full rounded-lg bg-blue-300 h-full">
           <h1 className="mx-[45%] mt-[20%]">Slide 2</h1>
           </Slide>
-          <Slide index={2} className="w-full rounded-lg bg-gray-200 h-full">
+          <Slide index={2} className="w-full rounded-lg bg-blue-200 h-full">
           <h1 className="mx-[45%] mt-[20%]">Slide 3</h1>
           </Slide>
-          <Slide index={4} className="w-full rounded-lg bg-gray-300  h-full">
+          <Slide index={4} className="w-full rounded-lg bg-blue-300  h-full">
           <h1 className="mx-[45%] mt-[20%]">Slide 4</h1>
           </Slide>
           
