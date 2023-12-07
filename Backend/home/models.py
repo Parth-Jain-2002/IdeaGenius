@@ -44,3 +44,4 @@ class Topic(models.Model):
     keywords = models.JSONField(default=dict)
     chatid = models.UUIDField(default=uuid.uuid4)
     visiondoctext = models.TextField(default="")
+    market_insights = models.JSONField(default=dict)
