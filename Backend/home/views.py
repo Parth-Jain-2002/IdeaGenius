@@ -18,7 +18,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -1098,12 +1098,12 @@ from scipy.spatial.distance import cosine
 from collections import Counter
 from faker import Faker
 #load dummy data
-def load_dummy_data(topidid):
+def load_dummy_data():
     print("Loading dummy data")
     fake=Faker()
-    topic=Topic.objects.get(topicid=topidid)
-    topic.keywords={'keywords': ['C++', 'Python']}
-    topic.save()
+    # topic=Topic.objects.get(topicid=topidid)
+    # topic.keywords={'keywords': ['C++', 'Python']}
+    # topic.save()
     with open ('home/user_profiles.pkl', 'rb') as f:
         user_profiles = pickle.load(f)
     for i,key in enumerate(user_profiles.keys()):
@@ -1126,14 +1126,18 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 
     top_users = user_counter.most_common()
     return top_users
+
 # Helper functions
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        if(len(topic.keywords)==0 or len(topic.keywords['keywords'])==0 ):
-            load_dummy_data(topicid)
-        print("Topic keywords: ", topic.keywords['keywords'])
-        return topic.keywords['keywords']
+        # load_dummy_data()
+
+        if(len(topic.keywords)==0 or 'people_search_keywords' not in topic.keywords or len(topic.keywords['people_search_keywords'])==0):
+            generate_keywords(topicid)
+        
+        print("Topic keywords: ", topic.keywords['people_search_keywords'])
+        return topic.keywords['people_search_keywords']
 
     except Exception as e:
         print(e)
@@ -1167,3 +1171,43 @@ def get_recommended_people(request):
     except Exception as e:
         print(e)
         return JsonResponse({'response':'Error'}, status=500)
+
+
+#----------------------------------------------------------------------------------------
+#-------------------------------------KEYWORDS-------------------------------------------
+#----------------------------------------------------------------------------------------
+
+def validate_keywords(response):
+    try:
+        # Find the first "{" and the last "}" in response
+        response = response[response.find("{"):response.rfind("}")+1]
+        response = json.loads(response)
+        print(response)
+        if 'google_search_keywords' in response and 'people_search_keywords' in response and 'student_team_search_keywords' in response and 'investor_search_keywords' in response:
+            return response 
+        else:
+            return "Invalid"
+    except:
+        return "Invalid"
+
+def generate_keywords(ideaid):
+    print("Generating keywords for idea: ", ideaid)
+    # Get the topic from the database
+    topic = Topic.objects.get(topicid=ideaid)
+    topic.keywords = {}
+
+    prompt = generate_keywords_prompt(topic)
+    
+    response = llm(prompt)
+    while True:
+        validate = validate_keywords(response)
+        if validate != "Invalid":
+            topic.keywords = validate
+            topic.save()
+            break
+        else:
+            prompt += "You have generated invalid keywords. Please try again and generate it in the right format."
+            response = llm(prompt)
+    
+    return "Success"
+    
