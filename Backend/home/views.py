@@ -9,6 +9,8 @@ from urllib.parse import urlparse, parse_qs, urljoin
 from googlesearch import search
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from readability import Document
 import re
 import json
@@ -768,17 +770,23 @@ def clean_google_url(google_url):
 def get_competitor_revenue(competitors):
     competitor_revenue=[]
     
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
     for competitor in competitors:        
         search_query = f"{competitor} annual revenue growjo"
         search_url = f'https://www.google.com/search?q={search_query}'
-        response = requests.get(search_url)
+        response = session.get(search_url)
         soup = BeautifulSoup(response.text, 'html.parser')        
         all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]
         filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
         
         if len(filtered_urls) > 0 and filtered_urls[0]!="https://growjo.com/":
             try:
-                response = requests.get(filtered_urls[0], timeout=10)                
+                response = session.get(filtered_urls[0], timeout=10)                
                 soup = BeautifulSoup(response.text, 'html.parser')
                 all_li_tags = soup.find_all('li')
                 
@@ -810,10 +818,18 @@ def get_competitor_revenue(competitors):
     
     return final_competitor,final_competitor_revenue
 
-def get_competitors(description):
+def get_competitors(description):    
+    
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
+    
     search_query = f"{description} top best"
     search_url = f'https://www.google.com/search?q={search_query}'
-    response = requests.get(search_url)
+    response = session.get(search_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
     urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
@@ -822,8 +838,8 @@ def get_competitors(description):
     for url in urls:
         
         try:
-            response = requests.get(url, timeout=5)
-            # print(f"HTTP request successful for URL: {url}")
+            response = session.get(url, timeout=5)
+            
             soup = BeautifulSoup(response.text, 'html.parser')
             numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
             for title in numbered_titles:
@@ -834,7 +850,7 @@ def get_competitors(description):
     
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
-    unique_competitors=list(set(filtered_competitors))
+    unique_competitors=list(set(filtered_competitors))   
     
     
     
@@ -842,9 +858,16 @@ def get_competitors(description):
 
 
 def get_tables(description):
+    
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
     search_query = f"{description} future market insights"
     search_url = f'https://www.google.com/search?q={search_query}'
-    response = requests.get(search_url)
+    response = session.get(search_url)
     soup = BeautifulSoup(response.text, 'html.parser')        
     all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
     filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
@@ -853,7 +876,7 @@ def get_tables(description):
     tables=[]    
     for url in filtered_urls:        
         try:
-            response = requests.get(url, timeout=5)            
+            response = session.get(url, timeout=5)            
             soup = BeautifulSoup(response.text, 'html.parser')
             
             first_table = soup.find('table')
@@ -873,10 +896,17 @@ def get_tables(description):
     return tables
 
 
-def get_images(keywords):
+def get_images(keywords):   
+    
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
     search_query = f"{keywords} Fact MR"
     search_url = f'https://www.google.com/search?q={search_query}'
-    response = requests.get(search_url)
+    response = session.get(search_url)
     soup = BeautifulSoup(response.text, 'html.parser')        
     all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
     filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.factmr.com"]    
@@ -885,7 +915,7 @@ def get_images(keywords):
     images=[]    
     for url in filtered_urls:        
         try:
-            response = requests.get(url, timeout=5)            
+            response = session.get(url, timeout=5)            
             soup = BeautifulSoup(response.text, 'html.parser')
             
             all_images = []
