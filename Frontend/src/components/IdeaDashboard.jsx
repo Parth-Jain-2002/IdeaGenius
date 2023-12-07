@@ -28,7 +28,7 @@ const IdeaDashboard = ({ topicid }) => {
 
   useEffect(() => {
     getTopics();
-  }, []);
+  }, [topicid]);
 
     const handleIdeaGeneration = () => {
         navigate(`../idea/${topicid}`);
