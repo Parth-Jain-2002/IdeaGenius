@@ -27,7 +27,7 @@ function Signup() {
         passwordRef.current.value,
         nameRef.current.value
       );
-      navigate("/research");
+      navigate("/dashboard");
     } catch {
       setError("Failed to create an account");
       alert("Failed to Sign Up");
@@ -38,7 +38,7 @@ function Signup() {
     try {
       setError("");
       await loginWithGoogle();
-      navigate("/research");
+      navigate("/dashboard");
     } catch {
       setError("Failed to login with google");
       alert("Failed to Sign Up");

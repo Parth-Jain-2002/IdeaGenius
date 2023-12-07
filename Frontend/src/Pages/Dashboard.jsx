@@ -206,6 +206,7 @@ export default function ResearchBank() {
         naturalSlideWidth={100}
         naturalSlideHeight={40}
         totalSlides={5}
+        isPlaying={true}
         className="w-full h-2/3"
       >
       <div className="flex w-full border-2 rounded-3xl ">
