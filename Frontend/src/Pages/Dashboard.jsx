@@ -144,7 +144,7 @@ export default function ResearchBank() {
                       </Link>
                       <button
                         onClick={() => setCurrentTopic(topic)}
-                        className="flex  w-full justify-start flex-row p-2 text-sm hover:bg-gray-200"
+                        className="flex rounded-lg w-full justify-start flex-row p-2 text-sm hover:bg-gray-200"
                       >
                         <img
                           src={researchIcon}
