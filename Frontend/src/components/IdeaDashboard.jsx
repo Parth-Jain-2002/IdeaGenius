@@ -341,8 +341,9 @@ const IdeaDashboard = ({ topicid }) => {
                       <Pie className="object-contain h-72" data={competitorChart} />
                     </div>
                   </Slide>
+
                   {images && Array.isArray(images) && images.length > 0
-                    ? images.map((image, index) => (
+                    && images.map((image, index) => (
                       <Slide key={index} index={index+3} className="w-full rounded-lg h-full">
                         <div className=" p-6 rounded-md shadow-md mb-4">
                           <img
@@ -353,7 +354,6 @@ const IdeaDashboard = ({ topicid }) => {
                         </div>
                       </Slide>
                     ))
-                    : <p>No images available</p>
                   }
 
                 </Slider>
