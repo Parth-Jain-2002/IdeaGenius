@@ -1234,7 +1234,7 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        load_dummy_data()
+        #load_dummy_data()
 
         if(len(topic.keywords)==0 or 'people_search_keywords' not in topic.keywords or len(topic.keywords['people_search_keywords'])==0):
             generate_keywords(topicid)

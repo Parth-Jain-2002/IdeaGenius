@@ -14,7 +14,7 @@ def idea_generation(answer, source_documents):
     # Step 2: Provide context for Trumio, the AI-driven University Project Ecosystem
     prompt = f"""The insights and valid points from the source documents are: {source_documents}. Use this, if found relevant, to generate 4 unique disjoint problem statements for alumni/clients, which can then be addressed with college students.
 
-    Now, as part of our continued innovation, we are developing "IdeaGenius" to address ideation and market research challenges. Users have responded to five key questions, and their insights are outlined below:
+    Now, as part of our continued innovation, we are developing "IdeaGenius" to Aress ideation and market research challenges. Users have responded to five key questions, and their insights are outlined below:
 
     {formatted_answers}
 

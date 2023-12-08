@@ -6,12 +6,82 @@ import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
+import { Line, Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale,
+  ArcElement,
+} from "chart.js";
+import Navbar from "../components/Layout/Navbar";
+import "chartjs-adapter-date-fns";
+//import { enUS } from 'date-fns/locale';
+
+import randomcolor from 'randomcolor';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  TimeScale,
+  Title,
+  Tooltip,
+  Legend
+);
 
 
 const IdeaDashboard = ({ topicid }) => {
   const [topicDetails, setTopicDetails] = useState([]);
   const [peopleData, setPeopleData] = useState([{}]);
+
+
+  const [competitors, setCompetitors] = useState([]);
+  const [tables, setTables] = useState([]);
+
+  const [customerInterest, setCustomerInterest] = useState({});
+  const [competitorChart, setCompetitorChart] = useState({});
+  const [competitorChartLoading, setCompetitorChartLoading] = useState(true);
+  const [customerInterestLoading, setCustomerInterestLoading] = useState(true);
+
+  const [images, setImages] = useState([]);
+  const lineChartOptions = {
+    scales: {
+      x: {},
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
   const navigate = useNavigate();
+
+  const parseRevenue = (revenueString) => {
+    // Remove commas
+    const withoutCommas = revenueString.replace(/,/g, '');
+
+    // Extract numerical part
+    const numericPart = withoutCommas.slice(1, -1);
+    console.log(numericPart);
+    // Convert to numeric value based on the last character (B, M, K)
+    const multiplier = {
+      'B': 1e9,
+      'M': 1e6,
+      'K': 1e3,
+    }[withoutCommas.slice(-1).toUpperCase()] || 1;
+    console.log(multiplier);
+    console.log(parseFloat(numericPart));
+    return parseFloat(numericPart) * multiplier;
+  };
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
@@ -77,11 +147,82 @@ const IdeaDashboard = ({ topicid }) => {
 
   
   
+const getInsights = () => {
+  axios
+  .post(`http://localhost:8000/get_insights`, {
+    userid: localStorage.getItem("ideagen_user_id"),
+    ideaid: topicid,
+  })
+  .then(
+    (response) => {
+      console.log(response.data);
+      setCompetitors(response.data.competitors);
+      setTables(response.data.tables);
+      setImages(response.data.images);
 
+      const revenueStrings = response.data.competitor_revenue;
+      const revenueData = revenueStrings.map(parseRevenue);
+      console.log(revenueData);
+      const competitorData = response.data.competitors
+      const competitorLength = response.data.competitors.length
+      const CompetitorChartData = {
+        labels: competitorData || [],
+        datasets: [{
+          data: revenueData || [],
+          backgroundColor: randomcolor({ count: competitorLength }) || [],
+        }],
+      };
+      setCompetitorChart(CompetitorChartData);
+      
+
+      const result_df = response.data.interest_over_time;
+      const parsedResult = JSON.parse(result_df);
+
+      if (parsedResult && parsedResult.sum_frequency) {
+        // Extract data from the parsed result
+        const sumFrequencyData = parsedResult.sum_frequency;
+      
+        // Convert Unix timestamps to a readable date format
+        const dates = Object.keys(sumFrequencyData).map((timestamp) =>
+          new Date(Number(timestamp)).toLocaleDateString()
+        );
+      
+        const customerInterestData = {
+          labels: dates || [],
+          datasets: [
+            {
+              label: "Customer Interest Trends",
+              data: Object.values(sumFrequencyData) || [],
+              fill: false,
+              borderColor: "rgba(75,192,192,1)",
+              borderWidth: 2,
+            },
+          ],
+        };
+      
+        setCustomerInterest(customerInterestData);
+        setCustomerInterestLoading(false);
+      }
+      
+
+      setCompetitorChart(CompetitorChartData);
+      setCompetitorChartLoading(false);
+
+      
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
 
   useEffect(() => {
     getTopics();
     getPeeps();
+    getInsights();
+
+    
+    
   }, [topicid]);
 
     const handleIdeaGeneration = () => {
@@ -140,44 +281,99 @@ const IdeaDashboard = ({ topicid }) => {
       </div>
       <div className="flex w-full mt-6">
         <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg ">
-            <h1 className="text-xl font-medium p-4 mt-1">Marketing Insights</h1>
+            <h1 className="text-xl font-semibold p-2 ">Market Trends Analysis</h1>
             <div className=" w-full">
-            <CarouselProvider
-        naturalSlideWidth={100}
-        naturalSlideHeight={45}
-        totalSlides={4}
-        isPlaying={true}
-        className="w-full pr-2 rounded-lg"
-      >
-     
-      
-        <Slider className="w-full h-full rounded-lg my-auto">
-          <Slide index={0} className="w-full  justify-center rounded-lg bg-blue-200 h-full">
-           <h1 className="mx-[45%] mt-[20%]">Slide 1</h1>
+            {competitorChartLoading || customerInterestLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <CarouselProvider
+            naturalSlideWidth={100}
+            naturalSlideHeight={45}
+            totalSlides={4}
+            isPlaying={true}
+            className="w-full pr-2 rounded-lg"
+          >
+           <Slider className="w-full h-full rounded-lg my-auto">
+        <Slide index={0} className="w-full  justify-center rounded-lg  h-full">
+  {tables.length > 0 && tables[0].length > 0 ? (
+    <table className="table-auto w-full h-full">
+      <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
+        <tr>
+          {tables[0][0].length > 0 && tables[0][0].map((header, index) => (
+            <th key={index} className="p-2 whitespace-nowrap">
+              <div className="font-semibold text-left">{header}</div>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="text-sm divide-y divide-gray-100">
+        {tables[0].slice(1).map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row && Array.isArray(row) ? (
+              row.map((cell, cellIndex) => (
+                <td key={cellIndex} className="p-2 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div className="font-medium text-gray-800">{cell}</div>
+                  </div>
+                </td>
+              ))
+            ) : null}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>No data available</p>
+  )}
+</Slide>
+          <Slide index={1} className="w-full rounded-lg  h-full">
+         
+            <h2 className="text-black text-lg font-medium mb-4">
+              Customer Interest Trends
+            </h2>
+            <Line data={customerInterest} options={lineChartOptions} />
+         
           </Slide>
-          <Slide index={1} className="w-full rounded-lg bg-blue-300 h-full">
-          <h1 className="mx-[45%] mt-[20%]">Slide 2</h1>
+          <Slide index={2} className="w-full rounded-lg  h-full">
+          <h2 className="text-black text-lg font-medium mb-4">
+              Competitors in the Market
+            </h2>
+
+            <div className="w-3/5 mx-auto h-full">
+              <Pie data={competitorChart} />
+            </div>
           </Slide>
-          <Slide index={2} className="w-full rounded-lg bg-blue-200 h-full">
-          <h1 className="mx-[45%] mt-[20%]">Slide 3</h1>
-          </Slide>
-          <Slide index={4} className="w-full rounded-lg bg-blue-300  h-full">
-          <h1 className="mx-[45%] mt-[20%]">Slide 4</h1>
-          </Slide>
+          {images && Array.isArray(images) && images.length > 0
+    ? images.map((image, index) => (
+        <Slide key={index} index={index} className="w-full rounded-lg h-full">
+          <div className=" p-6 rounded-md shadow-md mb-4">
+            <img
+              src={image}
+              alt={`Market Insights`}
+              className="rounded-lg w-full h-72 object-contain"
+            />
+          </div>
+        </Slide>
+      ))
+    : <p>No images available</p>
+  }
           
         </Slider>
-     
-        {/* <div className="flex mt-3 justify-between">
-        <ButtonBack className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]"></ButtonBack>
-        <ButtonNext className="px-4 py-2 rounded-lg text-white hover:bg-[#4661bb] bg-[#597ef7]">Next</ButtonNext></div>
-        */}
-      </CarouselProvider>
+        <div className="flex mt-2 justify-between">
+        <ButtonBack><svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 7L10 12L15 17" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </ButtonBack>
+        <ButtonNext><svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+       </ButtonNext>
+         </div>  
+        </CarouselProvider>
+        )}
+            
             </div>
             <button onClick={() => {exploreMarketInsight()}} className="p-2 mb-2 ml-4 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Explore More</button>
 
         </div>
         <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
-            <h1 className="text-xl font-medium px-4 py-2">Recommended People on Trumio</h1>
+            <h1 className="text-xl font-semibold px-4 py-2">Recommended People on Trumio</h1>
             <div className=" px-4">
             {peopleData
               ? peopleData.map((person) => (
