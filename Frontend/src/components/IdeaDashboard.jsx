@@ -242,7 +242,7 @@ const getInsights = () => {
       
    return (
     <div className="w-full h-full p-4">
-      <div className="flex items-center justify-between px-10 py-4 dark:bg-gray-900 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
+      <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
         <div className=" flex flex-col justify-between w-full">
           <div className="flex flex-col">
             <div className="flex flex-row justify-between mb-1">
@@ -383,7 +383,6 @@ const getInsights = () => {
                   jobTitle={person.jobTitle}
                 />
                   </div>
-                 
    ))
               : null}
           

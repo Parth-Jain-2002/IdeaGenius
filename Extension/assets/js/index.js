@@ -35,3 +35,11 @@ deep_dive.addEventListener("click", function () {
     user_id: localStorage.getItem("ideagen_user_id"),
   });
 });
+
+[research, summary, insights, deep_dive].forEach((element) => {
+  // Make opacity of loading element 1 and increase z index to make the loading element visible
+  element.addEventListener("click", function () {
+    document.getElementById("loading").style.opacity = "1";
+    document.getElementById("loading").style.zIndex = "100";
+  });
+});

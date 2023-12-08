@@ -67,7 +67,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       },
     }).then(() => {
       chrome.tabs.create({
-        url: "http://localhost:5173/research",
+        url: "http://localhost:5173/research/Miscellaneous",
       });
     });
   }

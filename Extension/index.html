@@ -1,42 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IdeaGenius</title>
-    <link href="./dist/output.css" rel="stylesheet">
-</head>
-<body>
-    <div class="text-center flex flex-col items-center min-w-[250px] p-4 bg-white rounded-lg shadow-md" style="background-color: #fbf8e3;">
+    <link href="./dist/output.css" rel="stylesheet" />
+  </head>
+  <body class="bg-white">
+    <div
+      class="text-center flex flex-col items-center min-w-[250px] p-4 relative bg-white"
+    >
       <div class="flex items-center justify-between w-full mb-6">
         <div class="flex items-center">
-          <img src="assets/images/platform_logo.png" alt="Logo" class="mr-4" style="height: 25px; width: 25px;" />
+          <img
+            src="./assets/images/platform_logo.png"
+            alt="Logo"
+            class="mr-4"
+            style="height: 25px; width: 25px"
+          />
           <h1 class="text-lg font-bold ml-2">IDEAGEN</h1>
         </div>
-        <img src="assets/images/setting_icon.png" alt="Settings Icon" style="height: 20px; width: 20px;" />
+        <!-- <img
+          src="./assets/images/setting_icon.png"
+          alt="Settings Icon"
+          style="height: 20px; width: 20px"
+        /> -->
       </div>
-      <div class="flex flex-col items-start space-y-3 w-4/5">
-        <div class="flex items-center">
-          <img src="assets/images/summary_icon.png" alt="Summary Icon" class="w-4 h-4 mr-4" />
+      <div class="flex flex-col items-start w-4/5">
+        <div class="flex items-center hover:bg-gray-200 w-full h-full p-2 py-4">
+          <img
+            src="./assets/images/summary_icon.png"
+            alt="Summary Icon"
+            class="w-4 h-4 mr-4"
+          />
           <button id="summary" class="text-base button">Summarize It</button>
         </div>
         <hr class="w-full border-gray-300 mx-auto" />
-        <div class="flex items-center">
-          <img src="assets/images/insights_icon.png" alt="Insights Icon" class="w-4 h-4 mr-4" />
+        <div class="flex items-center hover:bg-gray-200 w-full h-full p-2 py-4">
+          <img
+            src="./assets/images/insights_icon.png"
+            alt="Insights Icon"
+            class="w-4 h-4 mr-4"
+          />
           <button id="insights" class="text-base button">Get Insights</button>
         </div>
         <hr class="w-full border-gray-300 mx-auto" />
-        <div class="flex items-center">
-          <img src="assets/images/chat_icon.png" alt="Chat Icon" class="w-4 h-4 mr-4" />
+        <div class="flex items-center hover:bg-gray-200 w-full h-full p-2 py-4">
+          <img
+            src="./assets/images/chat_icon.png"
+            alt="Chat Icon"
+            class="w-4 h-4 mr-4"
+          />
           <button id="deep-dive" class="text-base button">AI Dive</button>
         </div>
         <hr class="w-full border-gray-300 mx-auto" />
-        <div class="flex items-center">
-          <img src="assets/images/plus_icon.png" alt="Plus Icon" class="w-4 h-4 mr-4" />
-          <button id="research-bank" class="text-base button">Add to Bank</button>
+        <div class="flex items-center hover:bg-gray-200 w-full h-full p-2 py-4">
+          <img
+            src="./assets/images/plus_icon.png"
+            alt="Plus Icon"
+            class="w-4 h-4 mr-4"
+          />
+          <button id="research-bank" class="text-base button">
+            Add to Bank
+          </button>
         </div>
       </div>
-    </div>        
-    <script src="assets/js/index.js"></script>
-</body>
+      <div
+        id="loading"
+        class="absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center -z-50 opacity-0 bg-white transition-all"
+      >
+        <svg
+          style="
+            margin: auto;
+            background: none;
+            display: block;
+            shape-rendering: auto;
+          "
+          width="200px"
+          height="200px"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid"
+        >
+          <path
+            fill="none"
+            stroke="#e90c59"
+            stroke-width="8"
+            stroke-dasharray="128.29446411132812 128.29446411132812"
+            d="M24.3 30C11.4 30 5 43.3 5 50s6.4 20 19.3 20c19.3 0 32.1-40 51.4-40 C88.6 30 95 43.3 95 50s-6.4 20-19.3 20C56.4 70 43.6 30 24.3 30z"
+            stroke-linecap="round"
+            style="transform: scale(0.8); transform-origin: 50px 50px"
+          >
+            <animate
+              attributeName="stroke-dashoffset"
+              repeatCount="indefinite"
+              dur="1s"
+              keyTimes="0;1"
+              values="0;256.58892822265625"
+            ></animate>
+          </path>
+          <!-- [ldio] generated by https://loading.io/ -->
+        </svg>
+      </div>
+    </div>
+    <script src="./assets/js/index.js"></script>
+  </body>
 </html>
