@@ -34,6 +34,16 @@ export default function ResearchBank() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentTopic, setCurrentTopic] = useState("")
   const [loading, setLoading] = useState(true);
+  const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  const capitalizeWords = (str) => {
+    if (!str) {
+      return '';
+    }
+    return str.split(' ').map(word => capitalizeFirstLetter(word)).join(' ');
+  };
+  
   const openModal = () => {
     setIsModalOpen(true)
   }
@@ -105,7 +115,7 @@ export default function ResearchBank() {
                       alt="Folder icon"
                       className="h-4 w-4 my-auto mr-4"
                     />
-                    {topic}
+                    {capitalizeWords(topic)}
                   </AccordionItemButton>
                 </AccordionItemHeading>
                 <AccordionItemPanel className=" ml-6 ">

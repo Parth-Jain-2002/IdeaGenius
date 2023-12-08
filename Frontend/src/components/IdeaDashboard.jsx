@@ -12,6 +12,16 @@ const IdeaDashboard = ({ topicid }) => {
   const [topicDetails, setTopicDetails] = useState([]);
   const [peopleData, setPeopleData] = useState([{}]);
   const navigate = useNavigate();
+  const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  const capitalizeWords = (str) => {
+    if (!str) {
+      return '';
+    }
+    return str.split(' ').map(word => capitalizeFirstLetter(word)).join(' ');
+  };
+  
   const getPeople = async () => {
     try {
       const response = await fetch(
@@ -95,7 +105,7 @@ const IdeaDashboard = ({ topicid }) => {
         <div className=" flex flex-col justify-between w-full">
           <div className="flex flex-col">
             <div className="flex flex-row justify-between mb-1">
-              <h3 className="text-2xl font-semibold">{topicid}</h3>
+              <h3 className="text-2xl font-semibold">{capitalizeWords(topicid)}</h3>
               <div className="self-end items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg">
                 {" "}
                 <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
@@ -122,7 +132,7 @@ const IdeaDashboard = ({ topicid }) => {
             </div>
             <div className="flex flex-row p-1">
               <p className="text-gray-600 text-base ">
-                {topicDetails.description}
+                {capitalizeWords(topicDetails.description)}
               </p>
             </div>
           </div>

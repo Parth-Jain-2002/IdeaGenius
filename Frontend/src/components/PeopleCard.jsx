@@ -70,8 +70,8 @@ PeopleCard.Small = ({ name, jobTitle }) => {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
   const url = `https://source.unsplash.com/150x150/?user&${randomSeed}`;
   return (
-    <div className="relative transition-transform rounded-xl overflow-hidden shadow-lg bg-white hover:shadow-2xl hover:-translate-y-1">
-      <div className="p-2 flex-row flex ">
+    <div className="relative border-b-2 rounded-xl bg-slate-50 border-gray-200 overflow-hidden hover:scale-105 ">
+      <div className="p-2 flex-row flex  ">
         <img
           className="w-14 h-14 mx-2 rounded-full object-cover border-4 border-white"
           src={url}
