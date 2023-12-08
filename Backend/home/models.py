@@ -29,6 +29,7 @@ class UserDoc(models.Model):
     name = models.CharField(max_length=255, default="")
     institution = models.CharField(max_length=255, default="")
     jobtitle = models.CharField(max_length=255, default="")
+    jobdescription = models.TextField(default="")
     topics = models.JSONField(default=dict)
 
 class Topic(models.Model):

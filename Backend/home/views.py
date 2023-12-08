@@ -1138,24 +1138,48 @@ import pickle
 from scipy.spatial.distance import cosine
 from collections import Counter
 from faker import Faker
+import random
 #load dummy data
+def rand_institution(institutions):
+    _type=random.choice(list(institutions.keys()))
+    _name=random.choice(institutions[_type])
+    return f"{_name}, {_type}"
 def load_dummy_data():
     print("Loading dummy data")
     fake=Faker()
-    # topic=Topic.objects.get(topicid=topidid)
-    # topic.keywords={'keywords': ['C++', 'Python']}
-    # topic.save()
     with open ('home/user_profiles.pkl', 'rb') as f:
         user_profiles = pickle.load(f)
+    with open('home/dummy_data.pkl', 'rb') as f:
+        dummy_data=pickle.load(f)
+    institutions=dummy_data['COLLEGES']
+    jobs=dummy_data['JOB DATA']
     for i,key in enumerate(user_profiles.keys()):
-        UserDoc.objects.get_or_create(userid=key, name=f"User{i}", email=f"user{i}@example.com",jobtitle=fake.job(), institution=fake.company(), topics={'Miscellaneous':[]})
-
+        job=random.choice(jobs)
+        user_obj, created = UserDoc.objects.get_or_create(
+            email=f"user{i}@example.com",
+            defaults={
+                'userid': key,
+                'name': fake.name(),
+                'jobtitle': job[0],
+                'jobdescription': job[1],
+                'institution': rand_institution(institutions),
+                'topics': {'Miscellaneous': []}
+            }
+        )
+        if not created:
+            user_obj.userid=key
+            user_obj.name=fake.name()
+            user_obj.jobtitle=job[0]
+            user_obj.jobdescription=job[1]
+            user_obj.institution=rand_institution(institutions)
+            user_obj.save()
 # Helper functions
 def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
     user_counter = Counter()  # Counter to track user occurrences
 
     for input_tag in input_tags:
         if input_tag not in tag_embeddings:
+            print("adding new")
             tag_embeddings[input_tag] = embeddings.embed_query(input_tag)
         input_embedding = tag_embeddings[input_tag]
         
@@ -1209,7 +1233,7 @@ def get_recommended_people(request):
         users = UserDoc.objects.filter(userid__in=top_users)
         response=[]
         for user in users:
-            response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': 'I am a software engineer and i engineer software', 'institution': user.institution})
+            response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': user.jobdescription, 'institution': user.institution})
         return JsonResponse({'response':response})
 
     except Exception as e:
