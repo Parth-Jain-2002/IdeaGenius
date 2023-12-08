@@ -171,80 +171,80 @@ export default function IdeaInterface() {
             </div>
             {chats
               ? chats.map((chat, index) => (
-                  <>
-                    <div className="flex items-start mb-4">
-                      <div className="flex-none">
-                        {/* <Avatar className="rounded-full" size="icon" /> */}
-                      </div>
-                      <div className="ml-auto mr-2 text-right max-w-3xl">
-                        <div className="text-sm text-gray-500">User</div>
-                        <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-3 mt-1 leading-loose">
-                          {chat.message}
-                        </div>
+                <>
+                  <div className="flex items-start mb-4">
+                    <div className="flex-none">
+                      {/* <Avatar className="rounded-full" size="icon" /> */}
+                    </div>
+                    <div className="ml-auto mr-2 text-right max-w-3xl">
+                      <div className="text-sm text-gray-500">User</div>
+                      <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-3 mt-1 leading-loose">
+                        {chat.message}
                       </div>
                     </div>
-                    <div className="flex items-start mb-4">
-                      <div className="flex-none">
-                        {/* <Avatar className="rounded-full" size="icon" /> */}
-                      </div>
-                      <div className="ml-2 mr-2 ">
-                        <div className="text-sm text-gray-500">AI</div>
-                        {index === question.length - 1 &&
+                  </div>
+                  <div className="flex items-start mb-4">
+                    <div className="flex-none">
+                      {/* <Avatar className="rounded-full" size="icon" /> */}
+                    </div>
+                    <div className="ml-2 mr-2 ">
+                      <div className="text-sm text-gray-500">AI</div>
+                      {index === question.length - 1 &&
                         initialIdeas.length == 4 ? (
-                          // Render AI-generated problem statements differently
-                          <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-xl bg-slate-50 lg:grid-cols-2 gap-12 leading-loose">
-                            {initialIdeas.map((problem, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.5 }}
-                                className=" hover:border-x-4 hover:border-y-4 bg-white dark:bg-zinc-900 border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
+                        // Render AI-generated problem statements differently
+                        <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-xl bg-slate-50 lg:grid-cols-2 gap-12 leading-loose">
+                          {initialIdeas.map((problem, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.5 }}
+                              className=" hover:border-x-4 hover:border-y-4 bg-white dark:bg-zinc-900 border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
+                            >
+                              <h2 className="text-lg p-2 font-semibold mb-4">
+                                {index + 1}. {problem.title}
+                              </h2>
+                              <p className="text-gray-600 p-2">
+                                {problem.description}
+                              </p>
+                              <button
+                                onClick={() =>
+                                  handleNavigate(
+                                    problem.title,
+                                    problem.description
+                                  )
+                                }
+                                className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black"
                               >
-                                <h2 className="text-lg p-2 font-semibold mb-4">
-                                  {index + 1}. {problem.title}
-                                </h2>
-                                <p className="text-gray-600 p-2">
-                                  {problem.description}
-                                </p>
-                                <button
-                                  onClick={() =>
-                                    handleNavigate(
-                                      problem.title,
-                                      problem.description
-                                    )
-                                  }
-                                  className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black"
-                                >
-                                  Select Idea
-                                </button>
-                              </motion.div>
-                            ))}
-                          </div>
-                        ) : (
-                          // Default rendering for other AI responses
-                          <div
-                            className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-3 mt-1 leading-loose max-w-3xl"
-                            ref={containerRef}
-                            style={{
-                              whiteSpace: "pre-wrap",
-                              overflowY: "auto",
+                                Select Idea
+                              </button>
+                            </motion.div>
+                          ))}
+                        </div>
+                      ) : (
+                        // Default rendering for other AI responses
+                        <div
+                          className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-3 mt-1 leading-loose max-w-3xl"
+                          ref={containerRef}
+                          style={{
+                            whiteSpace: "pre-wrap",
+                            overflowY: "auto",
+                          }}
+                        >
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: formatResponse(
+                                chat.response,
+                                containerRef
+                              ),
                             }}
-                          >
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: formatResponse(
-                                  chat.response,
-                                  containerRef
-                                ),
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
+                          />
+                        </div>
+                      )}
                     </div>
-                  </>
-                ))
+                  </div>
+                </>
+              ))
               : ""}
           </div>
         </section>

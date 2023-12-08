@@ -5,14 +5,7 @@ import { useNavigate } from "react-router-dom";
 import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemPanel,
-  AccordionItemState,
-} from "react-accessible-accordion";
+
 
 
 const IdeaDashboard = ({ topicid }) => {
@@ -72,6 +65,10 @@ const IdeaDashboard = ({ topicid }) => {
       );
   };
 
+  
+  
+
+
   useEffect(() => {
     getTopics();
     getPeeps();
@@ -116,7 +113,7 @@ const IdeaDashboard = ({ topicid }) => {
                     onClick={() => {
                       handleIdeaGeneration();
                     }}
-                    className="px-2 py-2 font-bold text-gray-700 text-bold rounded-lg"
+                    className="px-2 py-2 font-bold text-gray-700 rounded-lg"
                   >
                     Generate Idea
                   </button>
