@@ -1315,3 +1315,36 @@ def generate_keywords(ideaid):
     
     return "Success"
     
+
+@csrf_exempt
+def add_random_users(request):
+    fake=Faker()
+    with open('home/dummy_data.pkl', 'rb') as f:
+        dummy_data=pickle.load(f)
+    with open('home/user_profiles.pkl', 'rb') as f:
+        user_profiles=pickle.load(f)
+    with open('home/tag_embeddings.pkl', 'rb') as f:
+        tag_embeddings=pickle.load(f)
+    tags=[tag for tag in tag_embeddings.keys()]
+    print(len(tags))
+    institutions=dummy_data['COLLEGES']
+    jobs=dummy_data['JOB DATA']
+    for i in range(100):
+        name=fake.name(),
+        userid=uuid.uuid4(),
+        tags_per_user=random.sample(tags, random.randint(5,10))
+        job=random.choice(jobs)
+        print("adding user ", i)
+        UserDoc.objects.create(
+            email=f"user_{i}@gmail.com",
+            name=name,
+            userid=userid,
+            jobtitle=job[0],
+            jobdescription=job[1],
+            institution=rand_institution(institutions),
+        )
+        user_profiles[userid]=tags_per_user
+
+    with open('home/user_profiles.pkl', 'wb') as f:
+        pickle.dump(user_profiles, f)
+    return JsonResponse({'response':'Success'})
