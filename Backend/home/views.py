@@ -816,11 +816,11 @@ def get_competitor_revenue(competitors):
     final_competitor = [comp for comp, rev in zip(competitors, competitor_revenue) if rev != 0]
     final_competitor_revenue = [rev for rev in competitor_revenue if rev != 0]
     
-    
+    print(final_competitor,final_competitor_revenue)
     
     return final_competitor,final_competitor_revenue
 
-def get_competitors(description):    
+def get_competitors(description, keywords):    
     
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=0.5)
@@ -836,25 +836,60 @@ def get_competitors(description):
     
     urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
    
+    print(urls)
     competitors = []
     for url in urls:
         
         try:
             response = session.get(url, timeout=5)
-            
+            response.raise_for_status() 
+            print(url)
             soup = BeautifulSoup(response.text, 'html.parser')
             numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
             for title in numbered_titles:
                 competitors.append(title.text.strip())
-        except Exception as e:
+            
+            
+        
+        except requests.exceptions.RequestException as e:
+            
             print(f"Error fetching data from {url}: {e}")
-       
+            continue
+    
+    
+    search_query = ", ".join(keywords)+ " top best"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = session.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+   
+    print(urls)
+    
+    for url in urls:
+        
+        try:
+            response = session.get(url, timeout=5)
+            response.raise_for_status() 
+            print(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+            for title in numbered_titles:
+                competitors.append(title.text.strip())
+            
+            
+        
+        except requests.exceptions.RequestException as e:
+            
+            print(f"Error fetching data from {url}: {e}")
+            continue
+          
     
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
     unique_competitors=list(set(filtered_competitors))   
     
-    
+    print(unique_competitors)
     
     return unique_competitors
 
@@ -976,6 +1011,7 @@ def get_insights(request):
     
     if len(idea.keywords)==0 or 'google_search_keywords' not in idea.keywords:
         print(1)
+        
     
     if len(idea.market_insights)!=0 and json.loads(idea.market_insights).get('keywords',[])==idea.keywords['google_search_keywords']:
         print("Market Insights already fetched!")
@@ -984,11 +1020,11 @@ def get_insights(request):
     
     description = idea.description 
     keyword_list=idea.keywords.get('google_search_keywords', [])   
-    unique_competitors=get_competitors(description)
+    unique_competitors=get_competitors(description, keyword_list)
     competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
-    tables =get_tables(description, keyword_list)  
-    
     print(competitors,competitor_revenue)
+    tables =get_tables(description, keyword_list)   
+    
     
     images =get_images(keyword_list)  
     interest_over_time = get_google_trends_data(keyword_list)
