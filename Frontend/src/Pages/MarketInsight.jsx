@@ -65,7 +65,8 @@ export default function MarketInsight() {
   useEffect(() => {
     axios
       .post(`http://localhost:8000/get_insights`, {
-        idea_id: ideaid,
+        userid: localStorage.getItem("ideagen_user_id"),
+        ideaid: ideaid,
       })
       .then(
         (response) => {
@@ -163,92 +164,110 @@ export default function MarketInsight() {
       </header>
 
       <main className="flex-1 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          <div className="md:grid-cols-1">
-            <div className="bg-gray-200 p-6 rounded-md shadow-md relative mb-4">
-              <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
-                <div className="flex flex-col justify-center h-full">
-                  <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
-                    <div className="p-3 h-full">
-                      <div className="overflow-x-auto h-full">
-                        <table className="table-auto w-full h-full">
-                          <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
-                            <tr>
-                              {tables[0].length > 0 &&
-                                tables[0][0].map((header, index) => (
-                                  <th
-                                    key={index}
-                                    className="p-2 whitespace-nowrap"
-                                  >
-                                    <div className="font-semibold text-left">
-                                      {header}
+
+        <div >
+          <div className="bg-gray-200 p-6 rounded-md shadow-md relative mb-4">
+            <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
+              <div className="flex flex-col justify-center h-full">
+                <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
+                  <div className="p-3 h-full">
+                    <div className="overflow-x-auto h-full">
+                      <table className="table-auto w-full h-full">
+                        <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
+                          <tr>
+                            {tables[0].length > 0 &&
+                              tables[0][0].map((header, index) => (
+                                <th
+                                  key={index}
+                                  className="p-2 whitespace-nowrap"
+                                >
+                                  <div className="font-semibold text-left">
+                                    {header}
+                                  </div>
+                                </th>
+                              ))}
+                          </tr>
+                        </thead>
+                        <tbody className="text-sm divide-y divide-gray-100">
+                          {tables[0].slice(1).map((row, rowIndex) => (
+                            <tr key={rowIndex}>
+                              {row.map((cell, cellIndex) => (
+                                <td
+                                  key={cellIndex}
+                                  className="p-2 whitespace-nowrap"
+                                >
+                                  <div className="flex items-center">
+                                    <div className="font-medium text-gray-800">
+                                      {cell}
                                     </div>
-                                  </th>
-                                ))}
+                                  </div>
+                                </td>
+                              ))}
                             </tr>
-                          </thead>
-                          <tbody className="text-sm divide-y divide-gray-100">
-                            {tables[0].slice(1).map((row, rowIndex) => (
-                              <tr key={rowIndex}>
-                                {row.map((cell, cellIndex) => (
-                                  <td
-                                    key={cellIndex}
-                                    className="p-2 whitespace-nowrap"
-                                  >
-                                    <div className="flex items-center">
-                                      <div className="font-medium text-gray-800">
-                                        {cell}
-                                      </div>
-                                    </div>
-                                  </td>
-                                ))}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <p className="absolute text-sm bottom-0 right-0 mb-1 mr-2 text-m text-gray-500">
-                source: Future Market Insights
-              </p>
             </div>
-            <div className=" bg-gray-200 p-6 rounded-md shadow-md">
-              <h2 className="text-black text-lg font-semibold mb-4">
-                Competitors in the Market
-              </h2>
+
+            <p className="absolute text-sm bottom-0 right-0 mb-1 mr-2 text-m text-gray-500">
+              source: Future Market Insights
+            </p>
+          </div>
+        </div>
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-8">
+
+          <div className="bg-gray-200 p-6 rounded-md shadow-md mb-4 min-h-0">
+            <h2 className="text-black text-lg font-semibold mb-4">
+              Customer Interest Trends
+            </h2>
+            <Line data={customerInterest} options={lineChartOptions} />
+          </div>
+
+          <div className=" bg-gray-200 p-6 rounded-md mb-4 shadow-md">
+            <h2 className="text-black text-lg font-semibold mb-4">
+              Competitors in the Market
+            </h2>
+
+            <div className="w-3/5 mx-auto h-full">
               <Pie data={competitorChart} />
             </div>
+
+
           </div>
 
-          <div className="md:grid-cols-1 gap-4">
-            <div className="bg-gray-200 p-6 rounded-md shadow-md mb-4">
-              <h2 className="text-black text-lg font-semibold mb-4">
-                Customer Interest Trends
-              </h2>
-              <Line data={customerInterest} options={lineChartOptions} />
+
+
+
+
+
+
+
+          {images.slice(0, 2).map((image, index) => (
+            <div key={index} className=" bg-gray-200 p-6 rounded-md shadow-md mb-4">
+              <img
+                src={image}
+                alt={`Market Insights`}
+                className="rounded-lg w-full"
+
+              />
             </div>
-
-
-            {images.slice(0, 2).map((image, index) => (
-              <div key={index} className=" bg-gray-200 p-6 rounded-md shadow-md mb-4">
-                <img
-                  src={image}
-                  alt={`Market Insights`}
-                  className="rounded-lg w-full"
-
-                />
-              </div>
-            ))}
+          ))}
 
 
 
-          </div>
+
 
         </div>
+
+
+
+
       </main>
     </div>
   );

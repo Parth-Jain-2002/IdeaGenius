@@ -760,8 +760,9 @@ def select_idea(request):
 #------------------------------MARKET INSIGHTS---------------------------------------------
 #------------------------------------------------------------------------------------------
 
-def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'): 
-    pytrends = TrendReq(retries=5)
+def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):     
+    print(keywords)
+    pytrends = TrendReq(retries=5, hl='en-US', tz=360)
 
     # Build payload
     pytrends.build_payload(
@@ -775,7 +776,7 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
 
     interest_over_time_df['sum_frequency'] = interest_over_time_df[keywords].sum(axis=1)    
     result_df = interest_over_time_df[['sum_frequency']]
-    return result_df
+    return result_df   
 
 
 def clean_google_url(google_url):    
@@ -785,7 +786,7 @@ def clean_google_url(google_url):
 
 def get_competitor_revenue(competitors):
     competitor_revenue=[]
-    
+    visited=set()
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
@@ -801,40 +802,44 @@ def get_competitor_revenue(competitors):
         filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
         
         if len(filtered_urls) > 0 and filtered_urls[0]!="https://growjo.com/":
-            try:
-                response = session.get(filtered_urls[0], timeout=10)                
-                soup = BeautifulSoup(response.text, 'html.parser')
-                all_li_tags = soup.find_all('li')
-                
-                for li_tag in all_li_tags:
-                    
-                    
-                    if 'estimated annual revenue is currently' in li_tag.get_text():
-                        
-                        revenue_match = re.search(r'\$\d+(?:,\d{3})*(?:\.\d+)?[BMK]?', li_tag.get_text())
-
-                        if revenue_match:
-                            revenue_data = revenue_match.group(0)
-                            competitor_revenue.append(revenue_data)
-                            
-                        else:
-                            competitor_revenue.append(0)
-                
-                
-            except Exception as e:
-                print(f"Error fetching data from {filtered_urls[0]}: {e}")
+            if filtered_urls[0] in visited:
                 competitor_revenue.append(0)
+            else:
+                visited.add(filtered_urls[0])                
+                try:
+                    response = session.get(filtered_urls[0], timeout=10)                
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    all_li_tags = soup.find_all('li')
+                    
+                    for li_tag in all_li_tags:
+                        
+                        
+                        if 'estimated annual revenue is currently' in li_tag.get_text():
+                            
+                            revenue_match = re.search(r'\$\d+(?:,\d{3})*(?:\.\d+)?[BMK]?', li_tag.get_text())
+
+                            if revenue_match:
+                                revenue_data = revenue_match.group(0)
+                                competitor_revenue.append(revenue_data)
+                                
+                            else:
+                                competitor_revenue.append(0)
+                    
+                    
+                except Exception as e:
+                    print(f"Error fetching data from {filtered_urls[0]}: {e}")
+                    competitor_revenue.append(0)
         else:
             competitor_revenue.append(0)
                
     final_competitor = [comp for comp, rev in zip(competitors, competitor_revenue) if rev != 0]
     final_competitor_revenue = [rev for rev in competitor_revenue if rev != 0]
     
-    
+    print(final_competitor,final_competitor_revenue)
     
     return final_competitor,final_competitor_revenue
 
-def get_competitors(description):    
+def get_competitors(description, keywords):    
     
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=0.5)
@@ -850,30 +855,65 @@ def get_competitors(description):
     
     urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
    
+    print(urls)
     competitors = []
     for url in urls:
         
         try:
             response = session.get(url, timeout=5)
-            
+            response.raise_for_status() 
+            print(url)
             soup = BeautifulSoup(response.text, 'html.parser')
             numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
             for title in numbered_titles:
                 competitors.append(title.text.strip())
-        except Exception as e:
+            
+            
+        
+        except requests.exceptions.RequestException as e:
+            
             print(f"Error fetching data from {url}: {e}")
-       
+            continue
+    
+    
+    search_query = ", ".join(keywords)+ " top best"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = session.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+   
+    print(urls)
+    
+    for url in urls:
+        
+        try:
+            response = session.get(url, timeout=5)
+            response.raise_for_status() 
+            print(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+            for title in numbered_titles:
+                competitors.append(title.text.strip())
+            
+            
+        
+        except requests.exceptions.RequestException as e:
+            
+            print(f"Error fetching data from {url}: {e}")
+            continue
+          
     
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
     unique_competitors=list(set(filtered_competitors))   
     
-    
+    print(unique_competitors)
     
     return unique_competitors
 
 
-def get_tables(description):
+def get_tables(description, keywords):
     
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=0.5)
@@ -908,7 +948,33 @@ def get_tables(description):
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
         
+    search_query = ", ".join(keywords)+ " futuremarketinsights"
+    search_url = f'https://www.google.com/search?q={search_query}'
+    response = session.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')        
+    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
     
+    
+      
+    for url in filtered_urls:        
+        try:
+            response = session.get(url, timeout=5)            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            first_table = soup.find('table')
+            table_content = []
+            if first_table:
+                for row in first_table.find_all('tr'):
+                    columns = row.find_all(['th', 'td'])
+                    row_data = [column.get_text(strip=True) for column in columns]
+                    table_content.append(row_data)
+                tables.append(table_content)           
+            
+            
+        except Exception as e:
+            print(f"Error fetching data from {url}: {e}")
+            
     return tables
 
 
@@ -954,42 +1020,53 @@ def get_images(keywords):
 
 @csrf_exempt
 def get_insights(request):    
-    data = json.loads(request.body.decode('utf-8'))    
-    ideaid = data['idea_id'] 
-      
-    idea = Topic(
-        userid="ideagen_user_id",
-        topicid="Streamline_Expense_Tracking",
-        title="Streamline_Expense_Tracking",
-        description="Develop an intuitive web and mobile app for efficient expense tracking, categorization, and reporting, leveraging AI for smart insights and automated receipt scanning",
-        generated=True,
-        time_insight={},  
-        cost_insight={},  
-        subtask={"Implement manual and automated expense entry and categorization.","Develop a user-friendly reporting system with customizable visualizations."},
-        keywords={'keywords': ['Expense Tracking', 'Spending Insights','Finance Management App']}
-    )
+    data = json.loads(request.body.decode('utf-8'))   
+    userid = data['userid'] 
+    ideaid = data['ideaid']    
     
-    description = idea.description    
-    unique_competitors=get_competitors(description)
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+    
+    print(idea.description)
+    
+    if len(idea.keywords)==0 or 'google_search_keywords' not in idea.keywords:
+        print(1)
+        
+    
+    if len(idea.market_insights)!=0 and json.loads(idea.market_insights).get('keywords',[])==idea.keywords['google_search_keywords']:
+        print("Market Insights already fetched!")
+        return JsonResponse(json.loads(idea.market_insights))
+    
+    
+    description = idea.description 
+    keyword_list=idea.keywords.get('google_search_keywords', [])   
+    unique_competitors=get_competitors(description, keyword_list)
     competitors,competitor_revenue=get_competitor_revenue(unique_competitors)
-    tables =get_tables(description)  
-    
     print(competitors,competitor_revenue)
-    keyword_list=idea.keywords.get('keywords', [])
+    tables =get_tables(description, keyword_list)   
+    
+    
     images =get_images(keyword_list)  
     interest_over_time = get_google_trends_data(keyword_list)
     
-    
-    
-
+    response = {
+        'competitors': competitors,
+        'interest_over_time': interest_over_time.to_json(),
+        'images': images,
+        'tables': tables,
+        'competitor_revenue': competitor_revenue,
+        'keywords': keyword_list                             
+    }
+        
+    idea.market_insights = json.dumps(response)
+    idea.save()
     return JsonResponse({
         'competitors': competitors,
         'interest_over_time': interest_over_time.to_json(),
         'images': images,
         'tables': tables,
-        'competitor_revenue': competitor_revenue
-        #                 'keywords': keyword_list                             
-                        })
+        'competitor_revenue': competitor_revenue,
+        'keywords': keyword_list                             
+    })
 
 #----------------------------------------------------------------------------------------
 #-----------------------------------VISION DOC-------------------------------------------
@@ -1116,24 +1193,48 @@ import pickle
 from scipy.spatial.distance import cosine
 from collections import Counter
 from faker import Faker
+import random
 #load dummy data
+def rand_institution(institutions):
+    _type=random.choice(list(institutions.keys()))
+    _name=random.choice(institutions[_type])
+    return f"{_name}, {_type}"
 def load_dummy_data():
     print("Loading dummy data")
     fake=Faker()
-    # topic=Topic.objects.get(topicid=topidid)
-    # topic.keywords={'keywords': ['C++', 'Python']}
-    # topic.save()
     with open ('home/user_profiles.pkl', 'rb') as f:
         user_profiles = pickle.load(f)
+    with open('home/dummy_data.pkl', 'rb') as f:
+        dummy_data=pickle.load(f)
+    institutions=dummy_data['COLLEGES']
+    jobs=dummy_data['JOB DATA']
     for i,key in enumerate(user_profiles.keys()):
-        UserDoc.objects.get_or_create(userid=key, name=f"User{i}", email=f"user{i}@example.com",jobtitle=fake.job(), institution=fake.company(), topics={'Miscellaneous':[]})
-
+        job=random.choice(jobs)
+        user_obj, created = UserDoc.objects.get_or_create(
+            email=f"user{i}@example.com",
+            defaults={
+                'userid': key,
+                'name': fake.name(),
+                'jobtitle': job[0],
+                'jobdescription': job[1],
+                'institution': rand_institution(institutions),
+                'topics': {'Miscellaneous': []}
+            }
+        )
+        if not created:
+            user_obj.userid=key
+            user_obj.name=fake.name()
+            user_obj.jobtitle=job[0]
+            user_obj.jobdescription=job[1]
+            user_obj.institution=rand_institution(institutions)
+            user_obj.save()
 # Helper functions
 def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
     user_counter = Counter()  # Counter to track user occurrences
 
     for input_tag in input_tags:
         if input_tag not in tag_embeddings:
+            print("adding new")
             tag_embeddings[input_tag] = embeddings.embed_query(input_tag)
         input_embedding = tag_embeddings[input_tag]
         
@@ -1152,7 +1253,7 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        # load_dummy_data()
+        #load_dummy_data()
 
         if(len(topic.keywords)==0 or 'people_search_keywords' not in topic.keywords or len(topic.keywords['people_search_keywords'])==0):
             generate_keywords(topicid)
@@ -1187,7 +1288,7 @@ def get_recommended_people(request):
         users = UserDoc.objects.filter(userid__in=top_users)
         response=[]
         for user in users:
-            response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': 'I am a software engineer and i engineer software', 'institution': user.institution})
+            response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': user.jobdescription, 'institution': user.institution})
         return JsonResponse({'response':response})
 
     except Exception as e:
@@ -1233,3 +1334,36 @@ def generate_keywords(ideaid):
     
     return "Success"
     
+
+@csrf_exempt
+def add_random_users(request):
+    fake=Faker()
+    with open('home/dummy_data.pkl', 'rb') as f:
+        dummy_data=pickle.load(f)
+    with open('home/user_profiles.pkl', 'rb') as f:
+        user_profiles=pickle.load(f)
+    with open('home/tag_embeddings.pkl', 'rb') as f:
+        tag_embeddings=pickle.load(f)
+    tags=[tag for tag in tag_embeddings.keys()]
+    print(len(tags))
+    institutions=dummy_data['COLLEGES']
+    jobs=dummy_data['JOB DATA']
+    for i in range(100):
+        name=fake.name(),
+        userid=uuid.uuid4(),
+        tags_per_user=random.sample(tags, random.randint(5,10))
+        job=random.choice(jobs)
+        print("adding user ", i)
+        UserDoc.objects.create(
+            email=f"user_{i}@gmail.com",
+            name=name,
+            userid=userid,
+            jobtitle=job[0],
+            jobdescription=job[1],
+            institution=rand_institution(institutions),
+        )
+        user_profiles[userid]=tags_per_user
+
+    with open('home/user_profiles.pkl', 'wb') as f:
+        pickle.dump(user_profiles, f)
+    return JsonResponse({'response':'Success'})

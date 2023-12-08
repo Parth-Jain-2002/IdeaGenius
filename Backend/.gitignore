@@ -12,7 +12,4 @@ ideagenius/__pycache__
 *.pyc
 *.pyo
 
-home/test.py
-home/test2.py
-home/test3.py
-
+home/tag_embeddings.pkl
