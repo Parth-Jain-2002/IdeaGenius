@@ -164,7 +164,7 @@ export default function MarketInsight() {
       </header>
 
       <main className="flex-1 p-4">
-
+        { tables.length>0 && tables[0].length > 0 &&
         <div >
           <div className="bg-gray-200 p-6 rounded-md shadow-md relative mb-4">
             <div className="antialiased bg-[#efefef] text-gray-600 h-full rounded-lg mb-5">
@@ -172,10 +172,11 @@ export default function MarketInsight() {
                 <div className="w-full mx-auto bg-[#efefef] shadow-lg rounded-lg border border-gray-200 h-full">
                   <div className="p-3 h-full">
                     <div className="overflow-x-auto h-full">
+                      
                       <table className="table-auto w-full h-full">
                         <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
                           <tr>
-                            {tables[0].length > 0 &&
+                            {tables.length>0 && tables[0].length > 0 &&
                               tables[0][0].map((header, index) => (
                                 <th
                                   key={index}
@@ -189,7 +190,7 @@ export default function MarketInsight() {
                           </tr>
                         </thead>
                         <tbody className="text-sm divide-y divide-gray-100">
-                          {tables[0].slice(1).map((row, rowIndex) => (
+                          {tables.length>0 && tables[0].slice(1).map((row, rowIndex) => (
                             <tr key={rowIndex}>
                               {row.map((cell, cellIndex) => (
                                 <td
@@ -218,7 +219,7 @@ export default function MarketInsight() {
             </p>
           </div>
         </div>
-
+        }
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-8">
 
