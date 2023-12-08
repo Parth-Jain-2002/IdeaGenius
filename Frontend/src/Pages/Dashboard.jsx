@@ -43,7 +43,7 @@ export default function ResearchBank() {
     }
     return str.split(' ').map(word => capitalizeFirstLetter(word)).join(' ');
   };
-  
+
   const openModal = () => {
     setIsModalOpen(true)
   }
@@ -192,17 +192,17 @@ export default function ResearchBank() {
       </aside>
       <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
         <Navbar />
-  
-{currentTopic === "" || currentTopic === "Miscellaneous" ? (
-  <div className="w-full h-full">
-    <div className="flex  justify-start space-x-8 rounded-lg bg-white w-[95%] h-28  mb-4">
-  <Lottie
-       animationData={animationdata}
-       className=" h-full"
-     />
-     <div className=" p-4 my-auto ">
-       <h1 className="text-4xl my-auto font-semibold                                                                                                                      ">IdeaX Hub </h1>
-     <h2 class=" mt-2  font-medium text-[#597ef7] text-lg ">Refine, Explore, and cultivate groundbreaking ideas.</h2>
+
+        {currentTopic === "" || currentTopic === "Miscellaneous" ? (
+          <div className="w-full h-full">
+            <div className="flex  justify-start space-x-8 rounded-lg bg-white w-[95%] h-28  mb-4">
+              <Lottie
+                animationData={animationdata}
+                className=" h-full"
+              />
+              <div className=" p-4 my-auto ">
+                <h1 className="text-4xl my-auto font-semibold                                                                                                                      ">IdeaX Hub </h1>
+                <h2 class=" mt-2  font-medium text-[#597ef7] text-lg ">Refine, Explore, and cultivate groundbreaking ideas.</h2>
 
 
               </div>
