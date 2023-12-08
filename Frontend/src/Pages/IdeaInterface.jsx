@@ -136,8 +136,8 @@ export default function IdeaInterface() {
       <main className="flex flex-col p-4">
         <Navbar link={"/dashboard"} />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
-          <div className="p-4 bg-white dark:bg-zinc-900 rounded-md shadow-md mr-2">
-            <div className="flex items-center justify-between p-2 bg-gray-200 dark:bg-gray-900 rounded-md mb-4">
+          <div className="p-4 bg-white rounded-md shadow-md mr-2">
+            <div className="flex items-center justify-between p-2 bg-gray-200 rounded-md mb-4">
               <div className="items-center">
                 <h3 className="text-lg font-semibold ml-4">IdeaX</h3>
                 <span className="text-sm text-gray-500 ml-4">
@@ -164,87 +164,87 @@ export default function IdeaInterface() {
               </div>
               <div className="ml-2 mr-2 max-w-3xl">
                 <div className="text-sm text-gray-500">AI</div>
-                <div className="bg-blue-100 dark:bg-zinc-700 rounded-md px-5 py-3 mt-1">
+                <div className="bg-blue-100 rounded-md px-5 py-3 mt-1">
                   1. Current challenge or pain point?
                 </div>
               </div>
             </div>
             {chats
               ? chats.map((chat, index) => (
-                <>
-                  <div className="flex items-start mb-4">
-                    <div className="flex-none">
-                      {/* <Avatar className="rounded-full" size="icon" /> */}
-                    </div>
-                    <div className="ml-auto mr-2 text-right max-w-3xl">
-                      <div className="text-sm text-gray-500">User</div>
-                      <div className="bg-gray-200 dark:bg-zinc-700 rounded-xl px-5 py-3 mt-1 leading-loose">
-                        {chat.message}
+                  <>
+                    <div className="flex items-start mb-4">
+                      <div className="flex-none">
+                        {/* <Avatar className="rounded-full" size="icon" /> */}
+                      </div>
+                      <div className="ml-auto mr-2 text-right max-w-3xl">
+                        <div className="text-sm text-gray-500">User</div>
+                        <div className="bg-gray-200 rounded-xl px-5 py-3 mt-1 leading-loose">
+                          {chat.message}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-start mb-4">
-                    <div className="flex-none">
-                      {/* <Avatar className="rounded-full" size="icon" /> */}
-                    </div>
-                    <div className="ml-2 mr-2 ">
-                      <div className="text-sm text-gray-500">AI</div>
-                      {index === question.length - 1 &&
+                    <div className="flex items-start mb-4">
+                      <div className="flex-none">
+                        {/* <Avatar className="rounded-full" size="icon" /> */}
+                      </div>
+                      <div className="ml-2 mr-2 ">
+                        <div className="text-sm text-gray-500">AI</div>
+                        {index === question.length - 1 &&
                         initialIdeas.length == 4 ? (
-                        // Render AI-generated problem statements differently
-                        <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-xl bg-slate-50 lg:grid-cols-2 gap-12 leading-loose">
-                          {initialIdeas.map((problem, index) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ duration: 0.5 }}
-                              className=" hover:border-x-4 hover:border-y-4 bg-white dark:bg-zinc-900 border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
-                            >
-                              <h2 className="text-lg p-2 font-semibold mb-4">
-                                {index + 1}. {problem.title}
-                              </h2>
-                              <p className="text-gray-600 p-2">
-                                {problem.description}
-                              </p>
-                              <button
-                                onClick={() =>
-                                  handleNavigate(
-                                    problem.title,
-                                    problem.description
-                                  )
-                                }
-                                className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black"
+                          // Render AI-generated problem statements differently
+                          <div className="grid grid-cols-1 md:grid-cols-2 p-2 rounded-xl bg-slate-50 lg:grid-cols-2 gap-12 leading-loose">
+                            {initialIdeas.map((problem, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5 }}
+                                className=" hover:border-x-4 hover:border-y-4 bg-white border-4  rounded-md p-4 shadow-md border-transparent hover:border-green-300"
                               >
-                                Select Idea
-                              </button>
-                            </motion.div>
-                          ))}
-                        </div>
-                      ) : (
-                        // Default rendering for other AI responses
-                        <div
-                          className="bg-blue-100 dark:bg-blue-900 rounded-xl px-5 py-3 mt-1 leading-loose max-w-3xl"
-                          ref={containerRef}
-                          style={{
-                            whiteSpace: "pre-wrap",
-                            overflowY: "auto",
-                          }}
-                        >
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: formatResponse(
-                                chat.response,
-                                containerRef
-                              ),
+                                <h2 className="text-lg p-2 font-semibold mb-4">
+                                  {index + 1}. {problem.title}
+                                </h2>
+                                <p className="text-gray-600 p-2">
+                                  {problem.description}
+                                </p>
+                                <button
+                                  onClick={() =>
+                                    handleNavigate(
+                                      problem.title,
+                                      problem.description
+                                    )
+                                  }
+                                  className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black"
+                                >
+                                  Select Idea
+                                </button>
+                              </motion.div>
+                            ))}
+                          </div>
+                        ) : (
+                          // Default rendering for other AI responses
+                          <div
+                            className="bg-blue-100 rounded-xl px-5 py-3 mt-1 leading-loose max-w-3xl"
+                            ref={containerRef}
+                            style={{
+                              whiteSpace: "pre-wrap",
+                              overflowY: "auto",
                             }}
-                          />
-                        </div>
-                      )}
+                          >
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: formatResponse(
+                                  chat.response,
+                                  containerRef
+                                ),
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </>
-              ))
+                  </>
+                ))
               : ""}
           </div>
         </section>
@@ -259,7 +259,7 @@ export default function IdeaInterface() {
                 onKeyPress={handleKeyPress}
               />
               <button
-                className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
+                className="p-2 rounded-full bg-gray-300 "
                 onClick={() => handleChat()}
                 disabled={loading}
               >

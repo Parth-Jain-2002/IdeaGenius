@@ -65,7 +65,8 @@ export default function MarketInsight() {
   useEffect(() => {
     axios
       .post(`http://localhost:8000/get_insights`, {
-        idea_id: ideaid,
+        userid: localStorage.getItem("ideagen_user_id"),
+        ideaid: ideaid,
       })
       .then(
         (response) => {

@@ -72,7 +72,7 @@ def idea_info(idea):
 def generate_cost_insights_prompt(idea):
     prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
     This is for a platform that enables alumni/clients to collaborate with college students on projects.
-    So, we are generating insights for the idea:
+    So, we are generating cost insights for the idea:
 
     {idea_info(idea)}
 
@@ -86,7 +86,7 @@ def generate_cost_insights_prompt(idea):
 def generate_time_insights_prompt(idea):
     prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
     This is for a platform that enables alumni/clients to collaborate with college students on projects.
-    So, we are generating insights for the idea:
+    So, we are generating time insights for the idea:
 
     {idea_info(idea)}
 
@@ -100,7 +100,7 @@ def generate_time_insights_prompt(idea):
 def generate_subtasks_prompt(idea):
     prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
     This is for a platform that enables alumni/clients to collaborate with college students on projects.
-    So, we are generating insights for the idea:
+    So, we are generating subtasks for the idea:
 
     {idea_info(idea)}
 
@@ -108,5 +108,28 @@ def generate_subtasks_prompt(idea):
     """
 
     prompt += "They should be meaningful and clear> Justify if you made any assumptions."
+
+    return prompt
+
+def generate_keywords_prompt(idea):
+    prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
+    This is for a platform that enables alumni/clients to collaborate with college students on projects.
+    So, we are generating keywords for the idea:
+
+    {idea_info(idea)}
+
+    We need to generate google_search_keywords, people_search_keywords, student_team_search_keywords and investor_search_keywords
+    for this idea. Google_search_keywords are the keywords that can be used to search the market insights for the idea. People_search_keywords are the keywords that can be used to search the link minded people or people who can guide in this idea.Student_team_search_keywords are the keywords that can be used to search the students who can be interested in the idea. Investor_search_keywords are the keywords that can be used to search the investors who can be interested in the idea.
+    """
+
+    prompt += """The keywords should be in JSON format. All property name should be within proper double quotes. There should be 3-5 keywords in each list.
+    The format instruction is as follows: 
+    {
+        "google_search_keywords": ["keyword1", "keyword2", "keyword3"],
+        "people_search_keywords": ["keyword1", "keyword2", "keyword3"],
+        "student_team_search_keywords": ["keyword1", "keyword2", "keyword3"],
+        "investor_search_keywords": ["keyword1", "keyword2", "keyword3"]
+    }
+    """
 
     return prompt
