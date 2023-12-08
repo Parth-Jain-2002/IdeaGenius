@@ -18,6 +18,7 @@ urlpatterns = [
 
     path('get_user',views.get_user, name='get_user'),
     path('new_user',views.new_user, name='new_user'),
+    path('update_user',views.update_user, name='update_user'),
     path('get_topics',views.get_topics, name='get_topics'),
     path('get_topics_details',views.get_topics_details, name='get_topics_details'),
     path('get_topic',views.get_topic, name='get_topic'),
@@ -31,6 +32,7 @@ urlpatterns = [
 
     path('get_cost_insights',views.get_cost_insights, name='get_cost_insights'),
     path('get_time_insights',views.get_time_insights, name='get_time_insights'),
+    path('get_similar_insights',views.get_similar_insights, name='get_similar_insights'),
     path('get_subtasks',views.get_subtasks, name='get_subtasks'),
 
     path('get_recommended_people', views.get_recommended_people, name='get_recommended_people'),

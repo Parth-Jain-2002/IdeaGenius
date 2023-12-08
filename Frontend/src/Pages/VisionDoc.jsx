@@ -155,6 +155,22 @@ function VisionDoc() {
       );
   };
 
+  const generateSimilarInsights = () => {
+    axios
+      .post(`http://localhost:8000/get_similar_insights`, {
+        ideaid: ideaid,
+        userid: localStorage.getItem("ideagen_user_id"),
+      })
+      .then(
+        (response) => {
+          getIdeaInfo();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
   const generateSubtasks = () => {
     axios
       .post(`http://localhost:8000/get_subtasks`, {
@@ -187,6 +203,7 @@ function VisionDoc() {
         cost_insight: ideaInfo.cost_insight,
         subtask: ideaInfo.subtask,
         visiondoctext: ideaInfo.visiondoctext,
+        similar_insights: ideaInfo.similar_insights,
       })
       .then(
         (response) => {
@@ -230,7 +247,7 @@ function VisionDoc() {
 
   return (
     <div className="w-full h-screen bg-gray-200 p-4">
-      <Navbar />
+      <Navbar link="/dashboard"/>
       <section className="grid grid-cols-4">
         <main className="col-span-3 min-h-[88vh] max-h-[88vh]">
           <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh] overflow-y-scroll">
@@ -410,6 +427,7 @@ function VisionDoc() {
               </div>
             </div>
 
+
             <div className="mb-4">
               <div className="flex flex-row mb-2">
                 <label className="font-bold">Subtasks</label>
@@ -460,6 +478,59 @@ function VisionDoc() {
                 )}
               </div>
             </div>
+
+            <div className="mb-4">
+              <div className="flex flex-row mb-2">
+                <label className="font-bold">Similar Project Insights</label>
+                {ideaInfo.similar_insights && (
+                  <img
+                    src={researchIcon}
+                    alt="Logo"
+                    className=" rounded-lg hover:bg-gray-100 px-1 ml-2"
+                    height="10"
+                    width="30"
+                    onClick={() => generateSimilarInsights()}
+                  />
+                )}
+              </div>
+              <div className="outline-none flex-row">
+                {ideaInfo.similar_insights ? (
+                  <>
+                    <div
+                      contentEditable="true"
+                      className="outline-none flex-row"
+                      ref={visionContainerRef}
+                      onInput={(event) => {
+                        ideaInfo.similar_insights = event.target.innerText;
+                        setIdeaInfo(ideaInfo);
+                      }}
+                    >
+                      <pre style={{ fontFamily: "Poppins, sans-serif" }}>
+                        {formatResponse(ideaInfo.similar_insights, visionContainerRef)}
+                      </pre>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="bg-gray-200 hover:bg-gray-300 rounded-lg p-2 flex flex-row"
+                      onClick={() => generateSimilarInsights()}
+                    >
+                      <img
+                        src={researchIcon}
+                        alt="Logo"
+                        className="rounded-lg  mr-2"
+                        height="20"
+                        width="20"
+                      />
+                      <p className="text-gray-500 text-sm">Add Similar Project Insights</p>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            
 
             <div className="mb-4">
               <div>

@@ -133,3 +133,18 @@ def generate_keywords_prompt(idea):
     """
 
     return prompt
+
+def generate_similar_insights_prompt(topic):
+    prompt = f""" We are creating “IdeaGenius” as a platform to solve ideation and market research problems.
+    This is for a platform that enables alumni/clients to collaborate with college students on projects.
+    So, we are generating similar insights for the idea:
+
+    {idea_info(topic)}
+
+    Ideally, the similar insights would have come from the platform itself. But, since we are still in the development phase, we need to generate them manually. Similar insights are the insights that would come from projects that are similar to the idea.
+    These insights serve as a learning experience for alumni/clients and students. They can be used to improve the idea or to avoid mistakes that were made in the past.
+    """
+
+    prompt += "The similar insights should be meaningful and clear. Justify if you made any assumptions."
+
+    return prompt
