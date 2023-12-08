@@ -61,6 +61,7 @@ const IdeaDashboard = ({ topicid }) => {
         beginAtZero: true,
       },
     },
+    maintainAspectRatio: false
   };
 
   const navigate = useNavigate();
@@ -324,12 +325,14 @@ const IdeaDashboard = ({ topicid }) => {
                       </table>
                   </Slide>
                   }
-                  <Slide index={1} className="w-full rounded-lg  h-full">
+                  <Slide index={1} className="w-full rounded-lg  h-80">
 
                     <h2 className="text-black text-lg font-medium mb-4">
                       Customer Interest Trends
                     </h2>
+                    <div className="w-full mx-auto h-80">
                     <Line data={customerInterest} options={lineChartOptions} />
+                    </div>
 
                   </Slide>
                   <Slide index={2} className="w-full rounded-lg  h-full">
@@ -337,8 +340,10 @@ const IdeaDashboard = ({ topicid }) => {
                       Competitors in the Market
                     </h2>
 
-                    <div className="w-3/5 mx-auto h-full">
-                      <Pie className="object-contain h-72" data={competitorChart} />
+                    <div className="w-full mx-auto h-80">
+                      <Pie className="object-contain h-70" data={competitorChart} 
+                      options={{maintainAspectRatio: false}}
+                      />
                     </div>
                   </Slide>
 
