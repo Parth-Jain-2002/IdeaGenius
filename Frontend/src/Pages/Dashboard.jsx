@@ -12,9 +12,11 @@ import IdeaDashboard from "../components/IdeaDashboard";
 // Image and Animation Imports
 import imagem from "../assets/images/IdeaGenLogo.png";
 import folderIcon from '../assets/images/folder_icon.png';
+import animationdata from "../assets//animations/Animation - 1701635048705.json"
 import loadingAnimation from "../assets/animations/Animation - 1701802141018.json";
 import researchIcon from '../assets/images/research_bank_icon.png';
 import visionDocIcon from '../assets/images/vision_doc_icon.png';
+import plus_icon from '../assets/images/plus_icon_black.png';
 
 // Carousel and Accordion Components
 import {
@@ -34,6 +36,9 @@ import {
   AccordionItemPanel,
 } from "react-accessible-accordion";
 
+// Demo styles, see 'Styles' section below for some notes on use.
+import "react-accessible-accordion/dist/fancy-example.css";
+
 // Styling
 import "../assets/dashboard.css";
 
@@ -52,6 +57,14 @@ export default function ResearchBank() {
       return '';
     }
     return str.split(' ').map(word => capitalizeFirstLetter(word)).join(' ');
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   const getTopics = () => {
