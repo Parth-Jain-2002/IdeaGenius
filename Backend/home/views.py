@@ -18,7 +18,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -554,7 +554,7 @@ def get_topic(request):
 
     topic = Topic.objects.get(userid=userid, topicid=topicid)
     response = {'title':topic.title, 'description':topic.description, 'time_insight':topic.time_insight, 'cost_insight':topic.cost_insight, 'subtask':topic.subtask, 'keywords':topic.keywords, 'generated':topic.generated, 
-    'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext, 'market_insights': topic.market_insights}
+    'chatid':topic.chatid, 'visiondoctext':topic.visiondoctext, 'market_insights': topic.market_insights, 'similar_insights': topic.similar_insights}
 
     return JsonResponse(response)
 
@@ -1157,6 +1157,24 @@ def get_subtasks(request):
     
     response = llm(prompt)
     topic.subtask = response
+    topic.save()
+    
+    return JsonResponse({'response':"Success"})
+
+@csrf_exempt
+def get_similar_insights(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.similar_insights = ""
+
+    prompt = generate_similar_insights_prompt(topic)
+    
+    response = llm(prompt)
+    topic.similar_insights = response
     topic.save()
     
     return JsonResponse({'response':"Success"})
