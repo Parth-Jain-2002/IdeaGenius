@@ -8,7 +8,7 @@ export default function Features() {
           <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 ">
             Features
           </h2>
-          <p class="text-gray-500 mt-4 text-justify sm:text-xl ">
+          <p class="text-gray-500 mt-4 text-normal sm:text-xl ">
             From organizing diverse research to estimating project costs, our
             platform offers a one-stop solution. Elevate your ideation game with
             likeability scores, market trend analysis, and collaborative
@@ -34,9 +34,32 @@ export default function Features() {
             <h3 class="mb-2 text-xl font-bold ">
               Efficient Information Management with IdeaGen Extension
             </h3>
-            <p class="text-gray-500 text-justify  ">
+            <p class="text-gray-500 text-normal  ">
               Users employ IdeaGen tocollect, organize, andsynthesize
-              diverseinformation types, ensuringa streamlined research process
+              diverse information types, ensuring a streamlined research process
+            </p>
+          </div>
+          <div className="bg-white shadow-lg p-8 rounded-2xl">
+            <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary-100 lg:h-12 lg:w-12 ">
+              <svg
+                class="w-5 h-5 text-[#4f46e5] lg:w-6 lg:h-6 "
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                  clip-rule="evenodd"
+                ></path>
+                <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+              </svg>
+            </div>
+            <h3 class="mb-2 text-xl font-bold ">
+            Initial idea generation and refinement
+            </h3>
+            <p class="text-gray-500 text-normal ">
+            IdeaGen empowers users to dynamically craft and enhance problem statements for their concepts by leveraging a comprehensive research bank and tailoring the output to their specific requirements.
             </p>
           </div>
           <div className="bg-white shadow-lg p-8 rounded-2xl">
@@ -53,10 +76,10 @@ export default function Features() {
             <h3 class="mb-2 text-xl font-bold ">
               Holistic Market Trend Analysis
             </h3>
-            <p class="text-gray-500 text-justify ">
+            <p class="text-gray-500 text-normal ">
               Providing in-depth insights intomarket trends, competitor
-              analysis, and fundingopportunities, IdeaGen empowers users to
-              makeinformed decisions during the ideation phase
+              analysis, and funding opportunities, IdeaGen empowers users to
+              make informed decisions during the ideation phase
             </p>
           </div>
           <div className="bg-white shadow-lg p-8 rounded-2xl">
@@ -78,9 +101,9 @@ export default function Features() {
             <h3 class="mb-2 text-xl font-bold ">
               Transparent Project Duration and Cost Analysis
             </h3>
-            <p class="text-gray-500 text-justify ">
-              IdeaGen offers atransparent breakdown ofproject durations and
-              costs,facilitating effectiveresource planning andbudgeting Users
+            <p class="text-gray-500 text-normal ">
+              IdeaGen offers a transparent breakdown of project durations and
+              costs,facilitating effective resource planning and budgeting Users
             </p>
           </div>
           <div className="bg-white shadow-lg p-8 rounded-2xl">
@@ -103,9 +126,9 @@ export default function Features() {
               Informed Decision-Making from Similar Projects
             </h3>
             <p class="text-gray-500 ">
-              Users gain valuable insightsinto analogous projects on the Trumio
-              platform, includinglimitations, pricing, andrequired resources,
-              enablinginformed decision-making
+              Users gain valuable insights into analogous projects on the Trumio
+              platform, including limitations, pricing, and required resources,
+              enabling informed decision-making
             </p>
           </div>
           <div className="bg-white shadow-lg p-8 rounded-2xl">
@@ -122,9 +145,9 @@ export default function Features() {
             <h3 class="mb-2 text-xl font-bold ">
               Facilitated Collaborative Network
             </h3>
-            <p class="text-gray-500 text-justify ">
-              IdeaGen acts as a hub forconnecting users with expertstudent
-              teams, professors, andalumni, fostering collaborationand knowledge
+            <p class="text-gray-500 text-normal">
+              IdeaGen acts as a hub for connecting users with experts tudent
+              teams, professors, and alumni, fostering collaboration and knowledge
               sharing
             </p>
           </div>

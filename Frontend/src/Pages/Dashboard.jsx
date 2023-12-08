@@ -43,7 +43,7 @@ export default function ResearchBank() {
     }
     return str.split(' ').map(word => capitalizeFirstLetter(word)).join(' ');
   };
-  
+
   const openModal = () => {
     setIsModalOpen(true)
   }

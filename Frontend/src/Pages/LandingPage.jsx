@@ -3,9 +3,13 @@ import imagem from "../assets/images/IdeaGenLogo.png";
 import Lottie from "lottie-react";
 import mainAnimation from "../assets/animations/Animation - 1701314100612 (1).json";
 import { HiArrowSmDown } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link as ScrollLink } from "react-scroll";
 import Pricing from "../components/Layout/Pricing";
 import Features from "../components/Layout/Features";
+import UseCases from "../components/Layout/UseCases";
+import {Link} from "react-router-dom"
+
+
 const LandingPage = () => {
   return (
     <div className="bg-[#f4f7fa] py-6 px-20 ">
@@ -24,18 +28,18 @@ const LandingPage = () => {
 
         {/* Navbar Links */}
         <div className="flex items-center space-x-32">
-          <a href="/" className="text-black">
+        <ScrollLink to="/"  spy={true} smooth={true} offset={-70} duration={500} className="text-black cursor-pointer">
             Home
-          </a>
-          <a href="#features" className="text-black">
+          </ScrollLink>
+          <ScrollLink to="features" spy={true} smooth={true} offset={-70} duration={500} className="text-black cursor-pointer">
             Features
-          </a>
-          <a href="#" className="text-black">
+          </ScrollLink>
+          <ScrollLink to="usecases" spy={true} smooth={true} offset={-70} duration={500} className="text-black cursor-pointer">
             Use Cases
-          </a>
-          <a href="#pricing" className="text-black">
+          </ScrollLink>
+          <ScrollLink to="pricing" spy={true} smooth={true} offset={-70} duration={500} className="text-black cursor-pointer">
             Pricing
-          </a>
+          </ScrollLink>
         </div>
 
         {/* User Section */}
@@ -63,10 +67,10 @@ const LandingPage = () => {
             research processes.
           </p>
           <div className="flex justify-between">
-            <button className="flex gap-2 mt-10 p-3 border-4 text-white rounded-2xl bg-[#4f46e5] ">
+          <ScrollLink to="usecases" spy={true} smooth={true} offset={-70} duration={500} className="flex cursor-pointer gap-2 mt-10 p-3 border-4 text-white rounded-2xl bg-[#4f46e5] ">
               Use Cases
               <HiArrowSmDown className="text-white w-6 h-6" />
-            </button>
+            </ScrollLink>
           </div>
 
           <div className="container mx-auto px-4">
@@ -80,10 +84,15 @@ const LandingPage = () => {
       </div>
       <div id="features">
         <Features />
+        <div id="usecases">
+          <h1 class="mb-4 ml-14 text-4xl tracking-tight font-extrabold text-gray-900 ">Use Cases</h1>
+        <UseCases />
+      </div>
       </div>
       <div id="pricing">
         <Pricing />
       </div>
+    
     </div>
   );
 };
