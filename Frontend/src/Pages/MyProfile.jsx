@@ -1,28 +1,8 @@
-import imagem from "../assets/images/IdeaGenLogo.png";
 import axios from "axios";
 import Lottie from "lottie-react";
-import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react"
-import plus_icon from "../assets/images/plus_icon_black.png"
-import NewIdeaModal from "../components/modals/NewIdeaModal"
-import IdeaDashboard from "../components/IdeaDashboard"
-import Navbar from "../components/Layout/Navbar"
-import folderIcon from '../assets/images/folder_icon.png';
-import animationdata from "../assets//animations/Animation - 1701635048705.json"
 import loadingAnimation from "../assets//animations/Animation - 1701802141018.json"
-import researchIcon from '../assets/images/research_bank_icon.png';
-import visionDocIcon from '../assets/images/vision_doc_icon.png';
-
-import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemPanel,
-  AccordionItemState,
-} from "react-accessible-accordion";
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import "react-accessible-accordion/dist/fancy-example.css";
