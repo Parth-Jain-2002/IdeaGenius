@@ -294,8 +294,8 @@ const IdeaDashboard = ({ topicid }) => {
                 className="w-full pr-2 rounded-lg"
               >
                 <Slider className="w-full h-full rounded-lg my-auto">
+                {tables.length > 0 && tables[0].length > 0 &&
                   <Slide index={0} className="w-full  justify-center rounded-lg  h-full">
-                    {tables.length > 0 && tables[0].length > 0 ? (
                       <table className="table-auto w-full h-full">
                         <thead className="text-xs font-semibold uppercase text-gray-400 bg-[#efefef]">
                           <tr>
@@ -322,10 +322,8 @@ const IdeaDashboard = ({ topicid }) => {
                           ))}
                         </tbody>
                       </table>
-                    ) : (
-                      <p>No data available</p>
-                    )}
                   </Slide>
+                  }
                   <Slide index={1} className="w-full rounded-lg  h-full">
 
                     <h2 className="text-black text-lg font-medium mb-4">
@@ -345,7 +343,7 @@ const IdeaDashboard = ({ topicid }) => {
                   </Slide>
                   {images && Array.isArray(images) && images.length > 0
                     ? images.map((image, index) => (
-                      <Slide key={index} index={index} className="w-full rounded-lg h-full">
+                      <Slide key={index} index={index+3} className="w-full rounded-lg h-full">
                         <div className=" p-6 rounded-md shadow-md mb-4">
                           <img
                             src={image}
