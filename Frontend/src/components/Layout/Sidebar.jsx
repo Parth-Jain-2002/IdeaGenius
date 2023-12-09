@@ -15,7 +15,7 @@ import visionDocIcon from '../../assets/images/vision_doc_icon.png';
 import plus_icon from '../../assets/images/plus_icon_black.png';
 import NewIdeaModal from "../modals/NewIdeaModal";
 
-export default function Sidebar(){
+export default function Sidebar() {
   const [topics, setTopics] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
   const getTopics = () => {
@@ -54,69 +54,47 @@ export default function Sidebar(){
     setIsModalOpen(false);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getTopics()
   }, [])
 
   return (
     <aside className="flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] ">
-    <div className="flex items-center space-x-2">
-      <img
-        alt="Logo"
-        className="rounded-full mr-2"
-        height="50"
-        src={imagem}
-        style={{
-          aspectRatio: "50/50",
-          objectFit: "cover",
-        }}
-        width="50"
-      />
-      <h1 className="text-2xl font-bold text-black">IDEAGEN</h1>
-    </div>
-    <div className="space-y-4 mt-20 text-center">
-      <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">
-        My Ideas
-      </h2>
-      <Accordion className="rounded-lg w-64 ">
-        {Object.keys(topics).map((topic, index) => (
-          <AccordionItem className="">
-            <AccordionItemHeading className="hover:bg-gray-200 rounded-lg">
-              <AccordionItemButton className="text-black p-2 font-medium  flex justify-start ">
-                <img
-                  src={folderIcon}
-                  alt="Folder icon"
-                  className="h-4 w-4 my-auto mr-4"
-                />
-                {capitalizeWords(topic)}
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel className=" ml-6 ">
-              {topic === "Miscellaneous" ? (
-                <Link to={`../research/${topic}`}>
-                  <div className="flex justify-start rounded-lg text-sm flex-row p-2 hover:bg-gray-200">
-                    <img
-                      src={researchIcon}
-                      alt="Research bank icon"
-                      className="h-4 w-4 mr-2"
-                    />
-                    Research Bank
-                  </div>
-                </Link>
-              ) : (
-                <>
-                  {topics[topic].generated == true && <Link to={`/vision-doc/${topic}`}>
-                    <div className="flex  justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200">
-                      <img
-                        src={visionDocIcon}
-                        alt="Vision doc icon"
-                        className="h-4 w-4 mr-2"
-                      />
-                      Vision Doc
-                    </div>
-                  </Link>}
-                  <Link to={`/research/${topic}`}>
-                    <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
+      <div className="flex items-center space-x-2">
+        <img
+          alt="Logo"
+          className="rounded-full mr-2"
+          height="50"
+          src={imagem}
+          style={{
+            aspectRatio: "50/50",
+            objectFit: "cover",
+          }}
+          width="50"
+        />
+        <h1 className="text-2xl font-bold text-black">IDEAGEN</h1>
+      </div>
+      <div className="space-y-4 mt-20 text-center">
+        <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">
+          My Ideas
+        </h2>
+        <Accordion className="rounded-lg w-64 ">
+          {Object.keys(topics).map((topic, index) => (
+            <AccordionItem className="">
+              <AccordionItemHeading className="hover:bg-gray-200 rounded-lg">
+                <AccordionItemButton className="text-black p-2 font-medium  flex justify-start ">
+                  <img
+                    src={folderIcon}
+                    alt="Folder icon"
+                    className="h-4 w-4 my-auto mr-4"
+                  />
+                  {capitalizeWords(topic)}
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel className=" ml-6 ">
+                {topic === "Miscellaneous" ? (
+                  <Link to={`../research/${topic}`}>
+                    <div className="flex justify-start rounded-lg text-sm flex-row p-2 hover:bg-gray-200">
                       <img
                         src={researchIcon}
                         alt="Research bank icon"
@@ -125,43 +103,66 @@ export default function Sidebar(){
                       Research Bank
                     </div>
                   </Link>
-                  <Link
-                    to={`/dashboard/${topic}`}
-                    className="flex rounded-lg w-full justify-start flex-row p-2 text-sm hover:bg-gray-200"
-                  >
-                    <img
-                      src={researchIcon}
-                      alt="Research bank icon"
-                      className="h-4 w-4 mr-2"
-                    />
-                    Idea Dashboard
-                  </Link>
-                </>
-              )}
-            </AccordionItemPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
-      <button
-        className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200"
-        onClick={openModal}
-      >
-        <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
-        New Idea
+                ) : (
+                  <>
+                    <Link to={`/vision-doc/${topic}`} disabled={!topics[topic].generated}>
+                      <div className={`flex justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200 ${!topics[topic].generated && 'cursor-not-allowed opacity-50'}`}>
+                        <img
+                          src={visionDocIcon}
+                          alt="Vision doc icon"
+                          className="h-4 w-4 mr-2"
+                        />
+                        Vision Doc
+                      </div>
+                    </Link>
+
+                    <Link to={`/research/${topic}`}>
+                      <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
+                        <img
+                          src={researchIcon}
+                          alt="Research bank icon"
+                          className="h-4 w-4 mr-2"
+                        />
+                        Research Bank
+                      </div>
+                    </Link>
+                    <Link
+                      to={`/dashboard/${topic}`}
+                      className="flex rounded-lg w-full justify-start flex-row p-2 text-sm hover:bg-gray-200"
+                    >
+                      <img
+                        src={researchIcon}
+                        alt="Research bank icon"
+                        className="h-4 w-4 mr-2"
+                      />
+                      Idea Dashboard
+                    </Link>
+                  </>
+                )}
+              </AccordionItemPanel>
+            </AccordionItem>
+          ))}
+        </Accordion>
+        <button
+          className="w-full flex justify-center items-center space-x-2 bg-[#f8f9fb] rounded-full p-2 text-black hover:bg-gray-200"
+          onClick={openModal}
+        >
+          <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
+          New Idea
+        </button>
+        {isModalOpen && (
+          <NewIdeaModal
+            onClose={closeModal}
+            topics={Object.keys(topics)}
+            getTopics={getTopics}
+          />
+        )}
+      </div>
+      <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
+        <IconLightningbolt className="h-5 w-5 mr-2" />
+        Upgrade
       </button>
-      {isModalOpen && (
-        <NewIdeaModal
-          onClose={closeModal}
-          topics={Object.keys(topics)}
-          getTopics={getTopics}
-        />
-      )}
-  </div>
-    <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
-      <IconLightningbolt className="h-5 w-5 mr-2" />
-      Upgrade
-    </button>
-  </aside>
+    </aside>
   )
 }
 
