@@ -1265,6 +1265,7 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
             user_counter[user] += sum(score > threshold for score in similarity_scores)
 
     top_users = user_counter.most_common()
+    print(top_users)
     return top_users
 
 # Helper functions
@@ -1297,7 +1298,7 @@ def get_recommended_people(request):
         with open ('home/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
-        top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5)
+        top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.0)
         with open ('home/tag_embeddings.pkl', 'wb') as f:
             pickle.dump(tag_embeddings, f)
         # Get the top 6 users
@@ -1307,6 +1308,7 @@ def get_recommended_people(request):
         response=[]
         for user in users:
             response.append({'id':user.userid, 'name':user.name, 'jobTitle': user.jobtitle, 'jobDescription': user.jobdescription, 'institution': user.institution})
+        print(response)
         return JsonResponse({'response':response})
 
     except Exception as e:
@@ -1362,18 +1364,19 @@ def add_random_users(request):
         user_profiles=pickle.load(f)
     with open('home/tag_embeddings.pkl', 'rb') as f:
         tag_embeddings=pickle.load(f)
+    user_profiles={}
     tags=[tag for tag in tag_embeddings.keys()]
     print(len(tags))
     institutions=dummy_data['COLLEGES']
     jobs=dummy_data['JOB DATA']
-    for i in range(1):
+    for i in range(100):
         name=fake.name()
         userid=uuid.uuid4()
         tags_per_user=random.sample(tags, random.randint(5,10))
         job=random.choice(jobs)
         print("adding user ", i)
         UserDoc.objects.create(
-            email=f"user_{i+1}@gmail.com",
+            email=f"user_{i+2}@gmail.com",
             name=str(name),
             userid=userid,
             jobtitle=job[0],
