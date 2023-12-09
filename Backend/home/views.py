@@ -1366,15 +1366,15 @@ def add_random_users(request):
     print(len(tags))
     institutions=dummy_data['COLLEGES']
     jobs=dummy_data['JOB DATA']
-    for i in range(100):
-        name=fake.name(),
-        userid=uuid.uuid4(),
+    for i in range(1):
+        name=fake.name()
+        userid=uuid.uuid4()
         tags_per_user=random.sample(tags, random.randint(5,10))
         job=random.choice(jobs)
         print("adding user ", i)
         UserDoc.objects.create(
-            email=f"user_{i}@gmail.com",
-            name=name,
+            email=f"user_{i+1}@gmail.com",
+            name=str(name),
             userid=userid,
             jobtitle=job[0],
             jobdescription=job[1],
