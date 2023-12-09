@@ -5,7 +5,7 @@ import researchIcon from "../assets/images/research_bank_icon.png";
 import axios from "axios";
 import Navbar from "../components/Layout/Navbar";
 
-function VisionDoc() {
+export default function VisionDoc() {
   // Destructing the chat id from the url
   const { ideaid } = useParams();
 
@@ -93,13 +93,15 @@ function VisionDoc() {
 
   const handleChat = () => {
     setLoading(true);
+    let message_text = message.current.value;
+    message.current.value = ""
     // console.log("Sending message");
-    // console.log(message.current.value);
+    // console.log(message_text);
     axios
       .post(`http://localhost:8000/idea_interface`, {
         ideaid: ideaid,
         userid: localStorage.getItem("ideagen_user_id"),
-        message: message.current.value,
+        message: message_text,
       })
       .then(
         (response) => {
@@ -107,11 +109,10 @@ function VisionDoc() {
           setChats([
             ...chats,
             {
-              message: message.current.value,
+              message: message_text,
               response: response.data.response,
             },
           ]);
-          message.current.value = "";
           setLoading(false);
         },
         (error) => {
@@ -646,6 +647,7 @@ function VisionDoc() {
                   type="text"
                   ref={message}
                   onKeyPress={handleKeyPress}
+                  disabled={loading}
                 />
                 <button
                   className="p-2 rounded-full bg-gray-300 "
@@ -686,5 +688,3 @@ function IconArrowup(props) {
     </svg>
   );
 }
-
-export default VisionDoc;

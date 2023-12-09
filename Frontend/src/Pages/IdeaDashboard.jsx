@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import chatIcon from "../assets/images/chat_icon.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
-import data_img from "../assets/images/Data-amico.png"
-import { Line, Bar, Pie } from "react-chartjs-2";
+
+import { Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,11 +20,13 @@ import {
   TimeScale,
   ArcElement,
 } from "chart.js";
-import Navbar from "../components/Layout/Navbar";
 import "chartjs-adapter-date-fns";
 //import { enUS } from 'date-fns/locale';
 
 import randomcolor from 'randomcolor';
+
+import Navbar from "../components/Layout/Navbar";
+import Sidebar from "../components/Layout/Sidebar";
 
 ChartJS.register(
   CategoryScale,
@@ -40,9 +42,11 @@ ChartJS.register(
 );
 
 
-const IdeaDashboard = ({ topicid }) => {
+export default function IdeaDashboard() {
   const [topicDetails, setTopicDetails] = useState([]);
   const [peopleData, setPeopleData] = useState([{}]);
+  const { ideaid } = useParams();
+  const topicid = ideaid;
 
 
   const [competitors, setCompetitors] = useState([]);
@@ -127,7 +131,7 @@ const IdeaDashboard = ({ topicid }) => {
       console.error("Error fetching data:", error);
     }
   };
-  const getTopicDetails = () => {
+  const getTopics = () => {
     axios
       .get(`http://localhost:8000/get_topic`, {
         params: {
@@ -218,14 +222,9 @@ const IdeaDashboard = ({ topicid }) => {
   }
 
   useEffect(() => {
-    getTopicDetails();
-   
-    if (topicDetails.generated)
-    {
-      getPeeps();
-      getInsights();
-    }
-    
+    getTopics();
+    getPeeps();
+    getInsights();
 
 
 
@@ -246,8 +245,12 @@ const IdeaDashboard = ({ topicid }) => {
     navigate(`/people/${topicid}`);
   }
 
-  return (
-    <div className="w-full h-full p-4">
+  return (<>
+  <section className="grid h-full text-black grid-cols-5">
+      <Sidebar />
+      <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
+        <Navbar />
+        <div className="w-full h-full p-4">
       <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
         <div className=" flex flex-col justify-between w-full">
           <div className="flex flex-col">
@@ -285,8 +288,7 @@ const IdeaDashboard = ({ topicid }) => {
           </div>
         </div>
       </div>
-      {topicDetails.generated ? (
-        <div className="flex w-full mt-6">
+      <div className="flex w-full mt-6">
         <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg ">
           <h1 className="text-xl font-semibold p-2 ">Market Trends Analysis</h1>
           <div className=" w-full">
@@ -398,18 +400,12 @@ const IdeaDashboard = ({ topicid }) => {
               : null}
 
           </div>
-          <a className="p-2 mb-2 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white  ml-auto mr-4 text-center" href={`/people/${topicid}`}>Explore More</a>
+          <button onClick={() => { explorePeople() }} className="p-2 mb-2 ml-4 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Explore More</button>
         </div>
       </div>
-      ) : (
-        <div className="flex w-full space-x-20 mt-16">
-<img src={data_img} className="w-1/2 "></img>
-<h1 className="text-2xl leading-10 w-96 text-slate-500 items-center h-2/3 my-auto content-center">Genereate Problem Statement to access Market Insights and Recommended People</h1>
-        </div>
-      )}
-      
     </div>
+      </main>
+    </section>
+    </>
   );
 };
-
-export default IdeaDashboard;

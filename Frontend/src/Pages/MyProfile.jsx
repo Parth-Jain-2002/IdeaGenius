@@ -3,6 +3,7 @@ import Lottie from "lottie-react";
 import { useEffect, useState } from "react"
 import loadingAnimation from "../assets//animations/Animation - 1701802141018.json"
 import 'pure-react-carousel/dist/react-carousel.es.css';
+import user_pic from "../assets/images/user.png"
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import "react-accessible-accordion/dist/fancy-example.css";
@@ -10,12 +11,9 @@ import "react-accessible-accordion/dist/fancy-example.css";
 export default function MyProfile() {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
 
-  const [topics, setTopics] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentTopic, setCurrentTopic] = useState("")
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({
-    profilePicUrl: `https://source.unsplash.com/150x150/?user&${randomSeed}`,
+    profilePicUrl: user_pic,
     bannerPicUrl: "https://www.eikojones.com/wp-content/uploads/2016/01/esperanza-inlet-sunrise-1080x480.jpg",
     name: 'John Doe',
     email: 'john.doe@gmail.com',
@@ -26,13 +24,6 @@ export default function MyProfile() {
     jobDesc: 'I am a software engineer and i engineer software',
     trumio: 'https://prod-app.trumio.ai/profile/TALENT/a30c74f024ad265730e348f6',
   })
-  const openModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   const getTopics = () => {
     axios
@@ -121,7 +112,7 @@ export default function MyProfile() {
                 <button className="absolute top-2 right-2 bg-blue-200 p-2 rounded-full border-blue-700 border text-blue-700 hover:bg-blue-400">Edit</button>
                 <div className="flex flex-row items-center m-2 p-6 rounded-3xl absolute top-auto bottom-auto left-auto right-auto w-2/3 bg-gray-50 bg-opacity-40">
                   <div className="w-36 h-36 relative rounded-full p-0 flex justify-center items-center">
-                    <img src={user.profilePicUrl} alt="Profile Pic" className="w-full h-full rounded-full"/>
+                    <img src={localStorage.getItem("ideagen_user_pic") || user.profilePicUrl} alt="Profile Pic" className="w-full h-full rounded-full"/>
                     <button className="absolute top-0 left-0 w-full h-full opacity-0 p-2 rounded-full border-blue-700 border text-blue-700 bg-blue-200 hover:opacity-100 transition-opacity">Edit</button>
                   </div>
                   <div className="flex flex-col pl-4 flex-1">

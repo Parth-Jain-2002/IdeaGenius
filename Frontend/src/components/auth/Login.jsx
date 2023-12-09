@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import imagem from "../../assets/images/IdeaGenLogo.png";
 import { Link } from "react-router-dom";
 import Lottie from "lottie-react";
 import animationData from "../../assets/animations/Animation - 1701440987559.json";
-function Login() {
+
+export default function Login() {
   const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -217,5 +217,3 @@ function Login() {
     //                 </div>
   );
 }
-
-export default Login;

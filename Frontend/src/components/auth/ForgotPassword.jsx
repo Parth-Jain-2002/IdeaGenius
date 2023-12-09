@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import imagem from "../../assets/images/IdeaGenLogo.png";
 
-function ForgotPassword() {
+export default function ForgotPassword() {
   const { resetPassword } = useAuth();
   const [email, setEmail] = useState();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function ForgotPassword() {
         </div>
 
         <div
-          className="bg-white w-full md:max-w-md lg:max-w-full md:mx-auto md:mx-0 md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
+          className="bg-white w-full md:max-w-md lg:max-w-full md:mx-auto md:w-1/2 xl:w-2/5 h-screen px-6 lg:px-16 xl:px-12
                     flex items-center justify-center"
         >
           <div className="w-full h-100">
@@ -82,5 +82,3 @@ function ForgotPassword() {
     </>
   );
 }
-
-export default ForgotPassword;

@@ -1,8 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
 
+// Web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -14,10 +13,9 @@ const firebaseConfig = {
 };
 const fire = firebase.initializeApp(firebaseConfig);
 
+// Exporting the auth object and google auth provider for use in other files
 export const auth = fire.auth();
-export const db = firebase.firestore();
-export const storage = firebase.storage();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export const googleProvider = new firebase.auth.GoogleAuthProvider(); // Add this line
 export { firebase }; // Exporting the firebase object for consistency
 export default fire;
