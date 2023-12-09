@@ -637,11 +637,11 @@ def get_user(request):
     if user is None:
         return JsonResponse({'response':'User does not exist'})
 
-    return JsonResponse({'email':user.email, 'name':user.name, 'college': user.college, 'company': user.institution, 'jobTitle': user.jobtitle, 'jobDesc': user.jobdescription, 'currentPlan': user.currentplan, 'trumio': user.trumio, 'profilePic': user.profilePic, 'bannerPic': user.bannerPic})
+    return JsonResponse({'email':user.email, 'name':user.name, 'college': user.institution, 'company': user.company, 'jobTitle': user.jobtitle, 'jobDesc': user.jobdescription, 'currentPlan': user.currentplan, 'trumio': user.trumio, 'profilePic': user.profilePic, 'bannerPic': user.bannerPic})
   
 @csrf_exempt
 def update_user(request):
-    form_data:dict = json.loads(request.body)
+    form_data:dict = json.loads(request.body.decode('utf-8'))
     userid = form_data['userid']
     user = UserDoc.objects.get(userid=userid)
 
@@ -649,8 +649,8 @@ def update_user(request):
         return JsonResponse({'response':'User does not exist'})
 
     user.name = form_data['name']
-    user.college = form_data['college']
-    user.institution = form_data['company']
+    user.institution = form_data['college']
+    user.company = form_data['company']
     user.jobtitle = form_data['jobTitle']
     user.jobdescription = form_data['jobDesc']
     user.trumio = form_data['trumio']
