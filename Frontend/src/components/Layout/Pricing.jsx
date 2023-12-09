@@ -223,7 +223,7 @@ export default function Pricing() {
           </div>
 
           <div class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow xl:p-8 ">
-            <h3 class="mb-4 text-2xl font-semibold">Company</h3>
+            <h3 class="mb-4 text-2xl font-semibold">Pro</h3>
             <p class="font-light text-gray-500 sm:text-lg ">
               Relevant for multiple users, extended & premium support.
             </p>
