@@ -103,6 +103,8 @@ def url_test(request):
 #------------------------------------------------------------------------------------------
 #------------------------------ RESEARCH BANK ---------------------------------------------
 #------------------------------------------------------------------------------------------
+
+# Helper to summarize the text
 def summarize(url, chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -267,7 +269,7 @@ def summarize_document(document):
     # TODO: Create a vectorstore from the document and then create a QA chain
     return ai_summary
     
-
+# Function for answering visual questions
 def visual_answering_data(image, question):
     response = visual_summary(image)
 
@@ -277,6 +279,7 @@ def visual_answering_data(image, question):
     answer_to_query = chain({"question": question, "image_data": response})
     return answer_to_query
 
+# Function for providing visual summary of the image
 def visual_summary(image):
     processor = Pix2StructProcessor.from_pretrained('google/deplot')
     model = Pix2StructForConditionalGeneration.from_pretrained('google/deplot')
@@ -288,6 +291,7 @@ def visual_summary(image):
     # print(response)
     return response
 
+# Function for selecting the action
 def perform_task(url, action, chatid):
     if action == 'clicked_summary':
         return summarize(url, chatid)
@@ -304,6 +308,8 @@ def perform_task(url, action, chatid):
 #------------------------------------------------------------------------------------------
 #----------------------------------- CHAT -------------------------------------------------
 #------------------------------------------------------------------------------------------
+
+# Function for getting the chat list from the database
 @csrf_exempt
 def get_chats(request):
     # get the chats from the database
@@ -317,6 +323,7 @@ def get_chats(request):
 
     return JsonResponse({'chats':chats_json})
 
+# Function for getting a chat from the database
 @csrf_exempt
 def get_chat(request):
     chatid = request.GET['chat_id']
@@ -329,6 +336,7 @@ def get_chat(request):
 
     return JsonResponse({'data':response})
 
+# Function for getting the thread from the database
 @csrf_exempt
 def get_thread(request):
     chatid = request.GET['chat_id']
@@ -339,6 +347,7 @@ def get_thread(request):
 
     return JsonResponse(response)
 
+# Function for getting the thread list from the database
 @csrf_exempt
 def get_threads(request):
     try:
@@ -399,7 +408,7 @@ def create_thread(url, userid):
 
     return chatid
 
-# Function for creating Chat Interface
+# Function for generating and storing the chat
 @csrf_exempt
 def chat_interface(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -468,7 +477,7 @@ def get_idea_chat(request):
 
     return JsonResponse({'data':response})
 
-
+# Function for generating and storing the idea/chat history
 @csrf_exempt
 def idea_interface(request):
     data = json.loads(request.body.decode('utf-8'))
