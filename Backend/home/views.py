@@ -1428,7 +1428,7 @@ def add_random_users(request):
         job=random.choice(jobs)
         print("adding user ", i)
         UserDoc.objects.create(
-            email=f"user_{i+2}@gmail.com",
+            email=f"user_{i+2}@yahoo.com",
             name=str(name),
             userid=userid,
             jobtitle=job[0],
