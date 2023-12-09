@@ -121,7 +121,7 @@ export default function MyProfile() {
                 <button className="absolute top-2 right-2 bg-blue-200 p-2 rounded-full border-blue-700 border text-blue-700 hover:bg-blue-400">Edit</button>
                 <div className="flex flex-row items-center m-2 p-6 rounded-3xl absolute top-auto bottom-auto left-auto right-auto w-2/3 bg-gray-50 bg-opacity-40">
                   <div className="w-36 h-36 relative rounded-full p-0 flex justify-center items-center">
-                    <img src={user.profilePicUrl} alt="Profile Pic" className="w-full h-full rounded-full"/>
+                    <img src={localStorage.getItem("ideagen_user_pic") || user.profilePicUrl} alt="Profile Pic" className="w-full h-full rounded-full"/>
                     <button className="absolute top-0 left-0 w-full h-full opacity-0 p-2 rounded-full border-blue-700 border text-blue-700 bg-blue-200 hover:opacity-100 transition-opacity">Edit</button>
                   </div>
                   <div className="flex flex-col pl-4 flex-1">

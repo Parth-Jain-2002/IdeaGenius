@@ -136,7 +136,7 @@ export default function IdeaInterface() {
       <main className="flex flex-col p-4">
         <Navbar link={"/dashboard"} />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
-          <div className="p-4 bg-white rounded-md shadow-md mr-2">
+          <div className="p-4 bg-white rounded-md shadow-md">
             <div className="flex items-center justify-between p-2 bg-gray-200 rounded-md mb-4">
               <div className="items-center">
                 <h3 className="text-lg font-semibold ml-4">IdeaX</h3>
@@ -187,7 +187,7 @@ export default function IdeaInterface() {
                       <div className="flex-none">
                         {/* <Avatar className="rounded-full" size="icon" /> */}
                       </div>
-                      <div className="ml-2 mr-2 ">
+                      <div className="ml-2 mr-2">
                         <div className="text-sm text-gray-500">AI</div>
                         {index === question.length - 1 &&
                         initialIdeas.length == 4 ? (
@@ -224,7 +224,7 @@ export default function IdeaInterface() {
                         ) : (
                           // Default rendering for other AI responses
                           <div
-                            className="bg-blue-100 rounded-xl px-5 py-3 mt-1 leading-loose max-w-3xl"
+                            className="bg-blue-100 rounded-xl px-5 py-3 mt-1 leading-loose w-full max-w-3xl"
                             ref={containerRef}
                             style={{
                               whiteSpace: "pre-wrap",
@@ -232,6 +232,7 @@ export default function IdeaInterface() {
                             }}
                           >
                             <span
+                              className="w-full"
                               dangerouslySetInnerHTML={{
                                 __html: formatResponse(
                                   chat.response,
