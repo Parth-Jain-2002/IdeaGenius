@@ -1410,8 +1410,10 @@ def add_random_users(request):
     fake=Faker()
     with open('home/dummy_data.pkl', 'rb') as f:
         dummy_data=pickle.load(f)
-    with open('home/user_profiles.pkl', 'rb') as f:
-        user_profiles=pickle.load(f)
+    # with open('home/user_profiles.pkl', 'rb') as f:
+    #     user_profiles=pickle.load(f)
+    # idk why the above part was kept when user_profiles 
+    # is being overwritten a few lines later
     with open('home/tag_embeddings.pkl', 'rb') as f:
         tag_embeddings=pickle.load(f)
     user_profiles={}
@@ -1426,7 +1428,7 @@ def add_random_users(request):
         job=random.choice(jobs)
         print("adding user ", i)
         UserDoc.objects.create(
-            email=f"user_{i+2}@gmail.com",
+            email=f"user_{i+2}@yahoo.com",
             name=str(name),
             userid=userid,
             jobtitle=job[0],
