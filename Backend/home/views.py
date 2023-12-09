@@ -46,9 +46,10 @@ embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-b
 # Load whisper model
 whisper_model = whisper.load_model("tiny")
 
-
+#------------------------------------------------------------------------------------------
+#----------------------------- TESTING ENDPOINTS ------------------------------------------
+#------------------------------------------------------------------------------------------
 @csrf_exempt
-# Create your views here.
 def index(request):
     response = {}
     response['status'] = 'OK'
@@ -57,14 +58,51 @@ def index(request):
 
 @csrf_exempt
 def ai_response(request):
-    # get the user input
-    
     response = {}
     response['status'] = 'OK'
     response['message'] = 'This is the ai_response page'
     return JsonResponse(response)
 
-# Function for summarizing the text
+@csrf_exempt
+def test(request):
+    # Get the PDF file from the request
+    doc = request.FILES.getlist('image')
+    question = request.POST.get('question')
+
+    print(question)
+
+    image = Image.open(doc[0])
+    response = visual_answering_data(image, question)
+    print(response)
+    return JsonResponse({'response':response})
+
+@csrf_exempt
+def url_test(request):
+    # get the request url from request header
+    url = request.headers.get('url', None)
+    userid = request.headers.get('userid', None)
+    action = request.headers.get('action', None)
+    print("Url: ", url)
+    print("User ID: ", userid)
+    print("Action: ", action)
+
+    # Save the url, userid, and action in the django database
+    UserAction.objects.create(url=url, userid=userid, action=action)
+
+    # Chat Thread creation
+    chatid = create_thread(url, userid)
+    print(chatid)
+
+    # Perform the task, chat message
+    response = perform_task(url, action,chatid)
+    if action != 'clicked_research_bank':
+        Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
+
+    return JsonResponse({'response':'test'})
+
+#------------------------------------------------------------------------------------------
+#------------------------------ RESEARCH BANK ---------------------------------------------
+#------------------------------------------------------------------------------------------
 def summarize(url, chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -203,19 +241,6 @@ def scrape_youtube(video_url):
 
         return "Fallback transcription using Whisper failed."
     
-@csrf_exempt
-def test(request):
-    # Get the PDF file from the request
-    doc = request.FILES.getlist('image')
-    question = request.POST.get('question')
-
-    print(question)
-
-    image = Image.open(doc[0])
-    response = visual_answering_data(image, question)
-    print(response)
-    return JsonResponse({'response':response})
-
 
 # Function for summarizing the document
 def summarize_document(document):
@@ -276,6 +301,9 @@ def perform_task(url, action, chatid):
     else:
         return "No action found"
 
+#------------------------------------------------------------------------------------------
+#----------------------------------- CHAT -------------------------------------------------
+#------------------------------------------------------------------------------------------
 @csrf_exempt
 def get_chats(request):
     # get the chats from the database
@@ -336,7 +364,7 @@ def get_threads(request):
         print(e)
         return JsonResponse({'data':[]})
     
-
+# Function for creating a thread in the database
 def create_thread(url, userid):
     # get the title and image from the url
     html = requests.get(url).text
@@ -370,31 +398,8 @@ def create_thread(url, userid):
     user.save()
 
     return chatid
-    
-@csrf_exempt
-def url_test(request):
-    # get the request url from request header
-    url = request.headers.get('url', None)
-    userid = request.headers.get('userid', None)
-    action = request.headers.get('action', None)
-    print("Url: ", url)
-    print("User ID: ", userid)
-    print("Action: ", action)
 
-    # Save the url, userid, and action in the django database
-    UserAction.objects.create(url=url, userid=userid, action=action)
-
-    # Chat Thread creation
-    chatid = create_thread(url, userid)
-    print(chatid)
-
-    # Perform the task, chat message
-    response = perform_task(url, action,chatid)
-    if action != 'clicked_research_bank':
-        Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
-
-    return JsonResponse({'response':'test'})
-
+# Function for creating Chat Interface
 @csrf_exempt
 def chat_interface(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -441,6 +446,7 @@ def chat_interface(request):
 
     return JsonResponse({'response':response})
 
+# Function for retreiving the idea chat from the database
 @csrf_exempt
 def get_idea_chat(request):
     ideaid = request.GET['ideaid']
@@ -526,6 +532,10 @@ def idea_interface(request):
     return JsonResponse({'response':response})
 
 #------------------------------------------------------------------------------------------
+#----------------------------------- TOPIC ------------------------------------------------
+#------------------------------------------------------------------------------------------
+
+# Function for getting the topic list
 @csrf_exempt
 def get_topics(request):
     userid = request.GET['userid']
@@ -533,6 +543,7 @@ def get_topics(request):
 
     return JsonResponse({'topics':user.topics})
 
+# Function for getting topic details
 @csrf_exempt
 def get_topics_details(request):
     userid = request.GET['userid']
@@ -545,6 +556,7 @@ def get_topics_details(request):
 
     return JsonResponse({'topics':response})
 
+# Function for fetching the topic 
 @csrf_exempt
 def get_topic(request):
     userid = request.GET['userid']
@@ -558,6 +570,7 @@ def get_topic(request):
 
     return JsonResponse(response)
 
+# Function for a new topic
 @csrf_exempt
 def new_topic(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -576,6 +589,7 @@ def new_topic(request):
 
     return JsonResponse({'response':'Success'})
 
+# Function for editing a topic
 @csrf_exempt
 def edit_topic(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -611,6 +625,7 @@ def edit_topic(request):
 #----------------------------------- USER -------------------------------------------------
 #------------------------------------------------------------------------------------------
 
+# Function for creating a new user
 @csrf_exempt
 def new_user(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -629,6 +644,7 @@ def new_user(request):
 
     return JsonResponse({'response':'Success'})
 
+# Function for getting the user details
 @csrf_exempt
 def get_user(request):
     userid = request.GET['userid']
@@ -639,6 +655,7 @@ def get_user(request):
 
     return JsonResponse({'email':user.email, 'name':user.name, 'college': user.institution, 'company': user.company, 'jobTitle': user.jobtitle, 'jobDesc': user.jobdescription, 'currentPlan': user.currentplan, 'trumio': user.trumio, 'profilePic': user.profilePic, 'bannerPic': user.bannerPic})
   
+# Function for updating the user details
 @csrf_exempt
 def update_user(request):
     form_data:dict = json.loads(request.body.decode('utf-8'))
@@ -663,6 +680,7 @@ def update_user(request):
 #--------------------------------IDEA GENERATION-------------------------------------------
 #------------------------------------------------------------------------------------------
 
+# Function for generating the idea
 def generate_source_documents(answer, chatids):
     source_documents = ""
     for chatid in chatids:
@@ -687,6 +705,7 @@ def generate_source_documents(answer, chatids):
     response = llm(final_source_generation(source_documents,answer))
     return response
 
+# Function for validating a response
 def validate(response):
     print(response)
     try:
@@ -702,6 +721,7 @@ def validate(response):
         return False
     
 
+# Function for generating the idea
 @csrf_exempt
 def generate_idea(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -760,6 +780,7 @@ def select_idea(request):
 #------------------------------MARKET INSIGHTS---------------------------------------------
 #------------------------------------------------------------------------------------------
 
+# Function for fetching data from google trends
 def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):     
     print(keywords)
     pytrends = TrendReq(retries=5, hl='en-US', tz=360)
@@ -778,12 +799,12 @@ def get_google_trends_data(keywords, timeframe='today 12-m', geo='IN'):
     result_df = interest_over_time_df[['sum_frequency']]
     return result_df   
 
-
+# Helper function for url parsing
 def clean_google_url(google_url):    
     match = re.search(r'/url\?q=(.+?)&', google_url)
     return match.group(1) if match else google_url
 
-
+# Scraping competitor information from the web
 def get_competitor_revenue(competitors):
     competitor_revenue=[]
     visited=set()
@@ -839,6 +860,7 @@ def get_competitor_revenue(competitors):
     
     return final_competitor,final_competitor_revenue
 
+# Scraping competitor information from the web
 def get_competitors(description, keywords):    
     
     session = requests.Session()
@@ -912,7 +934,7 @@ def get_competitors(description, keywords):
     
     return unique_competitors
 
-
+# Helper function for scraping tables from the web
 def get_tables(description, keywords):
     
     session = requests.Session()
@@ -977,7 +999,7 @@ def get_tables(description, keywords):
             
     return tables
 
-
+# Helper function for scraping images from the web
 def get_images(keywords):   
     
     session = requests.Session()
@@ -1018,6 +1040,7 @@ def get_images(keywords):
     
     return images
 
+# Function for fetching market insights
 @csrf_exempt
 def get_insights(request):    
     data = json.loads(request.body.decode('utf-8'))   
@@ -1072,6 +1095,7 @@ def get_insights(request):
 #-----------------------------------VISION DOC-------------------------------------------
 #----------------------------------------------------------------------------------------
 
+# Validating the cost insights response
 def validate_cost_insights(response):
     try:
         # Find the first "{" and the last "}" in response
@@ -1085,6 +1109,7 @@ def validate_cost_insights(response):
     except:
         return "Invalid"
 
+# Validating the time insights response
 def validate_time_insights(response):
     try:
         # Find the first "{" and the last "}" in response
@@ -1097,6 +1122,7 @@ def validate_time_insights(response):
     except:
         return "Invalid"
 
+# Function for fetching the cost insights 
 @csrf_exempt
 def get_cost_insights(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -1120,6 +1146,7 @@ def get_cost_insights(request):
 
     return JsonResponse({'response':"Success"})
 
+# Function for fetching the time insights
 @csrf_exempt
 def get_time_insights(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -1143,6 +1170,7 @@ def get_time_insights(request):
 
     return JsonResponse({'response':"Success"})
 
+# Function for fetching the subtasks
 @csrf_exempt
 def get_subtasks(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -1161,6 +1189,7 @@ def get_subtasks(request):
     
     return JsonResponse({'response':"Success"})
 
+# Function for generating similar insights
 @csrf_exempt
 def get_similar_insights(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -1179,6 +1208,7 @@ def get_similar_insights(request):
     
     return JsonResponse({'response':"Success"})
 
+# Function for updating the topic
 @csrf_exempt
 def update_topic(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -1212,40 +1242,7 @@ from scipy.spatial.distance import cosine
 from collections import Counter
 from faker import Faker
 import random
-#load dummy data
-def rand_institution(institutions):
-    _type=random.choice(list(institutions.keys()))
-    _name=random.choice(institutions[_type])
-    return f"{_name}, {_type}"
-def load_dummy_data():
-    print("Loading dummy data")
-    fake=Faker()
-    with open ('home/user_profiles.pkl', 'rb') as f:
-        user_profiles = pickle.load(f)
-    with open('home/dummy_data.pkl', 'rb') as f:
-        dummy_data=pickle.load(f)
-    institutions=dummy_data['COLLEGES']
-    jobs=dummy_data['JOB DATA']
-    for i,key in enumerate(user_profiles.keys()):
-        job=random.choice(jobs)
-        user_obj, created = UserDoc.objects.get_or_create(
-            email=f"user{i}@example.com",
-            defaults={
-                'userid': key,
-                'name': fake.name(),
-                'jobtitle': job[0],
-                'jobdescription': job[1],
-                'institution': rand_institution(institutions),
-                'topics': {'Miscellaneous': []}
-            }
-        )
-        if not created:
-            user_obj.userid=key
-            user_obj.name=fake.name()
-            user_obj.jobtitle=job[0]
-            user_obj.jobdescription=job[1]
-            user_obj.institution=rand_institution(institutions)
-            user_obj.save()
+
 # Helper functions
 def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.5):
     user_counter = Counter()  # Counter to track user occurrences
@@ -1320,6 +1317,7 @@ def get_recommended_people(request):
 #-------------------------------------KEYWORDS-------------------------------------------
 #----------------------------------------------------------------------------------------
 
+# Function for validating a response
 def validate_keywords(response):
     try:
         # Find the first "{" and the last "}" in response
@@ -1333,6 +1331,7 @@ def validate_keywords(response):
     except:
         return "Invalid"
 
+# Function for generating the keywords
 def generate_keywords(ideaid):
     print("Generating keywords for idea: ", ideaid)
     # Get the topic from the database
@@ -1355,6 +1354,48 @@ def generate_keywords(ideaid):
     return "Success"
     
 
+#----------------------------------------------------------------------------------------
+#--------------------------------- DUMMY DATA GEN ---------------------------------------
+#----------------------------------------------------------------------------------------
+
+# Helper function for generating random institution
+def rand_institution(institutions):
+    _type=random.choice(list(institutions.keys()))
+    _name=random.choice(institutions[_type])
+    return f"{_name}, {_type}"
+
+#load dummy data
+def load_dummy_data():
+    print("Loading dummy data")
+    fake=Faker()
+    with open ('home/user_profiles.pkl', 'rb') as f:
+        user_profiles = pickle.load(f)
+    with open('home/dummy_data.pkl', 'rb') as f:
+        dummy_data=pickle.load(f)
+    institutions=dummy_data['COLLEGES']
+    jobs=dummy_data['JOB DATA']
+    for i,key in enumerate(user_profiles.keys()):
+        job=random.choice(jobs)
+        user_obj, created = UserDoc.objects.get_or_create(
+            email=f"user{i}@example.com",
+            defaults={
+                'userid': key,
+                'name': fake.name(),
+                'jobtitle': job[0],
+                'jobdescription': job[1],
+                'institution': rand_institution(institutions),
+                'topics': {'Miscellaneous': []}
+            }
+        )
+        if not created:
+            user_obj.userid=key
+            user_obj.name=fake.name()
+            user_obj.jobtitle=job[0]
+            user_obj.jobdescription=job[1]
+            user_obj.institution=rand_institution(institutions)
+            user_obj.save()
+
+# Endpoint for adding random users
 @csrf_exempt
 def add_random_users(request):
     fake=Faker()
