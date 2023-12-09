@@ -10,7 +10,7 @@ export default function ResearchBank() {
   const [topics, setTopics] = useState({});
   const { ideaid } = useParams();
 
-  const getTopics = () => {
+  function getTopics() {
     axios
       .get(`http://localhost:8000/get_topics`, {
         params: {
@@ -28,7 +28,7 @@ export default function ResearchBank() {
       );
   };
 
-  const getThreads = () => {
+  function getThreads() {
     axios
       .get(`http://localhost:8000/get_threads`, {
         params: {

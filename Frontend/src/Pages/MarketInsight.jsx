@@ -44,7 +44,7 @@ export default function MarketInsight() {
   const [competitorChart, setCompetitorChart] = useState({});
   const [images, setImages] = useState([]);
 
-  const parseRevenue = (revenueString) => {
+  function parseRevenue(revenueString) {
     // Remove commas
     const withoutCommas = revenueString.replace(/,/g, '');
 

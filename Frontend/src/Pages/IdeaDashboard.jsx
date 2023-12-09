@@ -70,7 +70,7 @@ export default function IdeaDashboard() {
 
   const navigate = useNavigate();
 
-  const parseRevenue = (revenueString) => {
+  function parseRevenue(revenueString) {
     // Remove commas
     const withoutCommas = revenueString.replace(/,/g, '');
 
@@ -87,10 +87,10 @@ export default function IdeaDashboard() {
     console.log(parseFloat(numericPart));
     return parseFloat(numericPart) * multiplier;
   };
-  const capitalizeFirstLetter = (str) => {
+  function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
-  const capitalizeWords = (str) => {
+  function capitalizeWords(str) {
     if (!str) {
       return '';
     }
@@ -131,7 +131,7 @@ export default function IdeaDashboard() {
       console.error("Error fetching data:", error);
     }
   };
-  const getTopicDetails = () => {
+  function getTopicDetails() {
     axios
       .get(`http://localhost:8000/get_topic`, {
         params: {
@@ -152,7 +152,7 @@ export default function IdeaDashboard() {
 
 
 
-  const getInsights = () => {
+  function getInsights() {
     axios
       .post(`http://localhost:8000/get_insights`, {
         userid: localStorage.getItem("ideagen_user_id"),
@@ -234,18 +234,18 @@ export default function IdeaDashboard() {
 
   }, [topicid]);
 
-  const handleIdeaGeneration = () => {
+  function handleIdeaGeneration() {
     navigate(`../idea/${topicid}`);
   }
-  const handleIdeaRefinement = () => {
+  function handleIdeaRefinement() {
     navigate(`../vision-doc/${topicid}`);
   }
 
-  const exploreMarketInsight = () => {
+  function exploreMarketInsight() {
     navigate(`/market-insight/${topicid}`)
   }
 
-  const explorePeople = () => {
+  function explorePeople() {
     navigate(`/people/${topicid}`);
   }
 

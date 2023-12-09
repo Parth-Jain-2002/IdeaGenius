@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import {
   Accordion,
   AccordionItem,
@@ -8,17 +8,27 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from "react-accessible-accordion";
-import imagem from '../../assets/images/IdeaGenLogo.png';
-import folderIcon from '../../assets/images/folder_icon.png';
-import researchIcon from '../../assets/images/research_bank_icon.png';
-import visionDocIcon from '../../assets/images/vision_doc_icon.png';
-import plus_icon from '../../assets/images/plus_icon_black.png';
+
+import imagem from "../../assets/images/IdeaGenLogo.png";
+import folderIcon from "../../assets/images/folder_icon.png";
+import researchIcon from "../../assets/images/research_bank_icon.png";
+import visionDocIcon from "../../assets/images/vision_doc_icon.png";
+import plus_icon from "../../assets/images/plus_icon_black.png";
 import NewIdeaModal from "../modals/NewIdeaModal";
 
+/**
+ * This is the common side for all of the pages (except certain)
+ * @returns {React.Component} Sidebar
+ */
 export default function Sidebar() {
   const [topics, setTopics] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const getTopics = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  /**
+   * A function to get the topics the user is researching on.
+   * These topics are shown in an accordion menu in the sidebar
+   */
+  function getTopics() {
     axios
       .get(`http://localhost:8000/get_topics_details`, {
         params: {
@@ -27,7 +37,7 @@ export default function Sidebar() {
       })
       .then(
         (response) => {
-          console.log(response);
+          // console.log(response);
           setTopics(response.data.topics);
         },
         (error) => {
@@ -35,31 +45,52 @@ export default function Sidebar() {
         }
       );
   };
-  const capitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
 
-  const capitalizeWords = (str) => {
+  /**
+   * A function to transform all letters of the given string in 
+   * such a way that the first letter of all words is capital.
+   * @param {string} str The string to capitalize 
+   * @returns {string} The capitalized string
+   */
+  function capitalizeWords(str) {
+    /**
+     * A function to capitalize the first letter of the given 
+     * string, which would be a word in this scenario
+     * @param {string} str The word to capitalize
+     * @returns {string} The capitalized word
+     */
+    function capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    };
     if (!str) {
-      return '';
+      return "";
     }
-    return str.split(' ').map(word => capitalizeFirstLetter(word)).join(' ');
+    return str.split(" ").map(word => capitalizeFirstLetter(word)).join(" ");
   };
 
-  const openModal = () => {
-    setIsModalOpen(true)
-  }
+  /**
+   * Open the new idea modal
+   */
+  function openModal() {
+    setIsModalOpen(true);
+  };
 
-  const closeModal = () => {
+  /**
+   * Close the new idea modal
+   */
+  function closeModal() {
     setIsModalOpen(false);
   };
 
+  /**
+   * Load the user's topics when the component is mounted in the view.
+   */
   useEffect(() => {
-    getTopics()
-  }, [])
+    getTopics();
+  }, []);
 
   return (
-    <aside className="flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] ">
+    <aside className="flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb]">
       <div className="flex items-center space-x-2">
         <img
           alt="Logo"
@@ -78,11 +109,11 @@ export default function Sidebar() {
         <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">
           My Ideas
         </h2>
-        <Accordion className="rounded-lg w-64 ">
+        <Accordion className="rounded-lg w-64">
           {Object.keys(topics).map((topic, index) => (
             <AccordionItem className="">
               <AccordionItemHeading className="hover:bg-gray-200 rounded-lg">
-                <AccordionItemButton className="text-black p-2 font-medium  flex justify-start ">
+                <AccordionItemButton className="text-black p-2 font-medium flex justify-start">
                   <img
                     src={folderIcon}
                     alt="Folder icon"
@@ -91,7 +122,7 @@ export default function Sidebar() {
                   {capitalizeWords(topic)}
                 </AccordionItemButton>
               </AccordionItemHeading>
-              <AccordionItemPanel className=" ml-6 ">
+              <AccordionItemPanel className="ml-6">
                 {topic === "Miscellaneous" ? (
                   <Link to={`../research/${topic}`}>
                     <div className="flex justify-start rounded-lg text-sm flex-row p-2 hover:bg-gray-200">
@@ -105,8 +136,8 @@ export default function Sidebar() {
                   </Link>
                 ) : (
                   <>
-                    <Link to={`/vision-doc/${topic}`} disabled={!topics[topic].generated}>
-                      <div className={`flex justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200 ${!topics[topic].generated && 'cursor-not-allowed opacity-50'}`}>
+                    {topics[topic].generated == true && <Link to={`/vision-doc/${topic}`}>
+                      <div className="flex justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200">
                         <img
                           src={visionDocIcon}
                           alt="Vision doc icon"
@@ -114,8 +145,7 @@ export default function Sidebar() {
                         />
                         Vision Doc
                       </div>
-                    </Link>
-
+                    </Link>}
                     <Link to={`/research/${topic}`}>
                       <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
                         <img
@@ -126,16 +156,15 @@ export default function Sidebar() {
                         Research Bank
                       </div>
                     </Link>
-                    <Link
-                      to={`/dashboard/${topic}`}
-                      className="flex rounded-lg w-full justify-start flex-row p-2 text-sm hover:bg-gray-200"
-                    >
-                      <img
-                        src={researchIcon}
-                        alt="Research bank icon"
-                        className="h-4 w-4 mr-2"
-                      />
-                      Idea Dashboard
+                    <Link to={`/dashboard/${topic}`}>
+                      <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
+                        <img
+                          src={researchIcon}
+                          alt="Idea Dashboard icon"
+                          className="h-4 w-4 mr-2"
+                        />
+                        Idea Dashboard
+                      </div>
                     </Link>
                   </>
                 )}
@@ -158,20 +187,22 @@ export default function Sidebar() {
           />
         )}
       </div>
-      <button className="w-4/5 flex justify-center items-center space-x-2  bg-black rounded-full p-2 text-white">
-        <IconLightningbolt className="h-5 w-5 mr-2" />
+      <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
+        <IconLightningbolt />
         Upgrade
       </button>
     </aside>
-  )
+  );
 }
 
-
-function IconLightningbolt(props) {
+/**
+ * Lightning Bolt SVG Icon
+ * @returns {React.Component} svg icon
+ */
+function IconLightningbolt() {
   return (
     <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 mr-2"
       width="24"
       height="24"
       viewBox="0 0 24 24"
