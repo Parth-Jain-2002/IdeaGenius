@@ -831,7 +831,8 @@ def get_competitor_revenue(competitors):
         all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]
         filtered_urls = [url for url in all_urls if urlparse(url).hostname == "growjo.com"]
         
-        if len(filtered_urls) > 0 and filtered_urls[0]!="https://growjo.com/":
+        if len(filtered_urls) > 0 and all(part in filtered_urls[0].lower() for part in competitor.lower().split(' ')):
+            
             if filtered_urls[0] in visited:
                 competitor_revenue.append(0)
             else:
@@ -859,12 +860,13 @@ def get_competitor_revenue(competitors):
                 except Exception as e:
                     print(f"Error fetching data from {filtered_urls[0]}: {e}")
                     competitor_revenue.append(0)
+            
         else:
             competitor_revenue.append(0)
                
     final_competitor = [comp for comp, rev in zip(competitors, competitor_revenue) if rev != 0]
     final_competitor_revenue = [rev for rev in competitor_revenue if rev != 0]
-    
+    session.close()
     print(final_competitor,final_competitor_revenue)
     
     return final_competitor,final_competitor_revenue
@@ -873,7 +875,7 @@ def get_competitor_revenue(competitors):
 def get_competitors(description, keywords):    
     
     session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=0.5)
+    retry = Retry(total=3, connect=3, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
@@ -884,7 +886,7 @@ def get_competitors(description, keywords):
     response = session.get(search_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower() or any(char.isdigit() for char in a.text)]
    
     print(urls)
     competitors = []
@@ -934,7 +936,7 @@ def get_competitors(description, keywords):
             print(f"Error fetching data from {url}: {e}")
             continue
           
-    
+    session.close()
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
     filtered_competitors = [competitor for competitor in competitors_without_numbering if len(competitor.split()) <= 2]
     unique_competitors=list(set(filtered_competitors))   
@@ -1005,7 +1007,7 @@ def get_tables(description, keywords):
             
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
-            
+    session.close()
     return tables
 
 # Helper function for scraping images from the web
@@ -1046,7 +1048,7 @@ def get_images(keywords):
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
         
-    
+    session.close()
     return images
 
 # Function for fetching market insights

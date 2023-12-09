@@ -88,7 +88,10 @@ export default function MarketInsight() {
             }],
           };
 
-          setCompetitorChart(CompetitorChartData);
+          if (competitorData.length > 0 && revenueData.length > 0) {
+            setCompetitorChart(CompetitorChartData);
+          }
+
 
           const result_df = response.data.interest_over_time;
           const parsedResult = JSON.parse(result_df);
@@ -142,18 +145,18 @@ export default function MarketInsight() {
   };
 
   const pieChartOptions = {
-    plugins: {      
+    plugins: {
       legend: {
-        display: true,        
-        position: "right",       
+        display: true,
+        position: "right",
         labels: {
-          fontSize:14,
+          fontSize: 14,
           padding: 10,
         }
       }
     },
     maintainAspectRatio: false
-    
+
   };
 
   return loading ? (
@@ -241,30 +244,34 @@ export default function MarketInsight() {
           </div>
         }
 
-        <div className="bg-gray-200 pb-8 pt-4 pl-4 pr-4 rounded-md shadow-md mb-4 h-96">
-          <h2 className="text-black text-lg font-semibold">
-            Customer Interest Trends
-          </h2>
+        {customerInterest && (
+          <div className="bg-gray-200 pb-8 pt-4 pl-4 pr-4 rounded-md shadow-md mb-4 h-96">
+            <h2 className="text-black text-lg font-semibold">
+              Customer Interest Trends
+            </h2>
 
-          <Line data={customerInterest} options={lineChartOptions} />
+            <Line data={customerInterest} options={lineChartOptions} />
 
 
-        </div>
+          </div>
+        )}
 
-        <div className=" bg-gray-200 p-10 rounded-md mb-4 shadow-md h-96">
-          <h2 className="text-black text-lg font-semibold">
-            Competitors in the Market
-          </h2>
-          
-          <Pie data={competitorChart} options={pieChartOptions} />
-        
-          
-        </div>
+        {competitorChart && (
+          <div className=" bg-gray-200 p-10 rounded-md mb-4 shadow-md h-96">
+            <h2 className="text-black text-lg font-semibold">
+              Competitors in the Market
+            </h2>
+
+            <Pie data={competitorChart} options={pieChartOptions} />
+
+
+          </div>
+        )}
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-8">
 
-          {images.slice(0, 2).map((image, index) => (
+          {images.length > 0 && images.slice(0, 2).map((image, index) => (
             <div key={index} className=" bg-gray-200 p-6 rounded-md shadow-md mb-4">
               <img
                 src={image}
