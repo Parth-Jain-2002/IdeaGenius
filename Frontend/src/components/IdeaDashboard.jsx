@@ -289,7 +289,7 @@ const IdeaDashboard = ({ topicid }) => {
             ) : (
               <CarouselProvider
                 naturalSlideWidth={100}
-                naturalSlideHeight={45}
+                naturalSlideHeight={43}
                 totalSlides={4}
                 isPlaying={true}
                 className="w-full pr-2 rounded-lg"
@@ -377,14 +377,16 @@ const IdeaDashboard = ({ topicid }) => {
         </div>
         <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
           <h1 className="text-xl font-semibold px-4 py-2">Recommended People on Trumio</h1>
-          <div className=" px-4">
+          <div className="px-6 py-2">
             {peopleData
               ? peopleData.map((person) => (
                 <div className="my-1" key={person.name}>
                 <PeopleCard.Small
                   name={person.name}
                   jobTitle={person.jobTitle}
+                  
                 />
+                  <hr className="my-2 bg-gray-100" />
                   </div>
    ))
               : null}

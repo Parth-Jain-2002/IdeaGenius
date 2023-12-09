@@ -70,7 +70,7 @@ PeopleCard.Small = ({ name, jobTitle }) => {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
   const url = `https://source.unsplash.com/150x150/?user&${randomSeed}`;
   return (
-    <div className="relative border-b-2 rounded-xl bg-slate-50 border-gray-200 overflow-hidden hover:scale-105 ">
+    <div className="relative rounded-xl overflow-hidden hover:scale-105 ">
       <div className="p-2 flex-row flex  ">
         <img
           className="w-14 h-14 mx-2 rounded-full object-cover border-4 border-white"
@@ -80,7 +80,7 @@ PeopleCard.Small = ({ name, jobTitle }) => {
         <div className="flex flex-1 flex-col justify-between">
           <span className="font-semibold text-lg">{name}</span>
           <span className="text-gray-700 text-sm">{jobTitle}</span>
-          <button className="group border  border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white px-3 rounded-full text-sm leading-loose flex flex-row justify-center items-center mt-2">
+          <button className="group border bg-[#efefef] border-gray-500 hover:bg-gray-700  hover:text-white px-3 rounded-full text-sm leading-loose flex flex-row justify-center items-center mt-2">
             <svg
               width="24"
               height="24"
