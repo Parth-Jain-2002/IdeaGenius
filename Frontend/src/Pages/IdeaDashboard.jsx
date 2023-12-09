@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import chatIcon from "../assets/images/chat_icon.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
@@ -20,11 +20,13 @@ import {
   TimeScale,
   ArcElement,
 } from "chart.js";
-import Navbar from "../components/Layout/Navbar";
 import "chartjs-adapter-date-fns";
 //import { enUS } from 'date-fns/locale';
 
 import randomcolor from 'randomcolor';
+
+import Navbar from "../components/Layout/Navbar";
+import Sidebar from "../components/Layout/Sidebar";
 
 ChartJS.register(
   CategoryScale,
@@ -40,9 +42,11 @@ ChartJS.register(
 );
 
 
-const IdeaDashboard = ({ topicid }) => {
+const IdeaDashboard = () => {
   const [topicDetails, setTopicDetails] = useState([]);
   const [peopleData, setPeopleData] = useState([{}]);
+  const { ideaid } = useParams();
+  const topicid = ideaid;
 
 
   const [competitors, setCompetitors] = useState([]);
@@ -241,8 +245,12 @@ const IdeaDashboard = ({ topicid }) => {
     navigate(`/people/${topicid}`);
   }
 
-  return (
-    <div className="w-full h-full p-4">
+  return (<>
+  <section className="grid h-full text-black grid-cols-5">
+      <Sidebar />
+      <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
+        <Navbar />
+        <div className="w-full h-full p-4">
       <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
         <div className=" flex flex-col justify-between w-full">
           <div className="flex flex-col">
@@ -392,10 +400,13 @@ const IdeaDashboard = ({ topicid }) => {
               : null}
 
           </div>
-          <a className="p-2 mb-2 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white  ml-auto mr-4 text-center" href={`/people/${topicid}`}>Explore More</a>
+          <button onClick={() => { explorePeople() }} className="p-2 mb-2 ml-4 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Explore More</button>
         </div>
       </div>
     </div>
+      </main>
+    </section>
+    </>
   );
 };
 

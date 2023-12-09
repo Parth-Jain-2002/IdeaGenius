@@ -10,9 +10,6 @@ import "react-accessible-accordion/dist/fancy-example.css";
 export default function MyProfile() {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
 
-  const [topics, setTopics] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentTopic, setCurrentTopic] = useState("")
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({
     profilePicUrl: `https://source.unsplash.com/150x150/?user&${randomSeed}`,
@@ -26,13 +23,6 @@ export default function MyProfile() {
     jobDesc: 'I am a software engineer and i engineer software',
     trumio: 'https://prod-app.trumio.ai/profile/TALENT/a30c74f024ad265730e348f6',
   })
-  const openModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   const getTopics = () => {
     axios

@@ -5,6 +5,7 @@ import Signup from './components/auth/Signup'
 import ForgotPassword from './components/auth/ForgotPassword'
 import AuthProvider from './contexts/AuthContext'
 import Dashboard from './Pages/Dashboard'
+import IdeaDashboard from './Pages/IdeaDashboard'
 import MyProfile from './Pages/MyProfile'
 import ResearchBank from './Pages/ResearchBank'
 import ChatInterface from './Pages/ChatInterface'
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/my-profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/:ideaid" element={<ProtectedRoute><IdeaDashboard /></ProtectedRoute>} />
             <Route path="/research/:ideaid" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
             <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface/></ProtectedRoute>} />
