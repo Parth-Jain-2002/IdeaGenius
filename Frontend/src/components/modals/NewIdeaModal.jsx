@@ -1,16 +1,24 @@
-// NewIdeaModal.js
-
-import React, { useEffect, useState } from "react";
-import crossIcon from "../../assets/images/cross_icon.png";
-import infoIcon from "../../assets/images/info_icon_red.svg";
+import React, { useState } from "react";
 import axios from "axios";
 
-const NewIdeaModal = ({ onClose, topics, getTopics }) => {
+import crossIcon from "../../assets/images/cross_icon.png";
+import infoIcon from "../../assets/images/info_icon_red.svg";
+
+/**
+ * This is the NewIdeaModal modal that allows users to create a new Idea
+ * @param {{onClose: function, topics: Array<string>, getTopics: function}} props Properties for the NewIdeaModal component
+ * @returns {React.Component} NewIdeaModal modal
+ */
+export default function NewIdeaModal({ onClose, topics, getTopics }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
-  const handleTitleChange = (e) => {
+  /**
+   * A function to validate the change in the title of the idea
+   * @param {Event} e onChange event of the title input
+   */
+  function handleTitleChange(e) {
     // Ensure the title does not exceed 25 characters
     if (e.target.value.length <= 25) {
       setError("");
@@ -18,14 +26,21 @@ const NewIdeaModal = ({ onClose, topics, getTopics }) => {
     }
   };
 
-  const handleDescriptionChange = (e) => {
+  /**
+   * A function to validate the change in the description of the idea
+   * @param {Event} e onChange event of the description input
+   */
+  function handleDescriptionChange(e) {
     // Ensure the description does not exceed 100 characters
     if (e.target.value.length <= 100) {
       setDescription(e.target.value);
     }
   };
 
-  const handleCreateIdea = () => {
+  /**
+   * A function to create the new Idea with the given title and description
+   */
+  function handleCreateIdea() {
     // Check if the title already exists in topics
     if (topics.includes(title)) {
       setError("You have a idea with the same name");
@@ -52,7 +67,7 @@ const NewIdeaModal = ({ onClose, topics, getTopics }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black opacity-50 z-40 top-0" style={{marginTop:0}}></div>
+      <div className="fixed inset-0 bg-black opacity-50 z-40 top-0" style={{ marginTop: 0 }}></div>
       <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-8 rounded-md shadow-md w-96 z-50">
         <div className="flex justify-between mb-4">
           <div>
@@ -117,5 +132,3 @@ const NewIdeaModal = ({ onClose, topics, getTopics }) => {
     </>
   );
 };
-
-export default NewIdeaModal;

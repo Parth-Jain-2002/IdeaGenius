@@ -1,10 +1,14 @@
 import React, { useState, useRef } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Lottie from "lottie-react";
+
+import { useAuth } from "../../contexts/AuthContext";
 import animationData from "../../assets/animations/Animation - 1701313508796.json";
 
+/**
+ * This is the Signup Page
+ * @returns {React.Component} Signup Page
+ */
 export default function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -14,6 +18,11 @@ export default function Signup() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  /**
+   * Async function to signup the user with his entered 
+   * details and redirect to dashboard on success
+   * @param {Event} e The button press event
+   */
   async function handleSubmit(e) {
     e.preventDefault();
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
@@ -34,6 +43,10 @@ export default function Signup() {
     }
   }
 
+  /**
+   * Async function to login with google and redirect to dashboard
+   * @param {Event} e The button press event
+   */
   async function handleSubmitGoogle(e) {
     try {
       setError("");
@@ -77,7 +90,6 @@ export default function Signup() {
                     <svg
                       className="fill-current h-6 w-6 text-red-500"
                       role="button"
-                      xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                     >
                       <title>Close</title>
@@ -139,16 +151,14 @@ export default function Signup() {
                 id="password"
                 placeholder="Enter password (again)"
                 minLength={8}
-                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500
-                focus:bg-white focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
-              px-4 py-2 mt-4"
+              className="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-2 mt-4"
               onClick={handleSubmit}
             >
               Signup
@@ -159,7 +169,6 @@ export default function Signup() {
                 <Link
                   to="/login"
                   className="text-purple-600 hover:underline"
-                  href="#"
                 >
                   Log in
                 </Link>
@@ -168,7 +177,7 @@ export default function Signup() {
 
             <div className="flex items-center w-full my-4">
               <hr className="w-full" />
-              <p className="px-3 ">OR</p>
+              <p className="px-3">OR</p>
               <hr className="w-full" />
             </div>
             <div className="my-6 space-y-4">
@@ -179,18 +188,15 @@ export default function Signup() {
                 className="flex items-center text-white justify-center w-full p-2 space-x-4 border rounded-md bg-indigo-500 hover:bg-indigo-500"
               >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 32 32"
                   className="w-5 h-5  fill-current"
                 >
-                  <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z"></path>
+                  <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z" />
                 </svg>
                 <p>Login with Google</p>
               </button>
             </div>
           </form>
-
-          {/* <hr className="my-6 border-gray-300 w-full"/> */}
         </div>
       </div>
     </div>

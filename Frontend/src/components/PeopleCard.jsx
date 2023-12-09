@@ -1,8 +1,11 @@
-// PeopleCard.jsx
-
 import React from "react";
 
-const PeopleCard = ({ name, jobTitle, jobDescription, institution }) => {
+/**
+ * A component to display a person's profile in a card
+ * @param {{name: string, jobTitle: string, jobDescription: string, institution: string}} props Details of the Person 
+ * @returns {React.Component} The person's profile
+ */
+export default function PeopleCard({ name, jobTitle, jobDescription, institution }) {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
   const url = `https://source.unsplash.com/150x150/?user&${randomSeed}`;
   return (
@@ -66,12 +69,17 @@ const PeopleCard = ({ name, jobTitle, jobDescription, institution }) => {
   );
 };
 
+/**
+ * A component to display a person's profile in a card. This includes very limited data to be shown in a compact card
+ * @param {{name: string, jobTitle: string}} props Details of the Person 
+ * @returns {React.Component} The person's profile
+ */
 PeopleCard.Small = ({ name, jobTitle }) => {
   const randomSeed = Math.floor(Math.random() * 1000) + 1;
   const url = `https://source.unsplash.com/150x150/?user&${randomSeed}`;
   return (
-    <div className="relative rounded-xl overflow-hidden hover:scale-105 ">
-      <div className="p-2 flex-row flex  ">
+    <div className="relative rounded-xl overflow-hidden hover:scale-105">
+      <div className="p-2 flex-row flex">
         <img
           className="w-14 h-14 mx-2 rounded-full object-cover border-4 border-white"
           src={url}
@@ -80,7 +88,7 @@ PeopleCard.Small = ({ name, jobTitle }) => {
         <div className="flex flex-1 flex-col justify-between">
           <span className="font-semibold text-lg">{name}</span>
           <span className="text-gray-700 text-sm">{jobTitle}</span>
-          <button className="group border bg-[#efefef] border-gray-500 hover:bg-gray-700  hover:text-white px-3 rounded-full text-sm leading-loose flex flex-row justify-center items-center mt-2">
+          <button className="group border bg-[#efefef] border-gray-500 hover:bg-gray-700 hover:text-white px-3 rounded-full text-sm leading-loose flex flex-row justify-center items-center mt-2">
             <svg
               width="24"
               height="24"
@@ -97,5 +105,3 @@ PeopleCard.Small = ({ name, jobTitle }) => {
     </div>
   );
 };
-
-export default PeopleCard;

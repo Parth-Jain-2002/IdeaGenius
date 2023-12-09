@@ -1,21 +1,21 @@
-// NewIdeaModal.js
-
-import React, { useEffect, useState } from "react";
-import crossIcon from "../../assets/images/cross_icon.png";
-import infoIcon from "../../assets/images/info_icon_red.svg";
+import React, { useState } from "react";
 import axios from "axios";
 
-const EditFormChat = ({
-  onClose,
-  topics,
-  getThreads,
-  currentTopic,
-  chatId,
-}) => {
+import crossIcon from "../../assets/images/cross_icon.png";
+
+/**
+ * This is the EditFormChat modal that allows users to edit the topic of a resource
+ * @param {{onClose: function, topics: Array<string>, getThreads: function, currentTopic: string, chatId: string}} props Properties for the EditFormChat component
+ * @returns {React.Component} EditFormChat modal
+ */
+export default function EditFormChat({ onClose, topics, getThreads, currentTopic, chatId }) {
   const [topicid, setTopicid] = useState(currentTopic);
   const [title, setTitle] = useState(`Save as ${currentTopic}`);
 
-  const handleChangeTopic = () => {
+  /**
+   * A function to handle submission of a topic to which to transfer the resource to
+   */
+  function handleChangeTopic() {
     // Check if the title already exists in topics
     if (topicid === currentTopic) {
       onClose();
@@ -41,7 +41,11 @@ const EditFormChat = ({
       );
   };
 
-  const handleTopicId = (value) => {
+  /**
+   * A function to handle the change in the selected topic
+   * @param {string} value The topic selected
+   */
+  function handleTopicId(value) {
     setTopicid(value);
     if (value === currentTopic) {
       setTitle(`Save as ${currentTopic}`);
@@ -98,5 +102,3 @@ const EditFormChat = ({
     </>
   );
 };
-
-export default EditFormChat;
