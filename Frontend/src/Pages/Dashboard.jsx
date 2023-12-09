@@ -23,9 +23,6 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 // Demo styles, see 'Styles' section below for some notes on use.
 import "react-accessible-accordion/dist/fancy-example.css";
 
-// Styling
-import "../assets/dashboard.css";
-
 export default function Dashboard() {
   return (
     <section className="grid h-full text-black grid-cols-5">
