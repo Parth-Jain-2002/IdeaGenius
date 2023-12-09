@@ -142,26 +142,18 @@ export default function MarketInsight() {
   };
 
   const pieChartOptions = {
-    plugins: {
-      tooltip: {
-        titleFont: {
-          size: 20
-        },
-        bodyFont: {
-          size: 20
-        },
-      },
+    plugins: {      
       legend: {
-        display: true,       
-        position: "right",
+        display: true,        
+        position: "right",       
         labels: {
-          boxWidth: 40,
-          padding: 10,                   
-        },
-        align: "start",
+          fontSize:14,
+          padding: 10,
+        }
       }
     },
-    maintainAspectRatio: false,
+    maintainAspectRatio: false
+    
   };
 
   return loading ? (
@@ -265,6 +257,7 @@ export default function MarketInsight() {
           </h2>
           
           <Pie data={competitorChart} options={pieChartOptions} />
+        
           
         </div>
 
