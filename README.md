@@ -3,15 +3,12 @@ IdeaGenius is a platform for seamless Market Research Assistance and Innovative 
 
 # Setup
 1. Clone the repository
-
 2. Go into the frontend folder using `cd frontend` and run `npm install` to install all the dependencies
 3. Create a `.env` file in the frontend folder by copying the contents of `.env.example` and replacing the values with your own
 4. Run `npm start` to start the frontend server
-
 5. Go into the extension folder using `cd extension` and run `npm install` to install all the dependencies
 6. To load the extension, go to `chrome://extensions` and turn on developer mode
 7. Click on `Load unpacked` and select the `extension` folder
-
 8. Go into the backend folder using `cd backend`
 9. Create a python virtual environment using `python -m venv {name of virtual environment}`
 10. Activate the virtual environment using `.\{name of virtual environment}\Scripts\Activate.ps1`
