@@ -5,8 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
-
-import { Line, Pie } from "react-chartjs-2";
+import data_img from "../assets/images/Data-amico.png"
+import { Line, Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -113,7 +113,7 @@ export default function IdeaDashboard() {
       );
 
       const data = await response.json();
-      // console.log(data.response);
+      //console.log(data.response);
       return data.response;
     } catch (error) {
       console.log(error);
@@ -131,7 +131,7 @@ export default function IdeaDashboard() {
       console.error("Error fetching data:", error);
     }
   };
-  const getTopics = () => {
+  const getTopicDetails = () => {
     axios
       .get(`http://localhost:8000/get_topic`, {
         params: {
@@ -222,9 +222,13 @@ export default function IdeaDashboard() {
   }
 
   useEffect(() => {
-    getTopics();
-    getPeeps();
-    getInsights();
+    getTopicDetails();
+   
+  
+      getPeeps();
+      getInsights();
+
+    
 
 
 
@@ -288,7 +292,8 @@ export default function IdeaDashboard() {
           </div>
         </div>
       </div>
-      <div className="flex w-full mt-6">
+      {topicDetails.generated ? (
+        <div className="flex w-full mt-6">
         <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg ">
           <h1 className="text-xl font-semibold p-2 ">Market Trends Analysis</h1>
           <div className=" w-full">
@@ -403,6 +408,13 @@ export default function IdeaDashboard() {
           <button onClick={() => { explorePeople() }} className="p-2 mb-2 ml-4 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Explore More</button>
         </div>
       </div>
+      ) : (
+        <div className="flex w-full space-x-20 mt-16">
+<img src={data_img} className="w-1/2 "></img>
+<h1 className="text-2xl leading-10 w-96 text-slate-500 items-center h-2/3 my-auto content-center">Genereate Problem Statement to access Market Insights and Recommended People</h1>
+        </div>
+      )}
+      
     </div>
       </main>
     </section>

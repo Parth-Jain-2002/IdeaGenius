@@ -99,12 +99,12 @@ export default function MarketInsight() {
             const sumFrequencyData = parsedResult.sum_frequency;
 
             // Convert Unix timestamps to a readable date format
-            const dates = Object.keys(sumFrequencyData).map((timestamp) =>{
+            const dates = Object.keys(sumFrequencyData).map((timestamp) => {
               const date = new Date(Number(timestamp));
               const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
               const year = date.getFullYear().toString();
               return `${month}/${year}`;
-            });  
+            });
 
             const data = {
               labels: dates,
@@ -132,13 +132,28 @@ export default function MarketInsight() {
 
   const lineChartOptions = {
     scales: {
-      x: {               
+      x: {
       },
       y: {
         beginAtZero: true,
       },
     },
     maintainAspectRatio: false,
+  };
+
+  const pieChartOptions = {
+    plugins: {      
+      legend: {
+        display: true,        
+        position: "right",       
+        labels: {
+          fontSize:14,
+          padding: 10,
+        }
+      }
+    },
+    maintainAspectRatio: false
+    
   };
 
   return loading ? (
@@ -230,44 +245,35 @@ export default function MarketInsight() {
           <h2 className="text-black text-lg font-semibold">
             Customer Interest Trends
           </h2>
+
+          <Line data={customerInterest} options={lineChartOptions} />
+
+
+        </div>
+
+        <div className=" bg-gray-200 p-10 rounded-md mb-4 shadow-md h-96">
+          <h2 className="text-black text-lg font-semibold">
+            Competitors in the Market
+          </h2>
           
-          <Line data={customerInterest} options={lineChartOptions}/>
-          
+          <Pie data={competitorChart} options={pieChartOptions} />
+        
           
         </div>
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-8">
-
-
-
-          <div className=" bg-gray-200 p-6 rounded-md mb-4 shadow-md">
-            <h2 className="text-black text-lg font-semibold mb-4">
-              Competitors in the Market
-            </h2>
-
-            <div className="w-3/5 mx-auto h-full pie-chart-conatiner">
-              <Pie data={competitorChart} />
-            </div>
-
-
-          </div>
-
-
-
-
 
           {images.slice(0, 2).map((image, index) => (
             <div key={index} className=" bg-gray-200 p-6 rounded-md shadow-md mb-4">
               <img
                 src={image}
                 alt={`Market Insights`}
-                className="rounded-lg w-full"
+                className="rounded-lg w-full h-full"
 
               />
             </div>
           ))}
-
-
-
 
 
         </div>
