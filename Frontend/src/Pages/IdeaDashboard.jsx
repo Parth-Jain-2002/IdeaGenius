@@ -113,7 +113,7 @@ export default function IdeaDashboard() {
       );
 
       const data = await response.json();
-      // console.log(data.response);
+      //console.log(data.response);
       return data.response;
     } catch (error) {
       console.log(error);
@@ -224,11 +224,10 @@ export default function IdeaDashboard() {
   useEffect(() => {
     getTopicDetails();
    
-    if (topicDetails.generated)
-    {
+  
       getPeeps();
       getInsights();
-    }
+
     
 
 

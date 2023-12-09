@@ -1293,6 +1293,7 @@ def get_input_tags(topicid):
 @csrf_exempt
 def get_recommended_people(request):
     try:
+        
         data = json.loads(request.body.decode('utf-8'))
         ideaid = data['ideaid']
         input_tags = get_input_tags(ideaid)
