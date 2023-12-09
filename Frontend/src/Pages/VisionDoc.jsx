@@ -22,7 +22,7 @@ export default function VisionDoc() {
   const message = useRef();
 
   // Function to get the chat info
-  const getIdeaInfo = () => {
+  function getIdeaInfo() {
     //console.log(ideaid);
     axios
       .get(`http://localhost:8000/get_topic`, {
@@ -47,7 +47,7 @@ export default function VisionDoc() {
       );
   };
 
-  const formatResponse = (text, containerRef) => {
+  function formatResponse(text, containerRef) {
     const result = [];
     let count = 0;
     const maxCount = containerRef.current
@@ -84,14 +84,14 @@ export default function VisionDoc() {
     return result.join("");
   };
 
-  const handleKeyPress = (event) => {
+  function handleKeyPress(event) {
     if (event.key === "Enter") {
       event.preventDefault();
       handleChat();
     }
   };
 
-  const handleChat = () => {
+  function handleChat() {
     setLoading(true);
     let message_text = message.current.value;
     message.current.value = ""
@@ -122,7 +122,7 @@ export default function VisionDoc() {
       );
   };
 
-  const generateTimeInsights = () => {
+  function generateTimeInsights() {
     axios
       .post(`http://localhost:8000/get_time_insights`, {
         ideaid: ideaid,
@@ -139,7 +139,7 @@ export default function VisionDoc() {
       );
   };
 
-  const generateCostInsights = () => {
+  function generateCostInsights() {
     axios
       .post(`http://localhost:8000/get_cost_insights`, {
         ideaid: ideaid,
@@ -156,7 +156,7 @@ export default function VisionDoc() {
       );
   };
 
-  const generateSimilarInsights = () => {
+  function generateSimilarInsights() {
     axios
       .post(`http://localhost:8000/get_similar_insights`, {
         ideaid: ideaid,
@@ -172,7 +172,7 @@ export default function VisionDoc() {
       );
   };
 
-  const generateSubtasks = () => {
+  function generateSubtasks() {
     axios
       .post(`http://localhost:8000/get_subtasks`, {
         ideaid: ideaid,
@@ -189,11 +189,11 @@ export default function VisionDoc() {
       );
   };
 
-  const AddBlock = () => {
+  function AddBlock() {
     setBlock(block + "\n ");
   };
 
-  const SaveData = () => {
+  function SaveData() {
     axios
       .post(`http://localhost:8000/update_topic`, {
         ideaid: ideaid,
@@ -217,7 +217,7 @@ export default function VisionDoc() {
       );
   };
 
-  const scrollToBottom = () => {
+  function scrollToBottom() {
     messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
   };
 

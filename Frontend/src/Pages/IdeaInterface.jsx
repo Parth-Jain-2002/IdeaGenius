@@ -24,7 +24,7 @@ export default function IdeaInterface() {
   const [chats, setChats] = useState([]);
   const [initialIdeas, setInitialIdeas] = useState([]);
 
-  const formatResponse = (text, containerRef) => {
+  function formatResponse(text, containerRef) {
     const result = [];
     let count = 0;
     const maxCount = containerRef.current
@@ -59,7 +59,7 @@ export default function IdeaInterface() {
     return result.join("");
   };
 
-  const handleNavigate = (title, description) => {
+  function handleNavigate(title, description) {
     axios
       .post(`http://localhost:8000/select_idea`, {
         userid: localStorage.getItem("ideagen_user_id"),
@@ -78,7 +78,7 @@ export default function IdeaInterface() {
       );
   };
 
-  const handleChat = () => {
+  function handleChat() {
     if (index === question.length - 1) {
       setChats([
         ...chats,
@@ -122,7 +122,7 @@ export default function IdeaInterface() {
     }
   };
 
-  const handleKeyPress = (event) => {
+  function handleKeyPress(event) {
     if (event.key === "Enter") {
       event.preventDefault();
       handleChat();

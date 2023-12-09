@@ -25,24 +25,6 @@ export default function MyProfile() {
     trumio: 'https://prod-app.trumio.ai/profile/TALENT/a30c74f024ad265730e348f6',
   })
 
-  const getTopics = () => {
-    axios
-      .get(`http://localhost:8000/get_topics_details`, {
-        params: {
-          userid: localStorage.getItem("ideagen_user_id"),
-        },
-      })
-      .then(
-        (response) => {
-          // console.log(response);
-          setTopics(response.data.topics);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-  };
-
   const getUserData = async () => {
     let res = await axios.get(`http://localhost:8000/get_user`, {
       params: {
@@ -63,7 +45,7 @@ export default function MyProfile() {
     });
   }
 
-  const saveDetails = () => {
+  function saveDetails() {
     setLoading(true)
     const data = {
       userid: localStorage.getItem("ideagen_user_id"),
@@ -87,7 +69,6 @@ export default function MyProfile() {
 
 
   useEffect(() => {        
-    getTopics();
     getUserData().then(()=>setLoading(false))
   },[])
 

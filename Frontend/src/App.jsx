@@ -19,10 +19,10 @@ import People from './Pages/People';
 
 /**
  * This component is used to create a protected route that can only be accessed if the user is authenticated
- * @param {Object} children The main component to show if user is authenticated
+ * @param {{children: React.Component}} children The main component to show if user is authenticated
  * @returns {React.Component} The component if user is authenticated, else redirects to login page
  */
-const ProtectedRoute = ({ children }) => {
+function ProtectedRoute({ children }) {
   const isLoggedIn = localStorage.getItem("ideagen_logged_in");
   return isLoggedIn == 'true' ? children : <Navigate to="/login" />;
 }

@@ -14,7 +14,7 @@ export default function ChatInterface() {
   const [chatInfo, setChatInfo] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const formatResponse = (text, containerRef) => {
+  function formatResponse(text, containerRef) {
     const result = [];
     let count = 0;
     const maxCount = containerRef.current
@@ -51,7 +51,7 @@ export default function ChatInterface() {
     return result.join("");
   };
 
-  const handleChat = () => {
+  function handleChat() {
     setLoading(true);
     let message_text = message.current.value;
     message.current.value = "";
@@ -81,7 +81,7 @@ export default function ChatInterface() {
       );
   };
 
-  const handleKeyPress = (event) => {
+  function handleKeyPress(event) {
     if (event.key === "Enter") {
       event.preventDefault();
       handleChat();
