@@ -52,7 +52,7 @@ const NewIdeaModal = ({ onClose, topics, getTopics }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+      <div className="fixed inset-0 bg-black opacity-50 z-40 top-0" style={{marginTop:0}}></div>
       <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-8 rounded-md shadow-md w-96 z-50">
         <div className="flex justify-between mb-4">
           <div>

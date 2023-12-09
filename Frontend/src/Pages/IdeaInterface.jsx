@@ -1,6 +1,4 @@
-import Collapsible from "../components/Collapsible";
-import imagem from "../assets/images/IdeaGenLogo.png";
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -294,45 +292,6 @@ function IconArrowup(props) {
     >
       <path d="m5 12 7-7 7 7" />
       <path d="M12 19V5" />
-    </svg>
-  );
-}
-
-function IconChevronright(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
-}
-
-function IconLightningbolt(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973" />
-      <path d="m13 12-3 5h4l-3 5" />
     </svg>
   );
 }

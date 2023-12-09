@@ -3,6 +3,7 @@ import Lottie from "lottie-react";
 import { useEffect, useState } from "react"
 import loadingAnimation from "../assets//animations/Animation - 1701802141018.json"
 import 'pure-react-carousel/dist/react-carousel.es.css';
+import user_pic from "../assets/images/user.png"
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import "react-accessible-accordion/dist/fancy-example.css";
@@ -12,7 +13,7 @@ export default function MyProfile() {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({
-    profilePicUrl: `https://source.unsplash.com/150x150/?user&${randomSeed}`,
+    profilePicUrl: user_pic,
     bannerPicUrl: "https://www.eikojones.com/wp-content/uploads/2016/01/esperanza-inlet-sunrise-1080x480.jpg",
     name: 'John Doe',
     email: 'john.doe@gmail.com',

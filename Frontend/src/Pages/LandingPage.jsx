@@ -10,7 +10,7 @@ import UseCases from "../components/Layout/UseCases";
 import {Link} from "react-router-dom"
 
 
-const LandingPage = () => {
+export default function LandingPage() {
   return (
     <div className="bg-[#f4f7fa] py-6 px-20 ">
       {/* Navbar */}
@@ -85,7 +85,7 @@ const LandingPage = () => {
       <div id="features">
         <Features />
         <div id="usecases">
-          <h1 class="mb-4 ml-14 text-4xl tracking-tight font-extrabold text-gray-900 ">Use Cases</h1>
+          <h1 className="mb-4 ml-14 text-4xl tracking-tight font-extrabold text-gray-900 ">Use Cases</h1>
         <UseCases />
       </div>
       </div>
@@ -96,5 +96,3 @@ const LandingPage = () => {
     </div>
   );
 };
-
-export default LandingPage;

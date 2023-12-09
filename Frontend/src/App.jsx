@@ -19,7 +19,7 @@ import People from './Pages/People'
 
 const ProtectedRoute = ({children}) => {
   const isLoggedIn = localStorage.getItem("ideagen_logged_in")
-  return isLoggedIn ? children : <Navigate to="/login" />
+  return isLoggedIn == 'true' ? children : <Navigate to="/login" />
 }
 
 export default function App() {

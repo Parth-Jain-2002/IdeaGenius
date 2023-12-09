@@ -6,7 +6,7 @@ import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
-import { Line, Bar, Pie } from "react-chartjs-2";
+import { Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -42,7 +42,7 @@ ChartJS.register(
 );
 
 
-const IdeaDashboard = () => {
+export default function IdeaDashboard() {
   const [topicDetails, setTopicDetails] = useState([]);
   const [peopleData, setPeopleData] = useState([{}]);
   const { ideaid } = useParams();
@@ -409,5 +409,3 @@ const IdeaDashboard = () => {
     </>
   );
 };
-
-export default IdeaDashboard;
