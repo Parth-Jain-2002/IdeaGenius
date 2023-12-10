@@ -36,7 +36,7 @@ export default function Signup() {
         passwordRef.current.value,
         nameRef.current.value
       );
-      navigate("/dashboard");
+      navigate("/login");
     } catch {
       setError("Failed to create an account");
       alert("Failed to Sign Up");
