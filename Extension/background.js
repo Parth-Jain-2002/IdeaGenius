@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     // console.log("Clicked research bank");
     // console.log(user_id);
     // Get request with url and user id to the server
-    fetch("http://localhost:8000/url_test", {
+    fetch("http://localhost:8000/extension_click", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

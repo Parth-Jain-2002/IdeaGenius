@@ -39,7 +39,7 @@ from PIL import Image
 
 from .models import UserAction, Chat, UserDoc, Thread, Topic
 
-# load llm and embeddings
+# Load llm and embeddings
 llm = HCA(email=os.getenv("EMAIL"), psw=os.getenv("PASSWORD"), cookie_path="./cookies_snapshot")
 embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-base-v2",task="feature-extraction",huggingfacehub_api_token=os.getenv("HF_TOKEN"))
 
@@ -47,7 +47,7 @@ embeddings = HuggingFaceHubEmbeddings(repo_id="sentence-transformers/all-mpnet-b
 whisper_model = whisper.load_model("tiny")
 
 #------------------------------------------------------------------------------------------
-#----------------------------- TESTING ENDPOINTS ------------------------------------------
+#-------------------------------- INDEX ENDPOINT ------------------------------------------
 #------------------------------------------------------------------------------------------
 @csrf_exempt
 def index(request):
@@ -56,120 +56,50 @@ def index(request):
     response['message'] = 'This is the home page'
     return JsonResponse(response)
 
-@csrf_exempt
-def ai_response(request):
-    response = {}
-    response['status'] = 'OK'
-    response['message'] = 'This is the ai_response page'
-    return JsonResponse(response)
+#------------------------------------------------------------------------------------------
+#-------------------------------- EXTENSION ENDPOINT --------------------------------------
+#------------------------------------------------------------------------------------------
 
 @csrf_exempt
-def test(request):
-    # Get the PDF file from the request
-    doc = request.FILES.getlist('image')
-    question = request.POST.get('question')
-
-    print(question)
-
-    image = Image.open(doc[0])
-    response = visual_answering_data(image, question)
-    print(response)
-    return JsonResponse({'response':response})
-
-@csrf_exempt
-def url_test(request):
+def extension_click(request):
     # get the request url from request header
     url = request.headers.get('url', None)
     userid = request.headers.get('userid', None)
     action = request.headers.get('action', None)
-    print("Url: ", url)
-    print("User ID: ", userid)
-    print("Action: ", action)
 
     # Save the url, userid, and action in the django database
     UserAction.objects.create(url=url, userid=userid, action=action)
 
     # Chat Thread creation
     chatid = create_thread(url, userid)
-    print(chatid)
 
     # Perform the task, chat message
     response = perform_task(url, action,chatid)
     if action != 'clicked_research_bank':
         Chat.objects.create(userid=userid, message=action, response=response, chatid=chatid)
 
-    return JsonResponse({'response':'test'})
+    return JsonResponse({'response':'Success'})
 
 #------------------------------------------------------------------------------------------
 #------------------------------ RESEARCH BANK ---------------------------------------------
 #------------------------------------------------------------------------------------------
 
-# Helper to summarize the text
-def summarize(url, chatid):
-    db = add_to_research_bank(url,chatid)
-    retriever = db.as_retriever()
+# Function for scraping the url
+def scrape(url):
+    # if the url contains youtube, then call other function
+    if 'youtube' in url:
+        return scrape_youtube(url)
 
-    # create a QA chain
-    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
-
-    # summarize the text
-    query_to_ask = "Summarize this in 5 ordered list points"
-    ai_summary = qa({"query": query_to_ask})
+    # scrape the url and return the text
+    html = requests.get(url).text
+    doc = Document(html)
+    summary = doc.summary()
     
-    # print(ai_summary)
-    return ai_summary['result']
+    # remove the html tags
+    clean = re.compile('<.*?>')
+    summary = re.sub(clean, '', summary)
 
-# Function for actionable insights from the text
-def insights(url,chatid):
-    db = add_to_research_bank(url,chatid)
-    retriever = db.as_retriever()
-
-    # create a QA chain
-    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
-
-    # actionable insights from the text
-    query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
-    ai_insights = qa({"query": query_to_ask})
-    # print(ai_insights['result'])
-    return ai_insights['result']
-
-# Function for deep diving into the text
-def deep_dive(url,chatid):
-    db = add_to_research_bank(url,chatid)
-    retriever = db.as_retriever()
-
-    # create a QA chain
-    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
-
-    # deep dive into the text
-    query_to_ask = "Deep dive into this article in 5 ordered list points"
-    ai_deep_dive = qa({"query": query_to_ask})
-    
-    return ai_deep_dive['result']
-
-# Function for adding the text to the research bank
-def add_to_research_bank(url,chatid):
-    # scrape the url
-    summary = scrape(url)
-    text_array = []
-
-    # Split the summary into chunks of 200 words
-    words = summary.split()
-    for i in range(0, len(words), 200):
-        text_array.append(" ".join(words[i:i+200]))
-
-    # print(text_array)
-
-    # Split the text into chunks of 1000 characters
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.create_documents(text_array)
-    # print(texts)
-    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
-
-    # save vectorstore
-    db.persist()
-    return db
-
+    return summary
 
 # Function for saving audio from input video id of YouTube
 def download(video_id: str) -> str:
@@ -189,23 +119,6 @@ def download(video_id: str) -> str:
             raise Exception('Failed to download video')
 
     return f'audio/{video_id}.m4a'
-    
-# Function for scraping the url
-def scrape(url):
-    # if the url contains youtube, then call other function
-    if 'youtube' in url:
-        return scrape_youtube(url)
-
-    # scrape the url and return the text
-    html = requests.get(url).text
-    doc = Document(html)
-    summary = doc.summary()
-    
-    # remove the html tags
-    clean = re.compile('<.*?>')
-    summary = re.sub(clean, '', summary)
-
-    return summary
 
 # Function for scraping the youtube url
 def scrape_youtube(video_url):
@@ -242,7 +155,7 @@ def scrape_youtube(video_url):
             print("Error deleting file:", delete_error)
 
         return "Fallback transcription using Whisper failed."
-    
+
 
 # Function for summarizing the document
 def summarize_document(document):
@@ -304,6 +217,72 @@ def perform_task(url, action, chatid):
         return "Add to research bank"
     else:
         return "No action found"
+
+# Function for adding the text to the research bank
+def add_to_research_bank(url,chatid):
+    # scrape the url
+    summary = scrape(url)
+    text_array = []
+
+    # Split the summary into chunks of 200 words
+    words = summary.split()
+    for i in range(0, len(words), 200):
+        text_array.append(" ".join(words[i:i+200]))
+
+    # Split the text into chunks of 1000 characters
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(text_array)
+    # print(texts)
+    db = Chroma.from_documents(texts, embeddings, persist_directory="./vector_store/chroma_db_" + str(chatid))
+
+    # save vectorstore
+    db.persist()
+    return db
+
+# Helper to summarize the text
+def summarize(url, chatid):
+    db = add_to_research_bank(url,chatid)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+
+    # summarize the text
+    query_to_ask = "Summarize this in 5 ordered list points"
+    ai_summary = qa({"query": query_to_ask})
+    
+    # print(ai_summary)
+    return ai_summary['result']
+
+# Function for actionable insights from the text
+def insights(url,chatid):
+    db = add_to_research_bank(url,chatid)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+
+    # actionable insights from the text
+    query_to_ask = "Give me actionable insights from this article in 5 ordered list points"
+    ai_insights = qa({"query": query_to_ask})
+    # print(ai_insights['result'])
+    return ai_insights['result']
+
+# Function for deep diving into the text
+def deep_dive(url,chatid):
+    db = add_to_research_bank(url,chatid)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+
+    # deep dive into the text
+    query_to_ask = "Deep dive into this article in 5 ordered list points"
+    ai_deep_dive = qa({"query": query_to_ask})
+    
+    return ai_deep_dive['result']
+
+
 
 #------------------------------------------------------------------------------------------
 #----------------------------------- CHAT -------------------------------------------------
