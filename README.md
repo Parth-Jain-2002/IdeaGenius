@@ -121,9 +121,9 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Personalized learning:** Tailor your research experience based on your specific needs and interests.
   
 ### 6. Market Insights:
-![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/19109273-e683-4b77-bb38-6497ec2a29e4)
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/108723453/ccbae0cb-1a98-49c7-88e2-5a49f05b1f23)
 
-![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/b8e23f20-9191-4c3c-8ea7-5622cb88694a)
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/108723453/67bc304f-d44d-4d20-94ab-b333375cd17c)
 
 - **Quantitative data analysis:** Access comprehensive data on current and projected market size, competitor valuations, and customer trends.
 - **Comparative analysis:** Benchmark your idea against existing players in the market to identify potential opportunities and challenges.
