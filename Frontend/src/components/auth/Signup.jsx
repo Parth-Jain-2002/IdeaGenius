@@ -28,6 +28,9 @@ export default function Signup() {
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
       return setError("Passwords do not match");
     }
+    if (passwordRef.current.value.length < 8) {
+      return setError("Length of password must be greater than 8");
+    }
 
     try {
       setError("");
@@ -82,11 +85,14 @@ export default function Signup() {
                   className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
                   role="alert"
                 >
-                  <strong className="font-bold">Holy smokes!</strong>
+                  <strong className="font-bold">Holy smokes!</strong><br/>
                   <span className="block sm:inline">
-                    Something seriously bad happened.
+                    {error}
                   </span>
-                  <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                  <span 
+                    className="absolute top-0 bottom-0 right-0 px-4 py-3"
+                    onClick={() => setError("")}
+                    >
                     <svg
                       className="fill-current h-6 w-6 text-red-500"
                       role="button"

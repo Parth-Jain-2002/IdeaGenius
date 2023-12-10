@@ -225,7 +225,7 @@ export default function IdeaInterface() {
                             className="bg-blue-100 rounded-xl px-5 py-3 mt-1 leading-loose w-full max-w-3xl"
                             ref={containerRef}
                             style={{
-                              whiteSpace: "pre-wrap",
+                              // whiteSpace: "pre-wrap",
                               overflowY: "auto",
                             }}
                           >
