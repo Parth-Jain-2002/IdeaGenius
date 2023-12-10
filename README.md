@@ -30,13 +30,17 @@ College alumni are graduates of academic institutions, bringing their experience
 ### 3. University Club
 University clubs are groups within academic institutions focused on fostering creativity, innovation, and collaboration. IdeaGenius caters to them in following ways:
 - **Idea Incubator** : IdeaGenius provides a dedicated space for university clubs to collaboratively explore and refine project ideas.
+- **Knowledge Hub** : With the Research Bank feature, university clubs can build a comprehensive knowledge hub. Club members can contribute and access relevant documents, research papers, and articles.
+- **Networking Opportunities** : IdeaGenius acts as a networking platform, connecting university clubs with like-minded peers. This networking opportunity extends beyond the club itself, facilitating collaborations with other clubs, sharing of experiences, and creating a broader ecosystem for innovation
 
 ### 4. Investor
+Investors are individuals or entities looking for investment opportunities in innovative projects.
+- **Curated Innovation** : Offers investors a curated selection of innovative projects, streamlining the process of identifying promising investment opportunities.
+- **Diverse Portfolio** : Allows investors to diversify their portfolio by exploring a wide range of projects across different industries and sectors.
 
-### 5. Student
 
 ## Scope 
-3The scope of IdeaGenius encompasses a comprehensive set of features to guide users through the idea generation and refinement process:
+The scope of IdeaGenius encompasses a comprehensive set of features to guide users through the idea generation and refinement process:
 
 ### 1. Smart Questionnaire:
 1. IdeaGenius prompts users with a targeted set of smart questions related to  target industries, current challenges, desired technologies, and budget and time constraints. The responses drive the AI-powered idea generation process.
@@ -53,6 +57,13 @@ University clubs are groups within academic institutions focused on fostering cr
 
 ### 4. Market Trends Analysis:
 1. IdeaGenius provides clients with real-time market trends, offering a detailed analysis of the chosen ideas. This analysis underscores the idea's relevance, market demand, and competitive landscape, supporting clients in making informed decisions.
+
+
+### 5. Collaboration Recommendations:
+1. IdeaGenius incorporates an intelligent networking algorithm that analyzes user profiles, preferences, and project interests and recommends potential collaborators within the IdeaGenius community.
+2. By suggesting individuals with complementary skills and interests, IdeaGenius aims to enhance the collaborative potential of users, fostering partnerships that can lead to more robust and successful project implementations.
+
+
 
 ## User Interface:  
 IdeaGenius boasts a suite of innovative features designed to streamline the process of developing and launching your ideas. Here's a closer look:
