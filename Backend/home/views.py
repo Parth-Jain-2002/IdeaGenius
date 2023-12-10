@@ -85,6 +85,41 @@ def extension_click(request):
 #------------------------------ RESEARCH BANK ---------------------------------------------
 #------------------------------------------------------------------------------------------
 
+# Function for creating a thread in the database
+def create_thread(url, userid):
+    # get the title and image from the url
+    html = requests.get(url).text
+    doc = Document(html)
+    title = doc.title()
+    
+    summary = doc.summary()
+    # If in summary, there is an image, then use that image
+    imgsrc = ""
+    
+    img_match = re.search(r'<img.+?src="(.+?)".*?>', summary)
+    if img_match:
+        imgsrc = img_match.group(1)
+    else:
+        imgsrc = "https://www.lisedunetwork.com/wp-content/uploads/2014/02/Types-of-Information.jpg"
+
+    # create a thread in the database
+    thread = Thread.objects.create(userid=userid, title=title, imgsrc=imgsrc, url=url)
+    chatid = thread.chatid
+    vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
+    thread.vectorstore_path = vectorstore_path
+
+    # Update the vectorstore path in the database
+    thread.save()
+
+    # Add the topic to the "Miscellaneous" topic
+    user = UserDoc.objects.get(userid=userid)
+    topics = user.topics
+    topics['Miscellaneous'].append({'title':title, 'chatid':str(chatid)})
+    user.topics = topics
+    user.save()
+
+    return chatid
+
 # Function for scraping the url
 def scrape(url):
     # if the url contains youtube, then call other function
@@ -286,7 +321,7 @@ def deep_dive(url,chatid):
 
 
 #------------------------------------------------------------------------------------------
-#----------------------------------- CHAT -------------------------------------------------
+#--------------------------------- BASIC INFO RETURN --------------------------------------
 #------------------------------------------------------------------------------------------
 
 # Function for getting the chat list from the database
@@ -353,40 +388,9 @@ def get_threads(request):
         print(e)
         return JsonResponse({'data':[]})
     
-# Function for creating a thread in the database
-def create_thread(url, userid):
-    # get the title and image from the url
-    html = requests.get(url).text
-    doc = Document(html)
-    title = doc.title()
-    
-    summary = doc.summary()
-    # If in summary, there is an image, then use that image
-    imgsrc = ""
-    
-    img_match = re.search(r'<img.+?src="(.+?)".*?>', summary)
-    if img_match:
-        imgsrc = img_match.group(1)
-    else:
-        imgsrc = "https://www.lisedunetwork.com/wp-content/uploads/2014/02/Types-of-Information.jpg"
-
-    # create a thread in the database
-    thread = Thread.objects.create(userid=userid, title=title, imgsrc=imgsrc, url=url)
-    chatid = thread.chatid
-    vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
-    thread.vectorstore_path = vectorstore_path
-
-    # Update the vectorstore path in the database
-    thread.save()
-
-    # Add the topic to the "Miscellaneous" topic
-    user = UserDoc.objects.get(userid=userid)
-    topics = user.topics
-    topics['Miscellaneous'].append({'title':title, 'chatid':str(chatid)})
-    user.topics = topics
-    user.save()
-
-    return chatid
+#------------------------------------------------------------------------------------------
+#----------------------------------- CHAT -------------------------------------------------
+#------------------------------------------------------------------------------------------
 
 # Function for generating and storing the chat
 @csrf_exempt
@@ -435,90 +439,7 @@ def chat_interface(request):
 
     return JsonResponse({'response':response})
 
-# Function for retreiving the idea chat from the database
-@csrf_exempt
-def get_idea_chat(request):
-    ideaid = request.GET['ideaid']
-    userid = request.GET['userid']
 
-    # Get the chatid from the topic
-    topic = Topic.objects.get(userid=userid, topicid=ideaid)
-    chatid = topic.chatid
-
-    if chatid == "":
-        return JsonResponse({'data':[]})
-
-    chats = Chat.objects.filter(chatid=chatid)
-    
-    # convert the chats to json
-    response = []
-    for chat in chats:
-        response.append({'message':chat.message, 'response':chat.response})
-
-    return JsonResponse({'data':response})
-
-# Function for generating and storing the idea/chat history
-@csrf_exempt
-def idea_interface(request):
-    data = json.loads(request.body.decode('utf-8'))
-    print(data)
-    message = data['message']
-    ideaid = data['ideaid']
-    userid = data['userid']
-
-    idea = Topic.objects.get(userid=userid, topicid=ideaid)
-    chatid = idea.chatid
-
-    thread = Thread.objects.filter(chatid=chatid)
-    # If the queryset is empty, then create a new thread
-    if not thread:
-        print("Thread does not exist")
-        thread = Thread.objects.create(userid=userid, chatid=chatid)
-        vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
-        thread.vectorstore_path = vectorstore_path
-        # Update the vectorstore path in the database
-        thread.save()
-
-    chat = ''
-    prompt = ''
-    try:
-        # Get the last chat from the database according to timestamp
-        chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
-
-        # Prompt
-        prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
-    except:
-        prompt = "What is your response to this query: " + message + "?"
-
-    prompt= idea_info(idea) + prompt
-
-    # Use the vectorstore from the thread
-    thread = Thread.objects.get(chatid=chatid)
-    vectorstore_path = thread.vectorstore_path
-    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
-    retriever = db.as_retriever()
-
-    # create a QA chain
-    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
-    response = qa({"query": prompt})
-    print(response)
-    response = response['result']
-
-    # Add the response to the vectorstore
-    word = response.split()
-    word_array = []
-    for i in range(0, len(word), 200):
-        word_array.append(" ".join(word[i:i+200]))
-
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.create_documents(word_array)
-    db.add_documents(texts)
-    db.persist()
-
-    # Save the chat in the database
-    Chat.objects.create(userid=thread.userid, message=message, response=response, chatid=chatid)
-
-    return JsonResponse({'response':response})
 
 #------------------------------------------------------------------------------------------
 #----------------------------------- TOPIC ------------------------------------------------
@@ -764,6 +685,237 @@ def select_idea(request):
     topic.save()
 
     return JsonResponse({'response':'Success'})
+
+#----------------------------------------------------------------------------------------
+#-----------------------------------VISION DOC-------------------------------------------
+#----------------------------------------------------------------------------------------
+
+# Validating the cost insights response
+def validate_cost_insights(response):
+    try:
+        # Find the first "{" and the last "}" in response
+        response = response[response.find("{"):response.rfind("}")+1]
+        response = json.loads(response)
+        print(response)
+        if 'cost' in response and 'explanation' in response:
+            return response 
+        else:
+            return "Invalid"
+    except:
+        return "Invalid"
+
+# Validating the time insights response
+def validate_time_insights(response):
+    try:
+        # Find the first "{" and the last "}" in response
+        response = response[response.find("{"):response.rfind("}")+1]
+        response = json.loads(response)
+        if 'time' in response and 'explanation' in response:
+            return response 
+        else:
+            return "Invalid"
+    except:
+        return "Invalid"
+
+# Function for fetching the cost insights 
+@csrf_exempt
+def get_cost_insights(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.cost_insight = {}
+
+    prompt = generate_cost_insights_prompt(topic)
+    
+    while True:
+        response = llm(prompt)
+        validate = validate_cost_insights(response)
+        print(validate)
+        if validate != "Invalid":
+            topic.cost_insight = validate
+            topic.save()
+            break
+
+    return JsonResponse({'response':"Success"})
+
+# Function for fetching the time insights
+@csrf_exempt
+def get_time_insights(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.time_insight = {}
+
+    prompt = generate_time_insights_prompt(topic)
+    
+    while True:
+        response = llm(prompt)
+        validate = validate_time_insights(response)
+        print(validate)
+        if validate != "Invalid":
+            topic.time_insight = validate
+            topic.save()
+            break
+
+    return JsonResponse({'response':"Success"})
+
+# Function for fetching the subtasks
+@csrf_exempt
+def get_subtasks(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.subtask = ""
+
+    prompt = generate_subtasks_prompt(topic)
+    
+    response = llm(prompt)
+    topic.subtask = response
+    topic.save()
+    
+    return JsonResponse({'response':"Success"})
+
+# Function for generating similar insights
+@csrf_exempt
+def get_similar_insights(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.similar_insights = ""
+
+    prompt = generate_similar_insights_prompt(topic)
+    
+    response = llm(prompt)
+    topic.similar_insights = response
+    topic.save()
+    
+    return JsonResponse({'response':"Success"})
+
+# Function for updating the topic
+@csrf_exempt
+def update_topic(request):
+    data = json.loads(request.body.decode('utf-8'))
+    userid = data['userid']
+    topicid = data['ideaid']
+    title = data['title']
+    description = data['description']
+    subtask = data['subtask']
+    visiondoctext = data['visiondoctext']
+    time_insight = data['time_insight']
+    cost_insight = data['cost_insight']
+
+    # Get the topic from the database
+    topic = Topic.objects.get(userid=userid, topicid=topicid)
+    topic.title = title
+    topic.description = description
+    topic.subtask = subtask
+    topic.time_insight = time_insight
+    topic.cost_insight = cost_insight
+    topic.visiondoctext = visiondoctext
+    topic.save()
+
+    return JsonResponse({'response':"Success"})
+
+#------------------------------------------------------------------------------------------
+#----------------------------------- VISION X ---------------------------------------------
+#------------------------------------------------------------------------------------------
+
+# Function for retreiving the idea chat from the database
+@csrf_exempt
+def get_idea_chat(request):
+    ideaid = request.GET['ideaid']
+    userid = request.GET['userid']
+
+    # Get the chatid from the topic
+    topic = Topic.objects.get(userid=userid, topicid=ideaid)
+    chatid = topic.chatid
+
+    if chatid == "":
+        return JsonResponse({'data':[]})
+
+    chats = Chat.objects.filter(chatid=chatid)
+    
+    # convert the chats to json
+    response = []
+    for chat in chats:
+        response.append({'message':chat.message, 'response':chat.response})
+
+    return JsonResponse({'data':response})
+
+# Function for generating and storing the idea/chat history
+@csrf_exempt
+def idea_interface(request):
+    data = json.loads(request.body.decode('utf-8'))
+    print(data)
+    message = data['message']
+    ideaid = data['ideaid']
+    userid = data['userid']
+
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+    chatid = idea.chatid
+
+    thread = Thread.objects.filter(chatid=chatid)
+    # If the queryset is empty, then create a new thread
+    if not thread:
+        print("Thread does not exist")
+        thread = Thread.objects.create(userid=userid, chatid=chatid)
+        vectorstore_path = "./vector_store/chroma_db_" + str(chatid)
+        thread.vectorstore_path = vectorstore_path
+        # Update the vectorstore path in the database
+        thread.save()
+
+    chat = ''
+    prompt = ''
+    try:
+        # Get the last chat from the database according to timestamp
+        chat = Chat.objects.filter(chatid=chatid).order_by('-timestamp')[0]
+
+        # Prompt
+        prompt = "Here is the last query: " + chat.message + " and here is the last response: " + chat.response + ". What is your response to this query: " + message + "?"
+    except:
+        prompt = "What is your response to this query: " + message + "?"
+
+    prompt= idea_info(idea) + prompt
+
+    # Use the vectorstore from the thread
+    thread = Thread.objects.get(chatid=chatid)
+    vectorstore_path = thread.vectorstore_path
+    db = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+    retriever = db.as_retriever()
+
+    # create a QA chain
+    qa = RetrievalQA.from_chain_type(llm = llm, chain_type='stuff', retriever=retriever,return_source_documents=True)
+    response = qa({"query": prompt})
+    print(response)
+    response = response['result']
+
+    # Add the response to the vectorstore
+    word = response.split()
+    word_array = []
+    for i in range(0, len(word), 200):
+        word_array.append(" ".join(word[i:i+200]))
+
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.create_documents(word_array)
+    db.add_documents(texts)
+    db.persist()
+
+    # Save the chat in the database
+    Chat.objects.create(userid=thread.userid, message=message, response=response, chatid=chatid)
+
+    return JsonResponse({'response':response})
 
 #------------------------------------------------------------------------------------------
 #------------------------------MARKET INSIGHTS---------------------------------------------
@@ -1091,148 +1243,6 @@ def get_insights(request):
         'competitor_revenue': competitor_revenue,
         'keywords': keyword_list                             
     })
-
-#----------------------------------------------------------------------------------------
-#-----------------------------------VISION DOC-------------------------------------------
-#----------------------------------------------------------------------------------------
-
-# Validating the cost insights response
-def validate_cost_insights(response):
-    try:
-        # Find the first "{" and the last "}" in response
-        response = response[response.find("{"):response.rfind("}")+1]
-        response = json.loads(response)
-        print(response)
-        if 'cost' in response and 'explanation' in response:
-            return response 
-        else:
-            return "Invalid"
-    except:
-        return "Invalid"
-
-# Validating the time insights response
-def validate_time_insights(response):
-    try:
-        # Find the first "{" and the last "}" in response
-        response = response[response.find("{"):response.rfind("}")+1]
-        response = json.loads(response)
-        if 'time' in response and 'explanation' in response:
-            return response 
-        else:
-            return "Invalid"
-    except:
-        return "Invalid"
-
-# Function for fetching the cost insights 
-@csrf_exempt
-def get_cost_insights(request):
-    data = json.loads(request.body.decode('utf-8'))
-    userid = data['userid']
-    topicid = data['ideaid']
-
-    # Get the topic from the database
-    topic = Topic.objects.get(userid=userid, topicid=topicid)
-    topic.cost_insight = {}
-
-    prompt = generate_cost_insights_prompt(topic)
-    
-    while True:
-        response = llm(prompt)
-        validate = validate_cost_insights(response)
-        print(validate)
-        if validate != "Invalid":
-            topic.cost_insight = validate
-            topic.save()
-            break
-
-    return JsonResponse({'response':"Success"})
-
-# Function for fetching the time insights
-@csrf_exempt
-def get_time_insights(request):
-    data = json.loads(request.body.decode('utf-8'))
-    userid = data['userid']
-    topicid = data['ideaid']
-
-    # Get the topic from the database
-    topic = Topic.objects.get(userid=userid, topicid=topicid)
-    topic.time_insight = {}
-
-    prompt = generate_time_insights_prompt(topic)
-    
-    while True:
-        response = llm(prompt)
-        validate = validate_time_insights(response)
-        print(validate)
-        if validate != "Invalid":
-            topic.time_insight = validate
-            topic.save()
-            break
-
-    return JsonResponse({'response':"Success"})
-
-# Function for fetching the subtasks
-@csrf_exempt
-def get_subtasks(request):
-    data = json.loads(request.body.decode('utf-8'))
-    userid = data['userid']
-    topicid = data['ideaid']
-
-    # Get the topic from the database
-    topic = Topic.objects.get(userid=userid, topicid=topicid)
-    topic.subtask = ""
-
-    prompt = generate_subtasks_prompt(topic)
-    
-    response = llm(prompt)
-    topic.subtask = response
-    topic.save()
-    
-    return JsonResponse({'response':"Success"})
-
-# Function for generating similar insights
-@csrf_exempt
-def get_similar_insights(request):
-    data = json.loads(request.body.decode('utf-8'))
-    userid = data['userid']
-    topicid = data['ideaid']
-
-    # Get the topic from the database
-    topic = Topic.objects.get(userid=userid, topicid=topicid)
-    topic.similar_insights = ""
-
-    prompt = generate_similar_insights_prompt(topic)
-    
-    response = llm(prompt)
-    topic.similar_insights = response
-    topic.save()
-    
-    return JsonResponse({'response':"Success"})
-
-# Function for updating the topic
-@csrf_exempt
-def update_topic(request):
-    data = json.loads(request.body.decode('utf-8'))
-    userid = data['userid']
-    topicid = data['ideaid']
-    title = data['title']
-    description = data['description']
-    subtask = data['subtask']
-    visiondoctext = data['visiondoctext']
-    time_insight = data['time_insight']
-    cost_insight = data['cost_insight']
-
-    # Get the topic from the database
-    topic = Topic.objects.get(userid=userid, topicid=topicid)
-    topic.title = title
-    topic.description = description
-    topic.subtask = subtask
-    topic.time_insight = time_insight
-    topic.cost_insight = cost_insight
-    topic.visiondoctext = visiondoctext
-    topic.save()
-
-    return JsonResponse({'response':"Success"})
 
 
 #----------------------------------------------------------------------------------------

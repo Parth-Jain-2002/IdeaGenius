@@ -73,19 +73,24 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 ![image19](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/d324dacf-59e9-42eb-b4e0-55c4ee5f63be)
 
 ### 1. Landing Page:
-![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
+![image_landing](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/02f95059-3784-4b89-a822-a6f1ac0f7bc4)
 
-![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb)
+<!-- ![image_landing](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/86c65fca-216a-41a4-a2fd-40f4b9b3d12d) -->
+
+<!-- ![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
+
+![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb) -->
 
 - **Clear and concise presentation of IdeaGenius' mission:** Briefly explain how IdeaGenius empowers users to turn their ideas into reality.
 - **Highlight key features:** Showcase the platform's core functionalities, such as idea generation, market research, and collaboration tools.
 - **Transparent pricing policy:** Display the different pricing tiers and their respective features to help users choose the best option.
 - **Call to action:** Encourage users to register and experience the power of IdeaGenius.
 
-### 2. Register & Login:
-![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/78ff1b0a-59aa-4716-b940-3cebe8140a98)
+### 2. Register & Login:  
+![image_register](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/3cfe7376-df40-4afd-a7c6-8adc387beb07)  
 
-![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/3cfe7376-df40-4afd-a7c6-8adc387beb07)
+![image_login](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/78ff1b0a-59aa-4716-b940-3cebe8140a98)
+
 
 - **Simple and efficient registration process:** Allow users to register quickly and easily using email or social media accounts.
 - **Secure login system:** Ensure user data is protected with secure login protocols.
