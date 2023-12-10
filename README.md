@@ -73,19 +73,24 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 ![image19](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/d324dacf-59e9-42eb-b4e0-55c4ee5f63be)
 
 ### 1. Landing Page:
-![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
+![image_landing](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/02f95059-3784-4b89-a822-a6f1ac0f7bc4)
 
-![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb)
+<!-- ![image_landing](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/86c65fca-216a-41a4-a2fd-40f4b9b3d12d) -->
+
+<!-- ![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
+
+![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb) -->
 
 - **Clear and concise presentation of IdeaGenius' mission:** Briefly explain how IdeaGenius empowers users to turn their ideas into reality.
 - **Highlight key features:** Showcase the platform's core functionalities, such as idea generation, market research, and collaboration tools.
 - **Transparent pricing policy:** Display the different pricing tiers and their respective features to help users choose the best option.
 - **Call to action:** Encourage users to register and experience the power of IdeaGenius.
 
-### 2. Register & Login:
-![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/78ff1b0a-59aa-4716-b940-3cebe8140a98)
+### 2. Register & Login:  
+![image_register](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/3cfe7376-df40-4afd-a7c6-8adc387beb07)  
 
-![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/3cfe7376-df40-4afd-a7c6-8adc387beb07)
+![image_login](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/78ff1b0a-59aa-4716-b940-3cebe8140a98)
+
 
 - **Simple and efficient registration process:** Allow users to register quickly and easily using email or social media accounts.
 - **Secure login system:** Ensure user data is protected with secure login protocols.
@@ -116,6 +121,9 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Personalized learning:** Tailor your research experience based on your specific needs and interests.
   
 ### 6. Market Insights:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/108723453/ccbae0cb-1a98-49c7-88e2-5a49f05b1f23)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/108723453/67bc304f-d44d-4d20-94ab-b333375cd17c)
 
 - **Quantitative data analysis:** Access comprehensive data on current and projected market size, competitor valuations, and customer trends.
 - **Comparative analysis:** Benchmark your idea against existing players in the market to identify potential opportunities and challenges.
@@ -143,6 +151,11 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Simple and intuitive profile editing:** Update your personal, college and work details and link your profile with Trumio.
 
 ### 10. Idea Interface
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/a2ecdf94-2a73-400b-a8e2-41cff6d31c86)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/64d9423f-180d-4e05-b2ef-024389d49e90)
+
+
 
 ### 11. Extension
 ![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/ca7a7a90-1790-48ce-a964-6f82589f4b7d)
@@ -172,7 +185,8 @@ By combining these powerful features, IdeaGenius empowers users to transform the
 
 
 ## Database Architecture
-![image5](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/7b856acb-e37f-4e10-a906-a751c15a203f)
+![image5](https://github.com/Parth-Jain-2002/IdeaGenius/assets/35802031/326a7f62-51f3-46c9-9388-196caab1a9f3)
+
 
 1. **UserAction:** Tracks user actions with fields for URL, user ID, and specific action performed, providing a log of user interactions.
 2. **Chat:** Manages individual chat messages with details such as user ID, unique chat ID, message content, and response.
