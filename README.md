@@ -179,11 +179,11 @@ By combining these powerful features, IdeaGenius empowers users to transform the
 
 ## Software Stack
 ### 1. Extension
-The extension design incorporates HTML and CSS in conjunction with tailwind css. Serving as the gateway to the research interface, the extension offers functionalities such as summarization, insights retrieval, in-depth exploration, and addition of topics to the research bank.
+The extension design incorporates **HTML** and **CSS** in conjunction with **Tailwind CSS**. Serving as the gateway to the research interface, the extension offers functionalities such as summarization, insights retrieval, in-depth exploration, and addition of topics to the research bank.
 ### 2. Frontend 
-In our front-end development, we leverage ReactJS with Tailwind for UI design. React's component-based architecture facilitates the creation of reusable code across the application. To visualize market insights, we employ Chart.js, React-chartjs-2, and chartjs-adapter-date-fns. For captivating animations, we utilize dependencies such as lottie-react and framer motion. Axios is employed for backend requests, and Firebase is integrated for user authentication and authorization.
+In our front-end development, we leverage **ReactJS** with **Tailwind CSS** for UI design. React's component-based architecture facilitates the creation of reusable code across the application. To visualize market insights, we employ Chart.js, React-chartjs-2, and chartjs-adapter-date-fns. For captivating animations, we utilize dependencies such as lottie-react and framer motion. Axios is employed for backend requests, and **Firebase** is integrated for user authentication and authorization.
 ### 3. Backend
-Django and Sqlite
+Our meticulously crafted backend integrates cutting-edge technologies for optimal efficiency and intelligence. **Django** forms the backbone for seamless web interactions, while **SQLite** ensures efficient data management. Advanced Natural Language Processing capabilities are powered by **Hugging Face libraries**, facilitating dynamic and intelligent data analysis. **Langchain** enables seamless interactions with state-of-the-art language models, providing insightful responses. **Whisper Transcription** enhances accessibility by converting audio content to text. **BeautifulSoup** is employed for precise web scraping, extracting market trends data with accuracy. URL management is streamlined with **Urlparse**, while **Pdfplumber** ensures content extraction from PDFs. **Google Deplot** is utilized for extracting meaningful insights from visual data, including charts and graphs, enriching our data analysis capabilities.
 
 
 ## Activity Diagram
