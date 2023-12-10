@@ -142,6 +142,11 @@ export default function IdeaDashboard() {
       .then(
         (response) => {
           //console.log("response:", response.data);
+          generated = response.data.generated;
+          if (generated) {
+            getPeeps();
+            getInsights();
+          }
           setTopicDetails(response.data);
         },
         (error) => {
@@ -223,15 +228,6 @@ export default function IdeaDashboard() {
 
   useEffect(() => {
     getTopicDetails();
-   
-  
-      getPeeps();
-      getInsights();
-
-    
-
-
-
   }, [topicid]);
 
   function handleIdeaGeneration() {
