@@ -91,6 +91,8 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Secure login system:** Ensure user data is protected with secure login protocols.
 
 ### 3. Dashboard:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/417003c3-2594-4695-b12c-595bcc0d3c27)
+
 ![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/adf0ef25-6360-4c0b-82ed-e4c70dd8f0d9)
 
 - **Personalized overview of your projects:** Provide a central hub where users can manage all their active ideas and track their progress.
@@ -100,6 +102,7 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Generate problem statement:** Formulate a clear and concise problem statement to be shared on Trumio, attracting relevant talent.
   
 ### 4. Research Bank:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/65a4d379-d86d-4e73-a11f-03546bc644b4)
 
 - **Organize and store relevant resources:** Build a comprehensive knowledge base by saving articles, research materials, and inspirational content.
 - **AI-powered analysis:** Enhance your understanding of the collected resources through AI-driven insights and analysis.
@@ -140,6 +143,10 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Simple and intuitive profile editing:** Update your personal, college and work details and link your profile with Trumio.
 
 ### 10. Idea Interface
+
+### 11. Extension
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/ca7a7a90-1790-48ce-a964-6f82589f4b7d)
+
 
 
 By combining these powerful features, IdeaGenius empowers users to transform their ideas into successful ventures.
