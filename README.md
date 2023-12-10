@@ -76,52 +76,72 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 ![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
 
 ![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb)
+
 - **Clear and concise presentation of IdeaGenius' mission:** Briefly explain how IdeaGenius empowers users to turn their ideas into reality.
 - **Highlight key features:** Showcase the platform's core functionalities, such as idea generation, market research, and collaboration tools.
 - **Transparent pricing policy:** Display the different pricing tiers and their respective features to help users choose the best option.
 - **Call to action:** Encourage users to register and experience the power of IdeaGenius.
 
 ### 2. Register & Login:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/78ff1b0a-59aa-4716-b940-3cebe8140a98)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/3cfe7376-df40-4afd-a7c6-8adc387beb07)
+
 - **Simple and efficient registration process:** Allow users to register quickly and easily using email or social media accounts.
 - **Secure login system:** Ensure user data is protected with secure login protocols.
 
 ### 3. Dashboard:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/adf0ef25-6360-4c0b-82ed-e4c70dd8f0d9)
+
 - **Personalized overview of your projects:** Provide a central hub where users can manage all their active ideas and track their progress.
 - **Easy navigation:** Offer intuitive navigation to access different sections of the platform, including Idea Dashboard, Research Bank, and People.
-
-### 4. Idea Dashboard:
 - **Market insights:** Gain valuable market intelligence through data and analysis, including market size, competitor valuations, and customer trends.
 - **Collaboration opportunities:** Discover potential collaborators with the required skills and experience to help your idea thrive.
 - **Generate problem statement:** Formulate a clear and concise problem statement to be shared on Trumio, attracting relevant talent.
   
-### 5. Research Bank:
+### 4. Research Bank:
+
 - **Organize and store relevant resources:** Build a comprehensive knowledge base by saving articles, research materials, and inspirational content.
 - **AI-powered analysis:** Enhance your understanding of the collected resources through AI-driven insights and analysis.
 - **Improved idea development:** Feed your research bank data into the AI to generate a personalized plan for your idea's growth.
 
-### 6. Chat Interface:
+### 5. Chat Interface:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/393a9024-d132-47f7-8c3a-1254c6b59695)
+
 - **Interactive exploration of resources:** Engage in a dynamic conversation with the AI to delve deeper into your research bank materials and extract key information.
 - **Enhanced comprehension:** Gain a clearer understanding of complex topics and concepts through interactive dialogue with the AI.
 - **Personalized learning:** Tailor your research experience based on your specific needs and interests.
   
-### 7. Market Insights:
+### 6. Market Insights:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/a896dc47-63c8-4c42-a191-3be2691b5120)
+
 - **Quantitative data analysis:** Access comprehensive data on current and projected market size, competitor valuations, and customer trends.
 - **Comparative analysis:** Benchmark your idea against existing players in the market to identify potential opportunities and challenges.
 - **Informed decision-making:** Gain data-driven insights to guide your idea development and marketing strategy.
   
-### 8. VisionDoc:
+### 7. VisionDoc:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/fa6df3d0-631a-4987-822e-29bdee2e30f6)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/d16a199a-4df4-475d-b045-80a31983de43)
+
 - **Interactive plan generation:** Create a comprehensive plan for your idea's execution, including timeframes, resource allocation, and subtask management.
 - **AI-powered assistance:** Receive valuable guidance from the AI on key aspects like cost estimation, timeline planning, and risk mitigation.
 - **Dynamic plan adaptation:** Adjust your plan as needed based on new insights, market shifts, and evolving goals.
 
-### 9.People:
+### 8.People:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/50c59b6c-aa2a-4925-aeb5-3de7b6992f5e)
+
 - **Discover potential collaborators:** Find individuals with the right skills, knowledge, and experience to contribute to your idea's success.
 - **Network and connect:** Build a network of collaborators, advisors, and investors who can help you bring your idea to life.
 - **Build a strong team:** Assemble a diverse group of individuals with complementary expertise to maximize your chances of success.
   
-### 10. User Profile:
+### 9. User Profile:
 ![image10](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/686649ea-ef9d-4e32-8359-143b219b590f)
-- Simple and intuitive profile editing. Update your personal, college and work details and link your profile with Trumio.
+
+- **Simple and intuitive profile editing:** Update your personal, college and work details and link your profile with Trumio.
+
+### 10. Idea Interface
+
 
 By combining these powerful features, IdeaGenius empowers users to transform their ideas into successful ventures.
 
