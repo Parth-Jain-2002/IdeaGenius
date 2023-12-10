@@ -185,7 +185,8 @@ By combining these powerful features, IdeaGenius empowers users to transform the
 
 
 ## Database Architecture
-![image5](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/7b856acb-e37f-4e10-a906-a751c15a203f)
+![image5](https://github.com/Parth-Jain-2002/IdeaGenius/assets/35802031/326a7f62-51f3-46c9-9388-196caab1a9f3)
+
 
 1. **UserAction:** Tracks user actions with fields for URL, user ID, and specific action performed, providing a log of user interactions.
 2. **Chat:** Manages individual chat messages with details such as user ID, unique chat ID, message content, and response.
