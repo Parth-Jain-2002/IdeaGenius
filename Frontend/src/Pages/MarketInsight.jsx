@@ -81,40 +81,33 @@ export default function MarketInsight() {
           const competitorData = response.data.competitors
           const competitorLength = response.data.competitors.length
           const CompetitorChartData = {
-            labels: competitorData,
+            labels: competitorData || [],
             datasets: [{
-              data: revenueData,
-              backgroundColor: randomcolor({ count: competitorLength }),
+              data: revenueData || [],
+              backgroundColor: randomcolor({ count: competitorLength }) || [],
             }],
           };
-
-          if (competitorData.length > 0 && revenueData.length > 0) {
-            setCompetitorChart(CompetitorChartData);
-          }
+          setCompetitorChart(CompetitorChartData);
 
 
           const result_df = response.data.interest_over_time;
           const parsedResult = JSON.parse(result_df);
-
 
           if (parsedResult && parsedResult.sum_frequency) {
             // Extract data from the parsed result
             const sumFrequencyData = parsedResult.sum_frequency;
 
             // Convert Unix timestamps to a readable date format
-            const dates = Object.keys(sumFrequencyData).map((timestamp) => {
-              const date = new Date(Number(timestamp));
-              const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-              const year = date.getFullYear().toString();
-              return `${month}/${year}`;
-            });
+            const dates = Object.keys(sumFrequencyData).map((timestamp) =>
+              new Date(Number(timestamp)).toLocaleDateString()
+            );
 
-            const data = {
-              labels: dates,
+            const customerInterestData = {
+              labels: dates || [],
               datasets: [
                 {
                   label: "Customer Interest Trends",
-                  data: Object.values(sumFrequencyData),
+                  data: Object.values(sumFrequencyData) || [],
                   fill: false,
                   borderColor: "rgba(75,192,192,1)",
                   borderWidth: 2,
@@ -122,8 +115,13 @@ export default function MarketInsight() {
               ],
             };
 
-            setCustomerInterest(data);
+            setCustomerInterest(customerInterestData);
+            //setCustomerInterestLoading(false);
           }
+
+
+          setCompetitorChart(CompetitorChartData);
+          //setCompetitorChartLoading(false);
           setLoading(false);
         },
         (error) => {

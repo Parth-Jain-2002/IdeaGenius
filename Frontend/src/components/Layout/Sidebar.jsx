@@ -138,8 +138,8 @@ export default function Sidebar() {
                   </Link>
                 ) : (
                   <>
-                    {topics[topic].generated == true && <Link to={`/vision-doc/${topic}`}>
-                      <div className="flex justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200">
+                    <Link to={`/vision-doc/${topic}`} disabled={!topics[topic].generated}>
+                      <div className={`flex justify-start rounded-lg flex-row text-sm p-2 hover:bg-gray-200 ${!topics[topic].generated && 'cursor-not-allowed opacity-50'}`}>
                         <img
                           src={visionDocIcon}
                           alt="Vision doc icon"
@@ -147,7 +147,8 @@ export default function Sidebar() {
                         />
                         Vision Doc
                       </div>
-                    </Link>}
+                    </Link>
+
                     <Link to={`/research/${topic}`}>
                       <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
                         <img

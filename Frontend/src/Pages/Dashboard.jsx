@@ -28,30 +28,30 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="w-full p-4">
+          <div className="w-full">
             <div className="flex w-full border-2 rounded-3xl ">
               <div className="w-1/3 h-full py-16 ">
                 <Lottie animationData={loadingAnimation} />
               </div>
               <div className="w-2/3 h-full my-auto flex flex-col p-4">
                 <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">Create New Ideas by</h1>
+                  <h1 className="text-center font-normal text-normal">Create New Ideas by</h1>
                   <div className="flex justify-center mx-2 border-black border-2 items-center space-x-2 bg-white rounded-full p-2 text-black mt-2">
                     <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
                     New Idea
                   </div>
                 </div>
-                <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">Click any existing idea from left panel to open "Idea Dashboard" or go to its "Vision Doc" or "Research Bank"</h1>
+                <div className="w-full bg-[#dbeafe] p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
+                  <h1 className="text-center font-normal text-normal">Click any existing idea from left panel to open "Idea Dashboard" or go to its "Vision Doc" or "Research Bank"</h1>
                 </div>
                 <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+                  <h1 className="text-center font-normal text-normal">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+                </div>
+                <div className="w-full p-4 bg-[#dbeafe] flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
+                  <h1 className="text-center font-normal text-normal">You can have AI generated problem statements for any idea according to your research bank and requirements</h1>
                 </div>
                 <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">You can have AI generated problem statements for any idea according to your research bank and requirements</h1>
-                </div>
-                <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">Refine, analyze and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
+                  <h1 className="text-center font-normal text-normal">Refine, analyze and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
                 </div>
 
               </div>
