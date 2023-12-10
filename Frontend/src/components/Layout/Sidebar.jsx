@@ -8,6 +8,7 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from "react-accessible-accordion";
+import "react-accessible-accordion/dist/fancy-example.css";
 
 import imagem from "../../assets/images/IdeaGenLogo.png";
 import folderIcon from "../../assets/images/folder_icon.png";
@@ -15,6 +16,7 @@ import researchIcon from "../../assets/images/research_bank_icon.png";
 import visionDocIcon from "../../assets/images/vision_doc_icon.png";
 import plus_icon from "../../assets/images/plus_icon_black.png";
 import NewIdeaModal from "../modals/NewIdeaModal";
+
 
 /**
  * This is the common side for all of the pages (except certain)
