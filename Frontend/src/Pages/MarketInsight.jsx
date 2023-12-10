@@ -88,10 +88,9 @@ export default function MarketInsight() {
             }],
           };
 
-          if (competitorData.length > 0 && revenueData.length > 0) {
-            setCompetitorChart(CompetitorChartData);
-          }
-
+          
+          setCompetitorChart(CompetitorChartData);
+          
 
           const result_df = response.data.interest_over_time;
           const parsedResult = JSON.parse(result_df);
@@ -256,7 +255,7 @@ export default function MarketInsight() {
           </div>
         )}
 
-        {competitorChart && (
+        {competitors && competitors.length > 0 && (
           <div className=" bg-gray-200 p-10 rounded-md mb-4 shadow-md h-96">
             <h2 className="text-black text-lg font-semibold">
               Competitors in the Market
