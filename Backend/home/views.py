@@ -254,7 +254,7 @@ def summarize(url, chatid):
     # print(ai_summary)
     return ai_summary['result']
 
-# Function for actionable insights from the text
+# Helper to get insights from the text
 def insights(url,chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -268,7 +268,7 @@ def insights(url,chatid):
     # print(ai_insights['result'])
     return ai_insights['result']
 
-# Function for deep diving into the text
+# Helper to deep dive into the text
 def deep_dive(url,chatid):
     db = add_to_research_bank(url,chatid)
     retriever = db.as_retriever()
@@ -1280,14 +1280,14 @@ def get_recommended_people(request):
         input_tags = get_input_tags(ideaid)
         # print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
-        with open ('home/user_profiles.pkl', 'rb') as f:
+        with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
             user_profiles = pickle.load(f)
         # Pre-computed tag embeddings for all users
-        with open ('home/tag_embeddings.pkl', 'rb') as f:
+        with open ('home/dummy_data/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
         # Find the users based on the tags
         top_users = find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshold=0.0)
-        with open ('home/tag_embeddings.pkl', 'wb') as f:
+        with open ('home/dummy_data/tag_embeddings.pkl', 'wb') as f:
             pickle.dump(tag_embeddings, f)
         # Get the top 6 users
         top_users = top_users[:6]
@@ -1359,9 +1359,9 @@ def rand_institution(institutions):
 def load_dummy_data():
     print("Loading dummy data")
     fake=Faker()
-    with open ('home/user_profiles.pkl', 'rb') as f:
+    with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
         user_profiles = pickle.load(f)
-    with open('home/dummy_data.pkl', 'rb') as f:
+    with open('home/dummy_data/dummy_data.pkl', 'rb') as f:
         dummy_data=pickle.load(f)
     institutions=dummy_data['COLLEGES']
     jobs=dummy_data['JOB DATA']
@@ -1390,13 +1390,13 @@ def load_dummy_data():
 @csrf_exempt
 def add_random_users(request):
     fake=Faker()
-    with open('home/dummy_data.pkl', 'rb') as f:
+    with open('home/dummy_data/dummy_data.pkl', 'rb') as f:
         dummy_data=pickle.load(f)
     # with open('home/user_profiles.pkl', 'rb') as f:
     #     user_profiles=pickle.load(f)
     # idk why the above part was kept when user_profiles 
     # is being overwritten a few lines later
-    with open('home/tag_embeddings.pkl', 'rb') as f:
+    with open('home/dummy_data/tag_embeddings.pkl', 'rb') as f:
         tag_embeddings=pickle.load(f)
     user_profiles={}
     tags=[tag for tag in tag_embeddings.keys()]
@@ -1419,6 +1419,6 @@ def add_random_users(request):
         )
         user_profiles[userid]=tags_per_user
 
-    with open('home/user_profiles.pkl', 'wb') as f:
+    with open('home/dummy_data/user_profiles.pkl', 'wb') as f:
         pickle.dump(user_profiles, f)
     return JsonResponse({'response':'Success'})
