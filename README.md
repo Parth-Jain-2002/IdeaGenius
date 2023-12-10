@@ -148,6 +148,11 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Simple and intuitive profile editing:** Update your personal, college and work details and link your profile with Trumio.
 
 ### 10. Idea Interface
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/a2ecdf94-2a73-400b-a8e2-41cff6d31c86)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/64d9423f-180d-4e05-b2ef-024389d49e90)
+
+
 
 ### 11. Extension
 ![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/ca7a7a90-1790-48ce-a964-6f82589f4b7d)
