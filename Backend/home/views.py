@@ -1305,8 +1305,14 @@ def get_recommended_people(request):
         input_tags = get_input_tags(ideaid)
         # print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
-        with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
-            user_profiles = pickle.load(f)
+        try:
+            with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
+                user_profiles = pickle.load(f)
+        except Exception as e:
+            print("Generating first time for dummy data")
+            add_random_users(request)
+            with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
+                user_profiles = pickle.load(f)
         # Pre-computed tag embeddings for all users
         with open ('home/dummy_data/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
