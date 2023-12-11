@@ -226,11 +226,17 @@ export default function IdeaDashboard() {
   }, [topicid]);
 
   useEffect(() => {
-    if (topicDetails && topicDetails.generated) {
-      getPeeps();
-      getInsights();
-    }
+    const fetchData = async () => {
+      if (topicDetails && topicDetails.generated) {
+        await getPeeps();
+        getInsights();
+      }
+    };
+  
+    fetchData();
   }, [topicDetails]);
+
+  
 
   function handleIdeaGeneration() {
     navigate(`../idea/${topicid}`);
@@ -412,7 +418,7 @@ export default function IdeaDashboard() {
           ) : (
             <div className="flex w-full space-x-20 mt-16">
               <img src={data_img} className="w-1/2 "></img>
-              <h1 className="text-2xl leading-10 w-96 text-slate-500 items-center h-2/3 my-auto content-center">Genereate Problem Statement to access Market Insights and Recommended People</h1>
+              <h1 className="text-2xl leading-10 w-96 text-slate-500 items-center h-2/3 my-auto content-center">Generate Problem Statement to access Market Insights and Recommended People</h1>
             </div>
           )}
 

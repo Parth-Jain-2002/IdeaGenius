@@ -1051,32 +1051,33 @@ def get_competitors(description, keywords):
             continue
     
     
-    search_query = ", ".join(keywords)+ " top best"
-    search_url = f'https://www.google.com/search?q={search_query}'
-    response = session.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
-   
-    print(urls)
-    
-    for url in urls:
+    if len(keywords)>0:
+        search_query = ", ".join(keywords)+ " top best"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = session.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
         
-        try:
-            response = session.get(url, timeout=5)
-            response.raise_for_status() 
-            print(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
-            for title in numbered_titles:
-                competitors.append(title.text.strip())
-            
-            
+        urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+    
+        print(urls)
         
-        except requests.exceptions.RequestException as e:
+        for url in urls:
             
-            print(f"Error fetching data from {url}: {e}")
-            continue
+            try:
+                response = session.get(url, timeout=5)
+                response.raise_for_status() 
+                print(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+                for title in numbered_titles:
+                    competitors.append(title.text.strip())
+                
+                
+            
+            except requests.exceptions.RequestException as e:
+                
+                print(f"Error fetching data from {url}: {e}")
+                continue
           
     session.close()
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
@@ -1122,33 +1123,34 @@ def get_tables(description, keywords):
             
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
+       
+    if len(keywords)>0: 
+        search_query = ", ".join(keywords)+ " futuremarketinsights"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = session.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')        
+        all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+        filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
         
-    search_query = ", ".join(keywords)+ " futuremarketinsights"
-    search_url = f'https://www.google.com/search?q={search_query}'
-    response = session.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')        
-    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
-    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
-    
-    
-      
-    for url in filtered_urls:        
-        try:
-            response = session.get(url, timeout=5)            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            first_table = soup.find('table')
-            table_content = []
-            if first_table:
-                for row in first_table.find_all('tr'):
-                    columns = row.find_all(['th', 'td'])
-                    row_data = [column.get_text(strip=True) for column in columns]
-                    table_content.append(row_data)
-                tables.append(table_content)           
-            
-            
-        except Exception as e:
-            print(f"Error fetching data from {url}: {e}")
+        
+        
+        for url in filtered_urls:        
+            try:
+                response = session.get(url, timeout=5)            
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                first_table = soup.find('table')
+                table_content = []
+                if first_table:
+                    for row in first_table.find_all('tr'):
+                        columns = row.find_all(['th', 'td'])
+                        row_data = [column.get_text(strip=True) for column in columns]
+                        table_content.append(row_data)
+                    tables.append(table_content)           
+                
+                
+            except Exception as e:
+                print(f"Error fetching data from {url}: {e}")
     session.close()
     return tables
 
@@ -1161,34 +1163,36 @@ def get_images(keywords):
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     
-    search_query = f"{keywords} Fact MR"
-    search_url = f'https://www.google.com/search?q={search_query}'
-    response = session.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')        
-    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
-    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.factmr.com"]    
-    
-    
-    images=[]    
-    for url in filtered_urls:        
-        try:
-            response = session.get(url, timeout=5)            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            all_images = []
-            
-            for img_tag in soup.find_all('img', src=True):
-                src = img_tag['src']
-                if src.startswith("https://www.factmr.com/images/reports"):
-                    all_images.append(src)
-                    
-            images.extend(all_images)
+    images=[]  
+    if len(keywords)>0:
+        search_query = f"{keywords} Fact MR"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = session.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')        
+        all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+        filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.factmr.com"]    
+        
+        
+          
+        for url in filtered_urls:        
+            try:
+                response = session.get(url, timeout=5)            
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                all_images = []
+                
+                for img_tag in soup.find_all('img', src=True):
+                    src = img_tag['src']
+                    if src.startswith("https://www.factmr.com/images/reports"):
+                        all_images.append(src)
+                        
+                images.extend(all_images)
 
-                     
-            
-            
-        except Exception as e:
-            print(f"Error fetching data from {url}: {e}")
+                        
+                
+                
+            except Exception as e:
+                print(f"Error fetching data from {url}: {e}")
         
     session.close()
     return images
@@ -1349,7 +1353,7 @@ def generate_keywords(ideaid):
     # Get the topic from the database
     topic = Topic.objects.get(topicid=ideaid)
     topic.keywords = {}
-
+    
     prompt = generate_keywords_prompt(topic)
     
     response = llm(prompt)
