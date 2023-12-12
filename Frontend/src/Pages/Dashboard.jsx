@@ -18,7 +18,7 @@ export default function Dashboard() {
       <Sidebar />
       <main className="flex h-full flex-col w-full bg-white col-span-4">
         <Navbar />
-        <div className="w-full h-full p-4 pt-0">
+        <div className="w-full h-full p-4">
           <div className="flex justify-start rounded-lg w-[95%] h-28 mb-4">
             <Lottie
               animationData={animationdata}

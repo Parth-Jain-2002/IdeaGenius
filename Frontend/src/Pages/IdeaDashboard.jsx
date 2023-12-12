@@ -258,13 +258,16 @@ export default function IdeaDashboard() {
       <Sidebar />
       <main className="flex h-full flex-col w-full bg-white col-span-4">
         <Navbar />
-        <div className="w-full h-full pt-4 p-8">
+        <div className="w-full h-full p-8">
           <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
-            <div className=" flex flex-col justify-between w-full">
-              <div className="flex flex-col">
-                <div className="flex flex-row justify-between mb-1">
-                  <h3 className="text-2xl font-semibold">{capitalizeWords(topicid)}</h3>
-                  <div className="self-end items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg">
+            <div className="flex flex-col justify-between w-full items-center md:flex-row">
+              <div className="flex flex-col w-full">
+                <h3 className="text-2xl font-semibold text-center md:text-left">{capitalizeWords(topicid)}</h3>
+                <p className="text-gray-600 text-base w-full text-center md:text-left p-1">
+                  {capitalizeWords(topicDetails.description)}
+                </p>
+              </div>
+              <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-96 max-w-full justify-center">
                     {" "}
                     <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
                     {topicDetails.generated ? (
@@ -286,19 +289,12 @@ export default function IdeaDashboard() {
                         Generate Idea
                       </button>
                     )}
-                  </div>
-                </div>
-                <div className="flex flex-row p-1">
-                  <p className="text-gray-600 text-base ">
-                    {capitalizeWords(topicDetails.description)}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
           {topicDetails.generated ? (
-            <div className="flex w-full mt-6">
-              <div className="w-2/3 h-full flex flex-col gap-2 rounded-l-lg ">
+            <div className="flex w-full mt-6 flex-col lg:flex-row">
+              <div className="lg:w-2/3 h-full flex flex-col gap-2 rounded-l-lg ">
                 <h1 className="text-xl font-semibold p-2 ">Market Trends Analysis</h1>
                 <div className=" w-full">
                   {competitorChartLoading || customerInterestLoading ? (
@@ -395,16 +391,15 @@ export default function IdeaDashboard() {
                 <button onClick={() => { exploreMarketInsight() }} className="p-2 mb-2 ml-4 w-32 rounded-full border-blue-700 bg-blue-100 hover:bg-blue-700 text-blue-700 hover:text-white">Explore More</button>
 
               </div>
-              <div className="w-1/3 border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
+              <div className="md:w-2/3 md:mx-auto lg:w-1/3 lg:border-l-2 h-full flex flex-col gap-2 rounded-r-lg ">
                 <h1 className="text-xl font-semibold px-4 py-2">Recommended People on Trumio</h1>
-                <div className="px-6 py-2">
+                <div className="md:px-6 py-2">
                   {peopleData
                     ? peopleData.map((person) => (
                       <div className="my-1" key={person.name}>
                         <PeopleCard.Small
                           name={person.name}
                           jobTitle={person.jobTitle}
-
                         />
                         <hr className="my-2 bg-gray-100" />
                       </div>
@@ -416,9 +411,9 @@ export default function IdeaDashboard() {
               </div>
             </div>
           ) : (
-            <div className="flex w-full space-x-20 mt-16">
-              <img src={data_img} className="w-1/2 "></img>
-              <h1 className="text-2xl leading-10 w-96 text-slate-500 items-center h-2/3 my-auto content-center">Generate Problem Statement to access Market Insights and Recommended People</h1>
+            <div className="flex w-full mt-16 flex-col-reverse md:flex-row">
+              <img src={data_img} className="w-full md:w-1/2"></img>
+              <h1 className="text-2xl leading-10 text-slate-500 items-center h-2/3 my-auto content-center text-center md:text-left flex-1">Generate Problem Statement to access Market Insights and Recommended People</h1>
             </div>
           )}
 

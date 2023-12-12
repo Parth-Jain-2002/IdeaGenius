@@ -96,6 +96,13 @@ export default function Sidebar() {
         setShowSidebar(false);
       }
     }
+    (function(history){
+      var pushState = history.pushState;
+      history.pushState = function(state) {
+        setShowSidebar(false);
+        return pushState.apply(history, arguments);
+      };
+    })(window.history);
   }, []);
 
   return (

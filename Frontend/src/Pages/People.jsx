@@ -51,8 +51,8 @@ export default function People() {
       <Sidebar />
       <main className="flex flex-col bg-white col-span-4">
         <Navbar link={"/dashboard"} />
-        <section className="space-y-4 min-h-[88vh] overflow-x-hidden p-6 pt-0">
-          <h2 className="text-3xl mt-4 font-semibold">
+        <section className="space-y-4 min-h-[88vh] overflow-x-hidden p-6">
+          <h2 className="text-3xl font-semibold">
             People you may know from alumni circle
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-center items-center">

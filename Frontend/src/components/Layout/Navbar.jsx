@@ -16,7 +16,7 @@ export default function Navbar(props) {
   const { logout } = useAuth();
 
   return (
-    <section className="flex items-center justify-center mb-4 sticky top-0 bg-white z-30 p-4 shadow-sm">
+    <section className="flex items-center justify-center sticky top-0 bg-white z-30 p-4 shadow-sm">
       <button
         onClick={() => {
           setShowSidebar(!showSidebar)
