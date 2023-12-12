@@ -47,7 +47,7 @@ export default function People() {
   }, []);
 
   return (
-    <section className="grid h-screen grid-cols-5">
+    <section className="grid h-screen xl:grid-cols-5 grid-cols-4">
       <Sidebar />
       <main className="flex flex-col bg-[#eee] col-span-4 p-4">
         <Navbar link={"/dashboard"} />

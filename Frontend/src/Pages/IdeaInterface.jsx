@@ -132,7 +132,7 @@ export default function IdeaInterface() {
   return (
     <section>
       <main className="flex flex-col p-4">
-        <Navbar link={"/dashboard"} />
+        <Navbar link={"/dashboard"} noBurger={true} />
         <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
           <div className="p-4 bg-white rounded-md shadow-md">
             <div className="flex items-center justify-between p-2 bg-gray-200 rounded-md mb-4">

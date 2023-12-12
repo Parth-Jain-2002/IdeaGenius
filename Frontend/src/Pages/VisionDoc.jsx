@@ -248,7 +248,7 @@ export default function VisionDoc() {
 
   return (
     <div className="w-full h-screen bg-gray-200 p-4">
-      <Navbar link="/dashboard"/>
+      <Navbar link="/dashboard" noBurger={true} />
       <section className="grid grid-cols-4">
         <main className="col-span-3 min-h-[88vh] max-h-[88vh]">
           <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh] overflow-y-scroll">

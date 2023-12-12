@@ -161,7 +161,7 @@ export default function MarketInsight() {
   return loading ? (
     <div className="bg-[#efefef] min-h-screen flex items-center justify-center">
       <main className="bg-[#efefef] flex flex-col p-4 w-full">
-        <Navbar link={"/dashboard"} />
+        <Navbar link={"/dashboard"} noBurger={true} />
         <header className="bg-gray-500 text-white p-4 rounded-lg">
           <h1 className="text-2xl font-bold">
             Market Insights for Idea {ideaid}
@@ -178,7 +178,7 @@ export default function MarketInsight() {
     </div>
   ) : (
     <div className="bg-[#efefef] flex flex-col p-4">
-      <Navbar link={"/dashboard"} />
+      <Navbar link={"/dashboard"} noBurger={true} />
       <header className="bg-gray-500 text-white p-4 rounded-lg">
         <h1 className="text-2xl font-bold">
           Market Insights for Idea {ideaid}{" "}

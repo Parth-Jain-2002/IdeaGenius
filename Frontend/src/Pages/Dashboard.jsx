@@ -12,7 +12,7 @@ import plus_icon from '../assets/images/plus_icon_black.png';
 
 export default function Dashboard() {
   return (
-    <section className="grid h-full text-black grid-cols-5">
+    <section className="grid h-full text-black xl:grid-cols-5 grid-cols-4">
       <Sidebar />
       <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
         <Navbar />

@@ -5,6 +5,7 @@ import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import ForgotPassword from './components/auth/ForgotPassword';
 import AuthProvider from './contexts/AuthContext';
+import NavProvider from './contexts/NavContext';
 
 import Dashboard from './Pages/Dashboard';
 import IdeaDashboard from './Pages/IdeaDashboard';
@@ -34,25 +35,27 @@ function ProtectedRoute({ children }) {
 export default function App() {
   return (
     <div>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/my-profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/dashboard/:ideaid" element={<ProtectedRoute><IdeaDashboard /></ProtectedRoute>} />
-            <Route path="/research/:ideaid" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
-            <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
-            <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface /></ProtectedRoute>} />
-            <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
-            <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
-            <Route path="/people/:ideaid" element={<ProtectedRoute><People /></ProtectedRoute>} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <NavProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/my-profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/dashboard/:ideaid" element={<ProtectedRoute><IdeaDashboard /></ProtectedRoute>} />
+              <Route path="/research/:ideaid" element={<ProtectedRoute><ResearchBank /></ProtectedRoute>} />
+              <Route path="/chat/:chatid" element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+              <Route path="/idea/:ideaid" element={<ProtectedRoute><IdeaInterface /></ProtectedRoute>} />
+              <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
+              <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
+              <Route path="/people/:ideaid" element={<ProtectedRoute><People /></ProtectedRoute>} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </NavProvider>
     </div>
   );
 }
