@@ -143,20 +143,20 @@ export default function ChatInterface() {
   return (
     <section className="grid h-screen xl:grid-cols-5 grid-cols-4">
       <Sidebar />
-      <main className="flex flex-col col-span-4 p-4">
+      <main className="flex flex-col col-span-4">
         <Navbar />
-        <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh]">
+        <section className="flex flex-col max-h-[80vh] p-4 overflow-y-scroll pb-10">
           <div className="p-4 bg-white rounded-md shadow-md">
             <div className="flex items-center justify-between p-2 bg-gray-200 rounded-md mb-4">
-              <div className="items-center">
-                <h3 className="text-lg font-semibold ml-4">{chatInfo.title}</h3>
-                <span className="text-sm text-gray-500 ml-4">
+              <div className="flex flex-col justify-center mx-2 md:mx-4 overflow-hidden">
+                <h3 className="text-lg font-semibold">{chatInfo.title}</h3>
+                <span className="text-sm text-gray-500 w-full text-ellipsis whitespace-nowrap overflow-hidden">
                   {chatInfo.url}
                 </span>
               </div>
               <img
                 alt="Icon"
-                className="rounded-lg mr-2"
+                className="rounded-lg mr-2 hidden md:block"
                 height="80"
                 src={chatInfo.imgsrc}
                 style={{
@@ -170,8 +170,6 @@ export default function ChatInterface() {
               ? chats.map((chat, index) => (
                   <>
                     <div className="flex items-start mb-4">
-                      <div className="flex-none">
-                      </div>
                       <div className="ml-auto mr-2 text-right max-w-3xl">
                         <div className="text-sm text-gray-500">User</div>
                         <div className="bg-gray-200 rounded-xl px-5 py-3 mt-1 leading-loose">
@@ -180,8 +178,6 @@ export default function ChatInterface() {
                       </div>
                     </div>
                     <div className="flex items-start mb-4">
-                      <div className="flex-none">
-                      </div>
                       <div className="ml-2 mr-2 flex-grow max-w-3xl">
                         <div className="text-sm text-gray-500">AI</div>
                         <div
@@ -206,8 +202,8 @@ export default function ChatInterface() {
           </div>
           <div ref={messageContainerRef} />
         </section>
-        <section className="flex flex-col space-y-4">
-          <div className="mt-4 flex items-center space-x-2">
+        <section className="flex flex-col p-4 fixed bottom-0 w-full h-auto bg-white">
+          <div className="flex items-center space-x-2">
             <div className="flex w-full">
               <input
                 className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef]"

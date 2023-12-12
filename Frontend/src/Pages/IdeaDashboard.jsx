@@ -256,9 +256,9 @@ export default function IdeaDashboard() {
   return (<>
     <section className="grid h-full text-black xl:grid-cols-5 grid-cols-4">
       <Sidebar />
-      <main className="flex h-full flex-col w-full bg-white col-span-4 p-4">
+      <main className="flex h-full flex-col w-full bg-white col-span-4">
         <Navbar />
-        <div className="w-full h-full p-4">
+        <div className="w-full h-full pt-4 p-8">
           <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
             <div className=" flex flex-col justify-between w-full">
               <div className="flex flex-col">

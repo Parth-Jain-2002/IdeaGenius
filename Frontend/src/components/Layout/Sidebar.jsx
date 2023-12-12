@@ -15,7 +15,7 @@ import folderIcon from "../../assets/images/folder_icon.png";
 import researchIcon from "../../assets/images/research_bank_icon.png";
 import visionDocIcon from "../../assets/images/vision_doc_icon.png";
 import plus_icon from "../../assets/images/plus_icon_black.png";
-import NewIdeaModal from "../modals/NewIdeaModal";
+import { useNewIdeaModal } from '../../contexts/NewIdeaModalContext';
 import { useNav } from "../../contexts/NavContext";
 
 
@@ -25,7 +25,7 @@ import { useNav } from "../../contexts/NavContext";
  */
 export default function Sidebar() {
   const [topics, setTopics] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setIsModalOpen } = useNewIdeaModal();
   const { showSidebar, setShowSidebar } = useNav();
 
   /**
@@ -99,7 +99,7 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <aside className={`flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] xl:translate-x-0 fixed xl:static -translate-x-96 transition-all z-50 ${showSidebar?'translate-x-0 w-96 max-w-full shadow-lg':''}`}>
+    <aside className={`flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] xl:translate-x-0 fixed top-0 xl:sticky -translate-x-96 transition-all z-40 ${showSidebar?'translate-x-0 w-96 max-w-full shadow-lg':''}`}>
       <button 
         onClick={()=>{
           setShowSidebar(!showSidebar);
@@ -196,13 +196,6 @@ export default function Sidebar() {
           <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
           New Idea
         </button>
-        {isModalOpen && (
-          <NewIdeaModal
-            onClose={closeModal}
-            topics={Object.keys(topics)}
-            getTopics={getTopics}
-          />
-        )}
       </div>
       <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
         <IconLightningbolt />

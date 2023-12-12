@@ -47,18 +47,18 @@ export default function People() {
   }, []);
 
   return (
-    <section className="grid h-screen xl:grid-cols-5 grid-cols-4">
+    <section className="grid h-screen overflow-y-scroll xl:grid-cols-5 grid-cols-4">
       <Sidebar />
-      <main className="flex flex-col bg-[#eee] col-span-4 p-4">
+      <main className="flex flex-col bg-white col-span-4">
         <Navbar link={"/dashboard"} />
-        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden p-2">
+        <section className="space-y-4 min-h-[88vh] overflow-x-hidden p-6 pt-0">
           <h2 className="text-3xl mt-4 font-semibold">
             People you may know from alumni circle
           </h2>
-          <div className="grid grid-cols-3 justify-center items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-center items-center">
             {peopleData
               ? peopleData.map((person) => (
-                  <div className="p-4 h-full" key={person.name}>
+                  <div className="py-2 sm:p-2 md:p-4 h-full" key={person.name}>
                     <PeopleCard
                       name={person.name}
                       jobTitle={person.jobTitle}

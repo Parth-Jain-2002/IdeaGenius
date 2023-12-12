@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import { useNewIdeaModal } from "../../contexts/NewIdeaModalContext";
+
 import crossIcon from "../../assets/images/cross_icon.png";
 import infoIcon from "../../assets/images/info_icon_red.svg";
 
 /**
  * This is the NewIdeaModal modal that allows users to create a new Idea
- * @param {{onClose: function, topics: Array<string>, getTopics: function}} props Properties for the NewIdeaModal component
  * @returns {React.Component} NewIdeaModal modal
  */
-export default function NewIdeaModal({ onClose, topics, getTopics }) {
+export default function NewIdeaModal() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const { isModalOpen, setIsModalOpen } = useNewIdeaModal();
 
   /**
    * A function to validate the change in the title of the idea
@@ -41,12 +43,6 @@ export default function NewIdeaModal({ onClose, topics, getTopics }) {
    * A function to create the new Idea with the given title and description
    */
   function handleCreateIdea() {
-    // Check if the title already exists in topics
-    if (topics.includes(title)) {
-      setError("You have a idea with the same name");
-      return;
-    }
-
     axios
       .post(`http://localhost:8000/new_topic`, {
         userid: localStorage.getItem("ideagen_user_id"),
@@ -56,8 +52,8 @@ export default function NewIdeaModal({ onClose, topics, getTopics }) {
       .then(
         (response) => {
           //console.log(response)
-          onClose();
-          getTopics();
+          setIsModalOpen(false);
+          window.location.reload();
         },
         (error) => {
           console.log(error);
@@ -65,6 +61,7 @@ export default function NewIdeaModal({ onClose, topics, getTopics }) {
       );
   };
 
+  if(!isModalOpen) return (<></>);
   return (
     <>
       <div className="fixed inset-0 bg-black opacity-50 z-40 top-0" style={{ marginTop: 0 }}></div>
@@ -75,7 +72,7 @@ export default function NewIdeaModal({ onClose, topics, getTopics }) {
             <p className="text-gray-500 text-left">Organize your thoughts</p>
           </div>
           <button
-            onClick={onClose}
+            onClick={()=>{setIsModalOpen(false)}}
             className="text-gray-600 hover:text-gray-800"
           >
             <img src={crossIcon} alt="Close" className="h-4 w-4" />

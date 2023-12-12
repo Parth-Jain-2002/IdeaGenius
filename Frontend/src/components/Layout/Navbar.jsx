@@ -7,7 +7,7 @@ import usericon from "../../assets/images/user.png";
 
 /**
  * This is the common navbar for all of the pages (except the home page)
- * @param {{link: string}} props Properties for Navbar
+ * @param {{link: string, noBurger: string}} props Properties for Navbar
  * @returns {React.Component} Navbar
  */
 export default function Navbar(props) {
@@ -16,7 +16,7 @@ export default function Navbar(props) {
   const { logout } = useAuth();
 
   return (
-    <section className="flex items-center justify-center mb-4">
+    <section className="flex items-center justify-center mb-4 sticky top-0 bg-white z-30 p-4 shadow-sm">
       <button
         onClick={() => {
           setShowSidebar(!showSidebar)
