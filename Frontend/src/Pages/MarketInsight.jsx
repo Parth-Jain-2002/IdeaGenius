@@ -161,15 +161,15 @@ export default function MarketInsight() {
 
   return loading ? (
     <div className="bg-[#efefef] min-h-screen flex items-center justify-center">
-      <main className="bg-[#efefef] flex flex-col p-4 w-full">
-        <Navbar link={"/dashboard"} />
-        <header className="bg-gray-500 text-white p-4 rounded-lg">
-          <h1 className="text-2xl font-bold">
+      <main className="bg-[#efefef] flex flex-col w-full">
+        <Navbar link={"/dashboard"} noBurger={true} />
+        <header className="bg-gray-500 text-white m-2 p-4 rounded-lg">
+          <h1 className="text-2xl font-bold text-center">
             Market Insights for Idea {ideaid}
           </h1>
         </header>
-        <div className="flex flex-col items-center">
-          <h1 className="text-3xl font-semibold my-4">Loading Market Insights</h1>
+        <div className="flex flex-col items-center p-4">
+          <h1 className="text-3xl font-semibold my-4 text-center">Loading Market Insights</h1>
           <Lottie
             className="w-full lg:w-1/2 xl:w-[40%]"
             animationData={animationData}
@@ -178,9 +178,9 @@ export default function MarketInsight() {
       </main>
     </div>
   ) : (
-    <div className="bg-[#efefef] flex flex-col p-4">
-      <Navbar link={"/dashboard"} />
-      <header className="bg-gray-500 text-white p-4 rounded-lg">
+    <div className="bg-[#efefef] flex flex-col">
+      <Navbar link={"/dashboard"} noBurger={true} />
+      <header className="bg-gray-500 text-white m-2 p-4 rounded-lg">
         <h1 className="text-2xl font-bold">
           Market Insights for Idea {ideaid}{" "}
         </h1>
@@ -238,7 +238,7 @@ export default function MarketInsight() {
               </div>
 
               <p className="absolute text-sm bottom-0 right-0 mb-1 mr-2 text-m text-gray-500">
-                source: Future Market Insights
+                Source: Future Market Insights
               </p>
             </div>
           </div>
@@ -269,7 +269,7 @@ export default function MarketInsight() {
         )}
 
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
 
           {images.length > 0 && images.slice(0, 2).map((image, index) => (
             <div key={index} className=" bg-gray-200 p-6 rounded-md shadow-md mb-4">

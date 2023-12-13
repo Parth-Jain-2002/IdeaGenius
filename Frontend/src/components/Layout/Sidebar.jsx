@@ -15,7 +15,8 @@ import folderIcon from "../../assets/images/folder_icon.png";
 import researchIcon from "../../assets/images/research_bank_icon.png";
 import visionDocIcon from "../../assets/images/vision_doc_icon.png";
 import plus_icon from "../../assets/images/plus_icon_black.png";
-import NewIdeaModal from "../modals/NewIdeaModal";
+import { useNewIdeaModal } from '../../contexts/NewIdeaModalContext';
+import { useNav } from "../../contexts/NavContext";
 
 
 /**
@@ -24,7 +25,8 @@ import NewIdeaModal from "../modals/NewIdeaModal";
  */
 export default function Sidebar() {
   const [topics, setTopics] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setIsModalOpen } = useNewIdeaModal();
+  const { showSidebar, setShowSidebar } = useNav();
 
   /**
    * A function to get the topics the user is researching on.
@@ -89,10 +91,30 @@ export default function Sidebar() {
    */
   useEffect(() => {
     getTopics();
+    window.onresize = () => {
+      if(window.innerWidth > 1280){
+        setShowSidebar(false);
+      }
+    }
+    (function(history){
+      var pushState = history.pushState;
+      history.pushState = function(state) {
+        setShowSidebar(false);
+        return pushState.apply(history, arguments);
+      };
+    })(window.history);
   }, []);
 
   return (
-    <aside className="flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb]">
+    <aside className={`flex h-screen flex-col items-center justify-between p-10 border-r-2 bg-[#f8f9fb] xl:translate-x-0 fixed top-0 xl:sticky -translate-x-96 transition-all z-40 ${showSidebar?'translate-x-0 w-96 max-w-full shadow-lg':''}`}>
+      <button 
+        onClick={()=>{
+          setShowSidebar(!showSidebar);
+        }}
+        className="absolute top-2 right-2 xl:hidden"
+        >
+          <img src={plus_icon} alt="Plus icon" className="h-5 w-5 rotate-45" />
+      </button>
       <div className="flex items-center space-x-2">
         <img
           alt="Logo"
@@ -107,11 +129,11 @@ export default function Sidebar() {
         />
         <h1 className="text-2xl font-bold text-black">IDEAGEN</h1>
       </div>
-      <div className="space-y-4 mt-20 text-center">
+      <div className="space-y-4 mt-20 text-center w-full">
         <h2 className="text-lg p-2 bg-white rounded-md shadow-lg font-semibold border-b">
           My Ideas
         </h2>
-        <Accordion className="rounded-lg w-64">
+        <Accordion className="rounded-lg w-full">
           {Object.keys(topics).map((topic, index) => (
             <AccordionItem className="">
               <AccordionItemHeading className="hover:bg-gray-200 rounded-lg">
@@ -182,13 +204,6 @@ export default function Sidebar() {
           <img src={plus_icon} alt="Plus icon" className="h-5 w-5 mr-2" />
           New Idea
         </button>
-        {isModalOpen && (
-          <NewIdeaModal
-            onClose={closeModal}
-            topics={Object.keys(topics)}
-            getTopics={getTopics}
-          />
-        )}
       </div>
       <button className="w-4/5 flex justify-center items-center space-x-2 bg-black rounded-full p-2 text-white">
         <IconLightningbolt />

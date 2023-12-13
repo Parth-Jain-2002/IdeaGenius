@@ -121,6 +121,9 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Personalized learning:** Tailor your research experience based on your specific needs and interests.
   
 ### 6. Market Insights:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/108723453/ccbae0cb-1a98-49c7-88e2-5a49f05b1f23)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/108723453/67bc304f-d44d-4d20-94ab-b333375cd17c)
 
 - **Quantitative data analysis:** Access comprehensive data on current and projected market size, competitor valuations, and customer trends.
 - **Comparative analysis:** Benchmark your idea against existing players in the market to identify potential opportunities and challenges.
@@ -148,6 +151,11 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 - **Simple and intuitive profile editing:** Update your personal, college and work details and link your profile with Trumio.
 
 ### 10. Idea Interface
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/a2ecdf94-2a73-400b-a8e2-41cff6d31c86)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/64d9423f-180d-4e05-b2ef-024389d49e90)
+
+
 
 ### 11. Extension
 ![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/ca7a7a90-1790-48ce-a964-6f82589f4b7d)
@@ -177,7 +185,8 @@ By combining these powerful features, IdeaGenius empowers users to transform the
 
 
 ## Database Architecture
-![image5](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/7b856acb-e37f-4e10-a906-a751c15a203f)
+![image5](https://github.com/Parth-Jain-2002/IdeaGenius/assets/35802031/326a7f62-51f3-46c9-9388-196caab1a9f3)
+
 
 1. **UserAction:** Tracks user actions with fields for URL, user ID, and specific action performed, providing a log of user interactions.
 2. **Chat:** Manages individual chat messages with details such as user ID, unique chat ID, message content, and response.

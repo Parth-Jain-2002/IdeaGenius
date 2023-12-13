@@ -57,7 +57,7 @@ export default function EditFormChat({ onClose, topics, getThreads, currentTopic
   return (
     <>
       <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
-      <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-8 rounded-md shadow-md w-96 z-50">
+      <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-8 rounded-md shadow-md w-80 md:w-96 md:scale-110 max-w-full z-50">
         <div className="flex justify-between mb-4">
           <div>
             <h2 className="text-xl font-bold text-left">Change Idea Bracket</h2>
@@ -67,7 +67,7 @@ export default function EditFormChat({ onClose, topics, getThreads, currentTopic
           </div>
           <button
             onClick={onClose}
-            className="text-gray-600 hover:text-gray-800"
+            className="text-gray-600 hover:text-gray-800 absolute top-4 right-4"
           >
             <img src={crossIcon} alt="Close" className="h-4 w-4" />
           </button>

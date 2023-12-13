@@ -54,13 +54,13 @@ export default function ResearchBank() {
   }, [ideaid]);
 
   return (
-    <section className="grid h-screen grid-cols-5">
+    <section className="grid h-screen xl:grid-cols-5 grid-cols-4 overflow-y-scroll">
       <Sidebar />
-      <main className="flex flex-col bg-[#f8f9fb] col-span-4 p-4">
+      <main className="flex flex-col bg-white col-span-4">
         <Navbar link={"/dashboard"} />
-        <section className="space-y-4 overflow-y-scroll max-h-[88vh] min-h-[88vh] overflow-x-hidden">
+        <section className="space-y-4 min-h-[88vh] overflow-x-hidden p-4">
           <h2 className="text-3xl mt-4 font-semibold">Research Bank</h2>
-          <div className="mt-8 grid grid-cols-3 gap-5">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {threads.map((thread) => (
               <ResearchCard
                 imgSrc={thread.imgsrc}

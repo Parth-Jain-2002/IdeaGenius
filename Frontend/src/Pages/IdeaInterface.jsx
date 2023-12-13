@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -129,16 +129,24 @@ export default function IdeaInterface() {
     }
   };
 
+  function scrollToBottom() {
+    if(containerRef.current)containerRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chats]);
+  
   return (
     <section>
-      <main className="flex flex-col p-4">
-        <Navbar link={"/dashboard"} />
-        <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[82vh] min-h-[82vh]">
+      <main className="flex flex-col">
+        <Navbar link={"/dashboard"} noBurger={true} />
+        <section className="flex flex-col max-h-[80vh] p-4 overflow-y-scroll pb-10">
           <div className="p-4 bg-white rounded-md shadow-md">
             <div className="flex items-center justify-between p-2 bg-gray-200 rounded-md mb-4">
-              <div className="items-center">
-                <h3 className="text-lg font-semibold ml-4">IdeaX</h3>
-                <span className="text-sm text-gray-500 ml-4">
+              <div className="flex flex-col justify-center mx-2 md:mx-4">
+                <h3 className="text-lg font-semibold">IdeaX</h3>
+                <span className="text-sm text-gray-500">
                   Let's start the journey of the idea creation. Before
                   generating some amazing ideas, we would like you to answer
                   some basic questions for us
@@ -146,7 +154,7 @@ export default function IdeaInterface() {
               </div>
               <img
                 alt="Icon"
-                className="rounded-lg mr-2"
+                className="rounded-lg mr-2 hidden md:block"
                 height="80"
                 src="https://alumni.arizona.edu/sites/default/files/styles/az_large/public/2022-07/is_your_idea_innovative.jpeg?itok=VbGVTSUP"
                 style={{
@@ -174,7 +182,7 @@ export default function IdeaInterface() {
                       <div className="flex-none">
                         {/* <Avatar className="rounded-full" size="icon" /> */}
                       </div>
-                      <div className="ml-auto mr-2 text-right max-w-3xl">
+                      <div className="ml-auto text-right max-w-3xl">
                         <div className="text-sm text-gray-500">User</div>
                         <div className="bg-gray-200 rounded-xl px-5 py-3 mt-1 leading-loose">
                           {chat.message}
@@ -185,7 +193,7 @@ export default function IdeaInterface() {
                       <div className="flex-none">
                         {/* <Avatar className="rounded-full" size="icon" /> */}
                       </div>
-                      <div className="ml-2 mr-2">
+                      <div className="">
                         <div className="text-sm text-gray-500">AI</div>
                         {index === question.length - 1 &&
                         initialIdeas.length == 4 ? (
@@ -225,7 +233,7 @@ export default function IdeaInterface() {
                             className="bg-blue-100 rounded-xl px-5 py-3 mt-1 leading-loose w-full max-w-3xl"
                             ref={containerRef}
                             style={{
-                              whiteSpace: "pre-wrap",
+                              // whiteSpace: "pre-wrap",
                               overflowY: "auto",
                             }}
                           >
@@ -246,9 +254,10 @@ export default function IdeaInterface() {
                 ))
               : ""}
           </div>
+          <div ref={containerRef} />
         </section>
-        <section className="flex flex-col space-y-4">
-          <div className="mt-4 flex items-center space-x-2">
+        <section className="flex flex-col p-4 fixed bottom-0 w-full h-auto bg-white">
+          <div className="flex items-center space-x-2">
             <div className="flex w-full">
               <input
                 className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef]"

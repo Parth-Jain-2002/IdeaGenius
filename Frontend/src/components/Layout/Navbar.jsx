@@ -1,20 +1,40 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNav } from "../../contexts/NavContext";
 import usericon from "../../assets/images/user.png";
 
 
 /**
  * This is the common navbar for all of the pages (except the home page)
- * @param {{link: string}} props Properties for Navbar
+ * @param {{link: string, noBurger: string}} props Properties for Navbar
  * @returns {React.Component} Navbar
  */
 export default function Navbar(props) {
   const navigate = useNavigate();
+  const { showSidebar, setShowSidebar } = useNav();
   const { logout } = useAuth();
 
   return (
-    <section className="flex items-center justify-between mb-4">
+    <section className="flex items-center justify-center sticky top-0 bg-white z-30 p-4 shadow-sm">
+      <button
+        onClick={() => {
+          setShowSidebar(!showSidebar)
+        }}
+        className={`flex flex-row xl:hidden ${(props.noBurger)?'hidden':''}`}
+        title="Open Sidebar"
+      >
+        <svg 
+          className="w-6 h-6"
+          clipRule="evenodd" 
+          fillRule="evenodd" 
+          strokeLinejoin="round" 
+          strokeMiterlimit="2" 
+          viewBox="0 0 24 24"
+        >
+          <path fillRule="nonzero" d="m13 16.745c0-.414-.336-.75-.75-.75h-9.5c-.414 0-.75.336-.75.75s.336.75.75.75h9.5c.414 0 .75-.336.75-.75zm9-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75zm-4-5c0-.414-.336-.75-.75-.75h-14.5c-.414 0-.75.336-.75.75s.336.75.75.75h14.5c.414 0 .75-.336.75-.75z" />
+        </svg>
+      </button>
       <button
         onClick={() => {
           navigate(props.link ? props.link : -1);
@@ -34,6 +54,7 @@ export default function Navbar(props) {
         </svg>
         Back
       </button>
+      <div className="flex-1"></div>
       <div className="flex items-center space-x-2 group relative">
         <span className="text-lg">
           {localStorage.getItem("ideagen_logged_in")

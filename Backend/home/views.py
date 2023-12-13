@@ -19,7 +19,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt, student_idea_generation
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -616,13 +616,13 @@ def generate_source_documents(answer, chatids):
     return response
 
 # Function for validating a response
-def validate(response):
+def validate(response, num=4):
     print(response)
     try:
         response = response.split("[")[1].split("]")[0]
         response = "[" + response + "]"
         response = json.loads(response)
-        if len(response) == 4:
+        if len(response) == num:
             # Check if the object contains title and description
             return True
         else:
@@ -687,7 +687,7 @@ def select_idea(request):
     return JsonResponse({'response':'Success'})
 
 #----------------------------------------------------------------------------------------
-#-----------------------------------VISION DOC-------------------------------------------
+#---------------------------------- VISION DOC ------------------------------------------
 #----------------------------------------------------------------------------------------
 
 # Validating the cost insights response
@@ -1051,32 +1051,33 @@ def get_competitors(description, keywords):
             continue
     
     
-    search_query = ", ".join(keywords)+ " top best"
-    search_url = f'https://www.google.com/search?q={search_query}'
-    response = session.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
-   
-    print(urls)
-    
-    for url in urls:
+    if len(keywords)>0:
+        search_query = ", ".join(keywords)+ " top best"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = session.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
         
-        try:
-            response = session.get(url, timeout=5)
-            response.raise_for_status() 
-            print(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
-            for title in numbered_titles:
-                competitors.append(title.text.strip())
-            
-            
+        urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True) if 'top' in a.text.lower() or 'best' in a.text.lower()]
+    
+        print(urls)
         
-        except requests.exceptions.RequestException as e:
+        for url in urls:
             
-            print(f"Error fetching data from {url}: {e}")
-            continue
+            try:
+                response = session.get(url, timeout=5)
+                response.raise_for_status() 
+                print(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                numbered_titles = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=re.compile(r'\d+\.'))
+                for title in numbered_titles:
+                    competitors.append(title.text.strip())
+                
+                
+            
+            except requests.exceptions.RequestException as e:
+                
+                print(f"Error fetching data from {url}: {e}")
+                continue
           
     session.close()
     competitors_without_numbering = [re.sub(r'^\d+\.\s*', '', competitor) for competitor in competitors]
@@ -1122,33 +1123,34 @@ def get_tables(description, keywords):
             
         except Exception as e:
             print(f"Error fetching data from {url}: {e}")
+       
+    if len(keywords)>0: 
+        search_query = ", ".join(keywords)+ " futuremarketinsights"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = session.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')        
+        all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+        filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
         
-    search_query = ", ".join(keywords)+ " futuremarketinsights"
-    search_url = f'https://www.google.com/search?q={search_query}'
-    response = session.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')        
-    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
-    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.futuremarketinsights.com"]    
-    
-    
-      
-    for url in filtered_urls:        
-        try:
-            response = session.get(url, timeout=5)            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            first_table = soup.find('table')
-            table_content = []
-            if first_table:
-                for row in first_table.find_all('tr'):
-                    columns = row.find_all(['th', 'td'])
-                    row_data = [column.get_text(strip=True) for column in columns]
-                    table_content.append(row_data)
-                tables.append(table_content)           
-            
-            
-        except Exception as e:
-            print(f"Error fetching data from {url}: {e}")
+        
+        
+        for url in filtered_urls:        
+            try:
+                response = session.get(url, timeout=5)            
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                first_table = soup.find('table')
+                table_content = []
+                if first_table:
+                    for row in first_table.find_all('tr'):
+                        columns = row.find_all(['th', 'td'])
+                        row_data = [column.get_text(strip=True) for column in columns]
+                        table_content.append(row_data)
+                    tables.append(table_content)           
+                
+                
+            except Exception as e:
+                print(f"Error fetching data from {url}: {e}")
     session.close()
     return tables
 
@@ -1161,34 +1163,36 @@ def get_images(keywords):
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     
-    search_query = f"{keywords} Fact MR"
-    search_url = f'https://www.google.com/search?q={search_query}'
-    response = session.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')        
-    all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
-    filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.factmr.com"]    
-    
-    
-    images=[]    
-    for url in filtered_urls:        
-        try:
-            response = session.get(url, timeout=5)            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            all_images = []
-            
-            for img_tag in soup.find_all('img', src=True):
-                src = img_tag['src']
-                if src.startswith("https://www.factmr.com/images/reports"):
-                    all_images.append(src)
-                    
-            images.extend(all_images)
+    images=[]  
+    if len(keywords)>0:
+        search_query = f"{keywords} Fact MR"
+        search_url = f'https://www.google.com/search?q={search_query}'
+        response = session.get(search_url)
+        soup = BeautifulSoup(response.text, 'html.parser')        
+        all_urls = [clean_google_url(a['href']) for a in soup.find_all('a', href=True)]   
+        filtered_urls = [url for url in all_urls if urlparse(url).hostname == "www.factmr.com"]    
+        
+        
+          
+        for url in filtered_urls:        
+            try:
+                response = session.get(url, timeout=5)            
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                all_images = []
+                
+                for img_tag in soup.find_all('img', src=True):
+                    src = img_tag['src']
+                    if src.startswith("https://www.factmr.com/images/reports"):
+                        all_images.append(src)
+                        
+                images.extend(all_images)
 
-                     
-            
-            
-        except Exception as e:
-            print(f"Error fetching data from {url}: {e}")
+                        
+                
+                
+            except Exception as e:
+                print(f"Error fetching data from {url}: {e}")
         
     session.close()
     return images
@@ -1301,8 +1305,14 @@ def get_recommended_people(request):
         input_tags = get_input_tags(ideaid)
         # print("input tags: ", input_tags)
         # Assuming User Data comes from Some API
-        with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
-            user_profiles = pickle.load(f)
+        try:
+            with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
+                user_profiles = pickle.load(f)
+        except Exception as e:
+            print("Generating first time for dummy data")
+            add_random_users(request)
+            with open ('home/dummy_data/user_profiles.pkl', 'rb') as f:
+                user_profiles = pickle.load(f)
         # Pre-computed tag embeddings for all users
         with open ('home/dummy_data/tag_embeddings.pkl', 'rb') as f:
             tag_embeddings = pickle.load(f)
@@ -1349,7 +1359,7 @@ def generate_keywords(ideaid):
     # Get the topic from the database
     topic = Topic.objects.get(topicid=ideaid)
     topic.keywords = {}
-
+    
     prompt = generate_keywords_prompt(topic)
     
     response = llm(prompt)
@@ -1443,3 +1453,38 @@ def add_random_users(request):
     with open('home/dummy_data/user_profiles.pkl', 'wb') as f:
         pickle.dump(user_profiles, f)
     return JsonResponse({'response':'Success'})
+
+
+#----------------------------------------------------------------------------------------
+#----------------------------- STUDENT LEARNING PATH ------------------------------------
+#----------------------------------------------------------------------------------------
+
+def extract_skills(response):
+    skill_list = []
+    for i in range(len(response)):
+        skill_list.append(response[i]['skill'])
+    return skill_list
+
+@csrf_exempt
+def get_learning_path(request):
+    data = json.loads(request.body.decode('utf-8'))
+    answer = data['answer']
+    idea = data['idea']
+    userid = data['userid']
+
+    answer = answer.split("###NewAnswer###")    
+    print(answer)
+    print(idea)
+    print(userid)
+    prompt= student_idea_generation(answer, "")
+    prompt+= "Title should be of max 10-15 words. Description should be of max 20-30 words. MAKE SURE to RETURN a JSON object array of the following format: [{\"title\": \"Title of the idea 1\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"} , {\"title\": \"Title of the idea 2\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"}], dont just return a paragraph"
+    while True:
+        response = llm(prompt)
+        # Check if there is a array in the response or not with four elements of title and description
+        if(validate(response, 4)):
+            break
+    # response= llm(prompt)
+    response = response.split("[")[1].split("]")[0]
+    response = "[" + response + "]"
+    print(response)
+    return JsonResponse({'response':response})
