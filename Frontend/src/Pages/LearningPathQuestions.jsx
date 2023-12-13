@@ -71,7 +71,7 @@ export default function LearningPathGenerator() {
       ]);
       setLoading(true);
       axios
-        .post(`http://localhost:8000/generate_idea`, {
+        .post(`http://localhost:8000/generate_learning_path_idea`, {
           userid: localStorage.getItem("ideagen_user_id"),
           idea: "idea_1",
           answer:

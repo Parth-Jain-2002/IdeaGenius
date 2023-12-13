@@ -23,18 +23,6 @@ def idea_generation(answer, source_documents):
     # Step 3: Return the refined prompt
     return prompt
 
-def student_idea_generation(answer, source_documents):
-    formatted_answers = questions_answer(answer)
-    prompt = f"""The insights and valid points from the source documents are: {source_documents}. Use this, if found relevant, to generate 4 unique disjoint project ideas for college students to help them gain experience for industry.
-
-    Students have responded to five key questions, and their insights are outlined below:
-
-    {formatted_answers}
-
-    Your task is to generate four unique and well-defined project ideas for college students. These project ideas will help college students to upskill themselves and provide them with experience of working on industry level projects. Each project idea should be logical, meaningful, and considerate of difficulty level of the required technologies. Also highlight the skills required to solve the problem statement. The objective is to provide project ideas to college students to help them upskill in the considered technologies."""
-
-    # Step 3: Return the refined prompt
-    return prompt
 
 def final_source_generation(source_documents, answer):
     # Step 1: Format user's answers using the provided function
@@ -161,3 +149,70 @@ def generate_similar_insights_prompt(topic):
     prompt += "The similar insights should be meaningful and clear. Justify if you made any assumptions."
 
     return prompt
+
+
+
+def student_idea_generation(answer, source_documents):
+    formatted_answers = questions_answer(answer)
+    prompt = f"""The insights and valid points from the source documents are: {source_documents}. Use this, if found relevant, to generate 4 unique disjoint project ideas for college students to help them gain experience for industry.
+
+    Students have responded to five key questions, and their insights are outlined below:
+
+    {formatted_answers}
+
+    Your task is to generate four unique and well-defined project ideas for college students. These project ideas will help college students to upskill themselves and provide them with experience of working on industry level projects. Each project idea should be logical, meaningful, and considerate of difficulty level of the required technologies. Also highlight the skills required to solve the problem statement. The objective is to provide project ideas to college students to help them upskill in the considered technologies."""
+
+    # Step 3: Return the refined prompt
+    return prompt
+
+def student_idea_info(idea):
+    prompt= f""" The deatils of the idea are: 
+        Title: {idea.title},
+        Description: {idea.description}        
+        
+    """
+
+    return prompt
+
+def generate_learning_path_prompt(idea):
+    prompt = f""" Given a project idea with details of project given as {student_idea_info(idea)}, create a detailed learning path in JSON format. The learning path should include the key milestones, tasks, and resources required for each step. Consider different aspects such as programming languages, frameworks, tools, and concepts that need to be covered.    
+
+    Ensure that the JSON structure is well-organized, with clear keys and values for each task. Include relevant information such as estimated time for completion, difficulty level, and any prerequisites for each task.
+    """
+    
+    prompt+="""
+    Return a JSON object array in the following format:
+    ["project_name": "Project Name",
+    "project_description": "Project Description",
+    "learning_path": [
+        {
+        "milestone": "Milestone 1",
+        "tasks": [
+            {
+            "task_name": {Task 1},
+            "description": {Description of Task 1},
+            "resources": [{Resource 1}, {Resource 2}],
+            "estimated_time": {Time of Task 1},
+            "difficulty": {Difficulty of Task 1},
+            "prerequisites": [{Prerequisite 1}, {Prerequisite 2}]
+            },
+            {Task 2},
+            {Task 3}
+        ]
+        },
+        {
+        "milestone": {Milestone 2},
+        "tasks": [
+            {Task 1 },
+            {Task 2 },
+            
+        ]
+        },
+        { Milestone 3 }
+    ]]
+    """
+
+    
+
+    return prompt
+    
