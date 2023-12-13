@@ -19,7 +19,7 @@ import LandingPage from './Pages/LandingPage';
 import MarketInsight from './Pages/MarketInsight';
 import VisionDoc from './Pages/VisionDoc';
 import People from './Pages/People';
-
+import LearningPathQuestions from "./Pages/LearningPathQuestions"
 /**
  * This component is used to create a protected route that can only be accessed if the user is authenticated
  * @param {{children: React.Component}} children The main component to show if user is authenticated
@@ -55,6 +55,7 @@ export default function App() {
                 <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
                 <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
                 <Route path="/people/:ideaid" element={<ProtectedRoute><People /></ProtectedRoute>} />
+                <Route path="/learning-path-generator" element={<LearningPathQuestions />} />
               </Routes>
             </BrowserRouter>
             <NewIdeaModal />
