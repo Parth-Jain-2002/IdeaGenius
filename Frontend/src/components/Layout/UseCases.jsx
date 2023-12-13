@@ -8,11 +8,13 @@ import image from "../../assets/images/Process-amico.png";
  */
 export default function UseCases() {
   return (
+    <div className="py-8 px-4 sm:py-16 lg:px-6">
+    <h1 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 ">Use Cases</h1>
     <div className="w-full h-full flex justify-evenly gap-2">
-      <div className="h-full w-[35%] my-auto">
+      <div className="h-full w-[35%] my-auto hidden lg:block">
         <img src={image} alt="process" />
       </div>
-      <div className="h-full w-[65%] flex flex-col justify-evenly">
+      <div className="h-full w-full lg:w-[65%] flex flex-col justify-evenly">
         <UseCaseCard
           scenario="Efficient Project Ideation"
           content="Scenario: Clients seeking innovative project ideas tailored to their needs."
@@ -39,6 +41,7 @@ export default function UseCases() {
 
       </div>
     </div>
+    </div>
   )
 }
 
@@ -49,7 +52,7 @@ export default function UseCases() {
  */
 function UseCaseCard({ scenario, content, howIdeaGeniusHelps }) {
   return (
-    <div className="p-4 bg-white shadow-lg mb-4 rounded-2xl h-36">
+    <div className="p-4 bg-white shadow-lg mb-4 rounded-2xl md:h-40">
       <h1 className="text-lg font-medium text-[#6c69dc] mb-1">{scenario}</h1>
       <p className="text-xs text-gray-500 mb-2">{content}</p>
       <h1 className="text-sm font-medium text-[#6c69dc] mb-1">How IdeaGenius Helps</h1>

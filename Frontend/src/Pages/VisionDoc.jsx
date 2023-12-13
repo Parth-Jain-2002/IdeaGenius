@@ -14,6 +14,7 @@ export default function VisionDoc() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [block, setBlock] = useState("Start writing here...");
+  const [showVisionX, setShowVisionX] = useState(false);
 
   // Refs for DOM elements
   const containerRef = useRef();
@@ -218,12 +219,14 @@ export default function VisionDoc() {
   };
 
   function scrollToBottom() {
-    messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    if(showVisionX || window.innerWidth > 768){
+      messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [chats]);
+  }, [chats, showVisionX]);
 
   useEffect(() => {
     getIdeaInfo();
@@ -247,11 +250,11 @@ export default function VisionDoc() {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-gray-200 p-4">
+    <div className="w-full h-screen bg-gray-200 overflow-x-hidden">
       <Navbar link="/dashboard" noBurger={true} />
-      <section className="grid grid-cols-4">
-        <main className="col-span-3 min-h-[88vh] max-h-[88vh]">
-          <div className="bg-white border border-gray-300 px-20 py-10 rounded-lg min-h-[90vh] max-h-[90vh] overflow-y-scroll">
+      <section className="grid grid-cols-4 p-4 h-[90vh] overflow-x-hidden">
+        <main className="col-span-4 md:col-span-2 lg:col-span-3 max-h-[78vh] md:max-h-[85vh]">
+          <div className="bg-white border border-gray-300 px-4 md:px-10 lg:px-20 py-10 rounded-lg overflow-y-scroll h-full">
             <div className="mb-8 flex flex-row justify-between">
               <div className="flex flex-row">
                 <img
@@ -558,7 +561,7 @@ export default function VisionDoc() {
               </div>
             </div>
 
-            <div className="flex flex-row justify-between opacity-0 hover:opacity-100">
+            <div className="flex flex-row justify-between hover:opacity-100 md:opacity-0 opacity-100">
               <hr className="w-[70vw] border-gray-100 mt-3" />
               <button
                 className="w-full items-center text-sm font-bold rounded-full text-red-500"
@@ -571,11 +574,11 @@ export default function VisionDoc() {
           </div>
         </main>
 
-        <aside className="flex flex-col space-y-2 p-4 ml-3 bg-[#f8f9fb] rounded-lg min-h-[90vh] max-h-[90vh]">
-          <div className="flex items-center space-x-2 p-4 bg-gray-100 rounded-lg mb-8">
+        <aside className={`col-span-4 md:col-span-2 lg:col-span-1 flex flex-col space-y-2 p-4 md:ml-3 bg-[#f8f9fb] rounded-lg md:max-h-[85vh] md:relative fixed top-0 left-0 right-0 bottom-14 md:z-50 md:translate-x-0 transition-all ${showVisionX?'translate-x-0 z-40':'-z-50 translate-x-[100vw]'}`}>
+          <div className="flex items-center space-x-2 p-4 bg-gray-100 rounded-lg mb-4">
             <h1 className="text-2xl font-bold">VisionX </h1>
           </div>
-          <section className="flex flex-col space-y-4 overflow-y-scroll max-h-[63vh] min-h-[63vh]">
+          <section className="flex flex-col space-y-4 overflow-y-scroll h-full pb-8">
             {chats.length > 0 ? (
               chats.map((chat, index) => (
                 <>
@@ -608,7 +611,7 @@ export default function VisionDoc() {
                         />
                         <div className="flex flex-row justify-center space-x-2 mt-2">
                           <button
-                            className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row"
+                            className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row justify-center items-center"
                             onClick={() =>
                               navigator.clipboard.writeText(chat.response)
                             }
@@ -616,9 +619,10 @@ export default function VisionDoc() {
                             <span className="text-sm">Copy</span>
                           </button>
                           <button
-                            className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row"
+                            className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row justify-center items-center"
                             onClick={() => {
                               setBlock(block + "\n" + chat.response);
+                              setShowVisionX(false);
                             }}
                           >
                             <span className="text-sm">Add to Vision</span>
@@ -638,8 +642,8 @@ export default function VisionDoc() {
             )}
             <div ref={messageContainerRef} />
           </section>
-          <section className="flex flex-col space-y-4 ">
-            <div className="mt-4 flex items-center space-x-2">
+          <section className="flex flex-col space-y-4 absolute bottom-0 left-0 right-0 p-2 bg-white rounded-lg">
+            <div className="flex items-center space-x-2">
               <div className="flex w-full">
                 <input
                   className="p-2 rounded-full shadow-md w-full mr-2 bg-[#efefef] text-sm"
@@ -664,6 +668,10 @@ export default function VisionDoc() {
             </div>
           </section>
         </aside>
+
+        <button className="fixed bottom-0 left-0 right-0 bg-blue-700 text-white p-4 rounded-t-xl h-14 md:hidden z-50" onClick={()=>setShowVisionX(!showVisionX)}>
+          VisionX
+        </button>
       </section>
     </div>
   );
