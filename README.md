@@ -30,13 +30,17 @@ College alumni are graduates of academic institutions, bringing their experience
 ### 3. University Club
 University clubs are groups within academic institutions focused on fostering creativity, innovation, and collaboration. IdeaGenius caters to them in following ways:
 - **Idea Incubator** : IdeaGenius provides a dedicated space for university clubs to collaboratively explore and refine project ideas.
+- **Knowledge Hub** : With the Research Bank feature, university clubs can build a comprehensive knowledge hub. Club members can contribute and access relevant documents, research papers, and articles.
+- **Networking Opportunities** : IdeaGenius acts as a networking platform, connecting university clubs with like-minded peers. This networking opportunity extends beyond the club itself, facilitating collaborations with other clubs, sharing of experiences, and creating a broader ecosystem for innovation
 
 ### 4. Investor
+Investors are individuals or entities looking for investment opportunities in innovative projects.
+- **Curated Innovation** : Offers investors a curated selection of innovative projects, streamlining the process of identifying promising investment opportunities.
+- **Diverse Portfolio** : Allows investors to diversify their portfolio by exploring a wide range of projects across different industries and sectors.
 
-### 5. Student
 
 ## Scope 
-3The scope of IdeaGenius encompasses a comprehensive set of features to guide users through the idea generation and refinement process:
+The scope of IdeaGenius encompasses a comprehensive set of features to guide users through the idea generation and refinement process:
 
 ### 1. Smart Questionnaire:
 1. IdeaGenius prompts users with a targeted set of smart questions related to  target industries, current challenges, desired technologies, and budget and time constraints. The responses drive the AI-powered idea generation process.
@@ -54,6 +58,13 @@ University clubs are groups within academic institutions focused on fostering cr
 ### 4. Market Trends Analysis:
 1. IdeaGenius provides clients with real-time market trends, offering a detailed analysis of the chosen ideas. This analysis underscores the idea's relevance, market demand, and competitive landscape, supporting clients in making informed decisions.
 
+
+### 5. Collaboration Recommendations:
+1. IdeaGenius incorporates an intelligent networking algorithm that analyzes user profiles, preferences, and project interests and recommends potential collaborators within the IdeaGenius community.
+2. By suggesting individuals with complementary skills and interests, IdeaGenius aims to enhance the collaborative potential of users, fostering partnerships that can lead to more robust and successful project implementations.
+
+
+
 ## User Interface:  
 IdeaGenius boasts a suite of innovative features designed to streamline the process of developing and launching your ideas. Here's a closer look:
 
@@ -62,55 +73,86 @@ IdeaGenius boasts a suite of innovative features designed to streamline the proc
 ![image19](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/d324dacf-59e9-42eb-b4e0-55c4ee5f63be)
 
 ### 1. Landing Page:
-![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
+![image_landing](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/02f95059-3784-4b89-a822-a6f1ac0f7bc4)
 
-![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb)
+<!-- ![image_landing](https://github.com/Parth-Jain-2002/IdeaGenius/assets/54469875/86c65fca-216a-41a4-a2fd-40f4b9b3d12d) -->
+
+<!-- ![image6](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/8140bb12-38fe-42f2-8f93-b585069763ae)
+
+![image17](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/e15fac7f-7bdf-4b99-a2d6-082e32f132bb) -->
+
 - **Clear and concise presentation of IdeaGenius' mission:** Briefly explain how IdeaGenius empowers users to turn their ideas into reality.
 - **Highlight key features:** Showcase the platform's core functionalities, such as idea generation, market research, and collaboration tools.
 - **Transparent pricing policy:** Display the different pricing tiers and their respective features to help users choose the best option.
 - **Call to action:** Encourage users to register and experience the power of IdeaGenius.
 
-### 2. Register & Login:
+### 2. Register & Login:  
+![image_register](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/3cfe7376-df40-4afd-a7c6-8adc387beb07)  
+
+![image_login](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/78ff1b0a-59aa-4716-b940-3cebe8140a98)
+
+
 - **Simple and efficient registration process:** Allow users to register quickly and easily using email or social media accounts.
 - **Secure login system:** Ensure user data is protected with secure login protocols.
 
 ### 3. Dashboard:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/417003c3-2594-4695-b12c-595bcc0d3c27)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/adf0ef25-6360-4c0b-82ed-e4c70dd8f0d9)
+
 - **Personalized overview of your projects:** Provide a central hub where users can manage all their active ideas and track their progress.
 - **Easy navigation:** Offer intuitive navigation to access different sections of the platform, including Idea Dashboard, Research Bank, and People.
-
-### 4. Idea Dashboard:
 - **Market insights:** Gain valuable market intelligence through data and analysis, including market size, competitor valuations, and customer trends.
 - **Collaboration opportunities:** Discover potential collaborators with the required skills and experience to help your idea thrive.
 - **Generate problem statement:** Formulate a clear and concise problem statement to be shared on Trumio, attracting relevant talent.
   
-### 5. Research Bank:
+### 4. Research Bank:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/65a4d379-d86d-4e73-a11f-03546bc644b4)
+
 - **Organize and store relevant resources:** Build a comprehensive knowledge base by saving articles, research materials, and inspirational content.
 - **AI-powered analysis:** Enhance your understanding of the collected resources through AI-driven insights and analysis.
 - **Improved idea development:** Feed your research bank data into the AI to generate a personalized plan for your idea's growth.
 
-### 6. Chat Interface:
+### 5. Chat Interface:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/393a9024-d132-47f7-8c3a-1254c6b59695)
+
 - **Interactive exploration of resources:** Engage in a dynamic conversation with the AI to delve deeper into your research bank materials and extract key information.
 - **Enhanced comprehension:** Gain a clearer understanding of complex topics and concepts through interactive dialogue with the AI.
 - **Personalized learning:** Tailor your research experience based on your specific needs and interests.
   
-### 7. Market Insights:
+### 6. Market Insights:
+
 - **Quantitative data analysis:** Access comprehensive data on current and projected market size, competitor valuations, and customer trends.
 - **Comparative analysis:** Benchmark your idea against existing players in the market to identify potential opportunities and challenges.
 - **Informed decision-making:** Gain data-driven insights to guide your idea development and marketing strategy.
   
-### 8. VisionDoc:
+### 7. VisionDoc:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/fa6df3d0-631a-4987-822e-29bdee2e30f6)
+
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/d16a199a-4df4-475d-b045-80a31983de43)
+
 - **Interactive plan generation:** Create a comprehensive plan for your idea's execution, including timeframes, resource allocation, and subtask management.
 - **AI-powered assistance:** Receive valuable guidance from the AI on key aspects like cost estimation, timeline planning, and risk mitigation.
 - **Dynamic plan adaptation:** Adjust your plan as needed based on new insights, market shifts, and evolving goals.
 
-### 9.People:
+### 8.People:
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/50c59b6c-aa2a-4925-aeb5-3de7b6992f5e)
+
 - **Discover potential collaborators:** Find individuals with the right skills, knowledge, and experience to contribute to your idea's success.
 - **Network and connect:** Build a network of collaborators, advisors, and investors who can help you bring your idea to life.
 - **Build a strong team:** Assemble a diverse group of individuals with complementary expertise to maximize your chances of success.
   
-### 10. User Profile:
+### 9. User Profile:
 ![image10](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/686649ea-ef9d-4e32-8359-143b219b590f)
-- Simple and intuitive profile editing. Update your personal, college and work details and link your profile with Trumio.
+
+- **Simple and intuitive profile editing:** Update your personal, college and work details and link your profile with Trumio.
+
+### 10. Idea Interface
+
+### 11. Extension
+![image](https://github.com/Parth-Jain-2002/IdeaGenius/assets/72060359/ca7a7a90-1790-48ce-a964-6f82589f4b7d)
+
+
 
 By combining these powerful features, IdeaGenius empowers users to transform their ideas into successful ventures.
 
@@ -148,11 +190,11 @@ By combining these powerful features, IdeaGenius empowers users to transform the
 
 ## Software Stack
 ### 1. Extension
-The extension design incorporates HTML and CSS in conjunction with tailwind css. Serving as the gateway to the research interface, the extension offers functionalities such as summarization, insights retrieval, in-depth exploration, and addition of topics to the research bank.
+The extension design incorporates **HTML** and **CSS** in conjunction with **Tailwind CSS**. Serving as the gateway to the research interface, the extension offers functionalities such as summarization, insights retrieval, in-depth exploration, and addition of topics to the research bank.
 ### 2. Frontend 
-In our front-end development, we leverage ReactJS with Tailwind for UI design. React's component-based architecture facilitates the creation of reusable code across the application. To visualize market insights, we employ Chart.js, React-chartjs-2, and chartjs-adapter-date-fns. For captivating animations, we utilize dependencies such as lottie-react and framer motion. Axios is employed for backend requests, and Firebase is integrated for user authentication and authorization.
+In our front-end development, we leverage **ReactJS** with **Tailwind CSS** for UI design. React's component-based architecture facilitates the creation of reusable code across the application. To visualize market insights, we employ Chart.js, React-chartjs-2, and chartjs-adapter-date-fns. For captivating animations, we utilize dependencies such as lottie-react and framer motion. Axios is employed for backend requests, and **Firebase** is integrated for user authentication and authorization.
 ### 3. Backend
-Django and Sqlite
+Our meticulously crafted backend integrates cutting-edge technologies for optimal efficiency and intelligence. **Django** forms the backbone for seamless web interactions, while **SQLite** ensures efficient data management. Advanced Natural Language Processing capabilities are powered by **Hugging Face libraries**, facilitating dynamic and intelligent data analysis. **Langchain** enables seamless interactions with state-of-the-art language models, providing insightful responses. **Whisper Transcription** enhances accessibility by converting audio content to text. **BeautifulSoup** is employed for precise web scraping, extracting market trends data with accuracy. URL management is streamlined with **Urlparse**, while **Pdfplumber** ensures content extraction from PDFs. **Google Deplot** is utilized for extracting meaningful insights from visual data, including charts and graphs, enriching our data analysis capabilities.
 
 
 ## Activity Diagram

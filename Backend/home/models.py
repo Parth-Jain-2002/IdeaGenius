@@ -39,7 +39,7 @@ class UserDoc(models.Model):
 
 class Topic(models.Model):
     userid = models.CharField(max_length=50)
-    topicid = models.CharField(max_length=50, default="", unique=True)
+    topicid = models.CharField(max_length=50, default="")
     title = models.CharField(max_length=255, default="")
     description = models.CharField(max_length=255, default="")
     generated = models.BooleanField(default=False)
@@ -52,3 +52,6 @@ class Topic(models.Model):
     visiondoctext = models.TextField(default="")
     market_insights = models.JSONField(default=dict)
     similar_insights = models.TextField(default="")
+
+    class Meta:
+        unique_together = ('userid', 'topicid',)
