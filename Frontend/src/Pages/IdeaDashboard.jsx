@@ -141,7 +141,13 @@ export default function IdeaDashboard() {
       })
       .then(
         (response) => {
-          //console.log("response:", response.data);
+          console.log("response:", response.data);
+          // Check if topicDetails.generated is true before calling the other functions
+          const generated = response.data.generated;
+        if (generated) {
+          getPeeps();
+          getInsights();
+        }
           setTopicDetails(response.data);
         },
         (error) => {

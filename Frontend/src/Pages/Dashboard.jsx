@@ -43,17 +43,17 @@ export default function Dashboard() {
                     New Idea
                   </div>
                 </div>
-                <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">Click any existing idea from left panel to open "Idea Dashboard" or go to its "Vision Doc" or "Research Bank"</h1>
+                <div className="w-full bg-[#dbeafe] p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
+                  <h1 className="text-center font-normal text-normal">Click any existing idea from left panel to open "Idea Dashboard" or go to its "Vision Doc" or "Research Bank"</h1>
                 </div>
                 <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+                  <h1 className="text-center font-normal text-normal">All articles and videos are saved in "Miscellaneous", you can move them to different ideas</h1>
+                </div>
+                <div className="w-full p-4 bg-[#dbeafe] flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
+                  <h1 className="text-center font-normal text-normal">You can have AI generated problem statements for any idea according to your research bank and requirements</h1>
                 </div>
                 <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">You can have AI generated problem statements for any idea according to your research bank and requirements</h1>
-                </div>
-                <div className="w-full p-4 flex justify-center items-center my-2 border rounded-lg flex-1 hover:shadow-xl">
-                  <h1 className="text-center font-normal text-lg">Refine, analyze and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
+                  <h1 className="text-center font-normal text-normal">Refine, analyze and formalize your idea through "Market Insights" and recommended "Collaborators"</h1>
                 </div>
 
               </div>

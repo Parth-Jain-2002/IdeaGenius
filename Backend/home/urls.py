@@ -36,5 +36,7 @@ urlpatterns = [
     path('get_subtasks',views.get_subtasks, name='get_subtasks'),
 
     path('get_recommended_people', views.get_recommended_people, name='get_recommended_people'),
-    path('add_random_users', views.add_random_users, name='add_random_users')
+    path('add_random_users', views.add_random_users, name='add_random_users'),
+
+    path('get_learning_path', views.get_learning_path, name='get_learning_path'),
 ]
