@@ -1464,6 +1464,7 @@ def extract_skills(response):
     for i in range(len(response)):
         skill_list.append(response[i]['skill'])
     return skill_list
+
 @csrf_exempt
 def get_learning_path(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -1480,7 +1481,7 @@ def get_learning_path(request):
     while True:
         response = llm(prompt)
         # Check if there is a array in the response or not with four elements of title and description
-        if(validate(response, 2)):
+        if(validate(response, 4)):
             break
     # response= llm(prompt)
     response = response.split("[")[1].split("]")[0]

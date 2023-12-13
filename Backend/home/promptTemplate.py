@@ -25,13 +25,13 @@ def idea_generation(answer, source_documents):
 
 def student_idea_generation(answer, source_documents):
     formatted_answers = questions_answer(answer)
-    prompt = f"""The insights and valid points from the source documents are: {source_documents}. Use this, if found relevant, to generate 2 unique disjoint problem statements for alumni/clients, which can then be addressed with college students.
+    prompt = f"""The insights and valid points from the source documents are: {source_documents}. Use this, if found relevant, to generate 4 unique disjoint project ideas for college students to help them gain experience for industry.
 
-    Now, as part of our continued innovation, we are developing "IdeaGenius" to Aress ideation and market research challenges. Users have responded to five key questions, and their insights are outlined below:
+    Students have responded to five key questions, and their insights are outlined below:
 
     {formatted_answers}
 
-    Your task is to generate two unique and well-defined problem statements for alumni/clients. These statements will serve as the foundation for collaborative projects with college students. Each problem statement should be logical, meaningful, and considerate of budget, time constraints, and required technologies. Also highlight the skills required to solve the problem statement. The objective is to propose ideas that alumni/clients find compelling to pursue further."""
+    Your task is to generate four unique and well-defined project ideas for college students. These project ideas will help college students to upskill themselves and provide them with experience of working on industry level projects. Each project idea should be logical, meaningful, and considerate of difficulty level of the required technologies. Also highlight the skills required to solve the problem statement. The objective is to provide project ideas to college students to help them upskill in the considered technologies."""
 
     # Step 3: Return the refined prompt
     return prompt
