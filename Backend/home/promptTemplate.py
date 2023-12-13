@@ -181,11 +181,8 @@ def generate_learning_path_prompt(idea):
     """
     
     prompt+="""
-    Return a JSON object array in the following format:
-    ["project_name": "Project Name",
-    "project_description": "Project Description",
-    "learning_path": [
-        {
+    Give a JSON object array in the following format:
+    [{
         "milestone": "Milestone 1",
         "tasks": [
             {
@@ -196,20 +193,16 @@ def generate_learning_path_prompt(idea):
             "difficulty": {Difficulty of Task 1},
             "prerequisites": [{Prerequisite 1}, {Prerequisite 2}]
             },
-            {Task 2},
-            {Task 3}
+            { Task 2 }                      
         ]
-        },
-        {
+    },
+    {
         "milestone": {Milestone 2},
         "tasks": [
-            {Task 1 },
-            {Task 2 },
-            
+            {Task 1 }      
         ]
-        },
-        { Milestone 3 }
-    ]]
+    }]
+    
     """
 
     

@@ -1458,6 +1458,17 @@ def add_random_users(request):
 #----------------------------------------------------------------------------------------
 #----------------------------- STUDENT LEARNING PATH ------------------------------------
 #----------------------------------------------------------------------------------------
+def validate_learning_path(response):
+    try:
+        # Find the first "[" and the last "]" in response
+        response = response[response.find("["):response.rfind("]")+1]
+        print(response)
+        response = json.loads(response)
+        print(response)
+        return response         
+    except:
+        return "Invalid"
+
 
 def extract_skills(response):
     skill_list = []
@@ -1489,6 +1500,7 @@ def generate_learning_path_idea(request):
     print(response)
     return JsonResponse({'response':response})
 
+
 @csrf_exempt
 def generate_learning_path(request):
     data = json.loads(request.body.decode('utf-8'))   
@@ -1500,11 +1512,13 @@ def generate_learning_path(request):
     
     prompt = generate_learning_path_prompt(idea)
     print(prompt)
-    
+           
     response = llm(prompt)
     print(response)
-    # Check if there is a array in the response or not with four elements of title and description
+    response=validate_learning_path(response)
     
+            
+        
         
     return JsonResponse({'response':response})
     
