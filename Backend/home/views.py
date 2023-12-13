@@ -19,7 +19,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt, student_idea_generation
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -616,13 +616,13 @@ def generate_source_documents(answer, chatids):
     return response
 
 # Function for validating a response
-def validate(response):
+def validate(response, num=4):
     print(response)
     try:
         response = response.split("[")[1].split("]")[0]
         response = "[" + response + "]"
         response = json.loads(response)
-        if len(response) == 4:
+        if len(response) == num:
             # Check if the object contains title and description
             return True
         else:
@@ -687,7 +687,7 @@ def select_idea(request):
     return JsonResponse({'response':'Success'})
 
 #----------------------------------------------------------------------------------------
-#-----------------------------------VISION DOC-------------------------------------------
+#---------------------------------- VISION DOC ------------------------------------------
 #----------------------------------------------------------------------------------------
 
 # Validating the cost insights response
@@ -1453,3 +1453,37 @@ def add_random_users(request):
     with open('home/dummy_data/user_profiles.pkl', 'wb') as f:
         pickle.dump(user_profiles, f)
     return JsonResponse({'response':'Success'})
+
+
+#----------------------------------------------------------------------------------------
+#----------------------------- STUDENT LEARNING PATH ------------------------------------
+#----------------------------------------------------------------------------------------
+
+def extract_skills(response):
+    skill_list = []
+    for i in range(len(response)):
+        skill_list.append(response[i]['skill'])
+    return skill_list
+@csrf_exempt
+def get_learning_path(request):
+    data = json.loads(request.body.decode('utf-8'))
+    answer = data['answer']
+    idea = data['idea']
+    userid = data['userid']
+
+    answer = answer.split("###NewAnswer###")    
+    print(answer)
+    print(idea)
+    print(userid)
+    prompt= student_idea_generation(answer, "")
+    prompt+= "Title should be of max 10-15 words. Description should be of max 20-30 words. MAKE SURE to RETURN a JSON object array of the following format: [{\"title\": \"Title of the idea 1\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"} , {\"title\": \"Title of the idea 2\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"}], dont just return a paragraph"
+    while True:
+        response = llm(prompt)
+        # Check if there is a array in the response or not with four elements of title and description
+        if(validate(response, 2)):
+            break
+    # response= llm(prompt)
+    response = response.split("[")[1].split("]")[0]
+    response = "[" + response + "]"
+    print(response)
+    return JsonResponse({'response':response})
