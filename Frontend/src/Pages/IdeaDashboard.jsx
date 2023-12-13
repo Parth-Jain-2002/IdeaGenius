@@ -231,12 +231,12 @@ export default function IdeaDashboard() {
     getTopicDetails();
   }, [topicid]);
 
-  useEffect(() => {
-    if (topicDetails && topicDetails.generated) {
-      getPeeps();
-      getInsights();
-    }
-  }, [topicDetails]);
+  // useEffect(() => {
+  //   if (topicDetails && topicDetails.generated) {
+  //     getPeeps();
+  //     getInsights();
+  //   }
+  // }, [topicDetails]);
 
   function handleIdeaGeneration() {
     navigate(`../idea/${topicid}`);

@@ -43,15 +43,15 @@ class Topic(models.Model):
     title = models.CharField(max_length=255, default="")
     description = models.CharField(max_length=255, default="")
     generated = models.BooleanField(default=False)
-    time_insight = models.JSONField(default=dict)
-    cost_insight = models.JSONField(default=dict)
-    subtask = models.TextField(default="")
+    time_insight = models.JSONField(blank=True, null=True, default=dict)
+    cost_insight = models.JSONField(blank=True, null=True, default=dict)
+    subtask = models.TextField(default="", blank=True, null=True)
     # This is a JSON object that contains the following keywords: {keywords: ['Finance', 'Investment', 'Stocks']}
     keywords = models.JSONField(default=dict)
     chatid = models.UUIDField(default=uuid.uuid4)
-    visiondoctext = models.TextField(default="")
-    market_insights = models.JSONField(default=dict)
-    similar_insights = models.TextField(default="")
+    visiondoctext = models.TextField(default="", blank=True, null=True)
+    market_insights = models.JSONField(blank=True, null=True, default=dict)
+    similar_insights = models.TextField(default="", blank=True, null=True)
 
     class Meta:
         unique_together = ('userid', 'topicid',)
