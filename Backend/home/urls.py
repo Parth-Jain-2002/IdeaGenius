@@ -38,5 +38,7 @@ urlpatterns = [
     path('get_recommended_people', views.get_recommended_people, name='get_recommended_people'),
     path('add_random_users', views.add_random_users, name='add_random_users'),
 
-    path('get_learning_path', views.get_learning_path, name='get_learning_path'),
+    path('generate_learning_path_idea', views.generate_learning_path_idea, name='generate_learning_path_idea'),
+    path('generate_learning_path', views.generate_learning_path, name='generate_learning_path'),
+    
 ]

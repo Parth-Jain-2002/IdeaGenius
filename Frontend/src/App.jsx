@@ -20,6 +20,7 @@ import MarketInsight from './Pages/MarketInsight';
 import VisionDoc from './Pages/VisionDoc';
 import People from './Pages/People';
 import LearningPathQuestions from "./Pages/LearningPathQuestions"
+import LearningPath from "./Pages/LearningPath"
 import TestPath from './Pages/TestPath';
 /**
  * This component is used to create a protected route that can only be accessed if the user is authenticated
@@ -56,7 +57,8 @@ export default function App() {
                 <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
                 <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
                 <Route path="/people/:ideaid" element={<ProtectedRoute><People /></ProtectedRoute>} />
-                <Route path="/learning-path-generator" element={<LearningPathQuestions />} />
+                <Route path="/learning-path-generator/:ideaid" element={<LearningPathQuestions />} />
+                <Route path="/learning-path/:ideaid" element={<LearningPath />} />
                 <Route path="/test-path" element={<TestPath />} />
               </Routes>
             </BrowserRouter>

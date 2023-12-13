@@ -19,7 +19,7 @@ import uuid
 import os
 import pdfplumber
 import docx2txt
-from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt, student_idea_generation
+from .promptTemplate import idea_generation, source_document_generation, final_source_generation, generate_cost_insights_prompt, generate_time_insights_prompt, idea_info, generate_subtasks_prompt, generate_keywords_prompt, generate_similar_insights_prompt, student_idea_generation, generate_learning_path_prompt
 
 from .hfcb_lang import HuggingChat as HCA
 
@@ -1458,6 +1458,17 @@ def add_random_users(request):
 #----------------------------------------------------------------------------------------
 #----------------------------- STUDENT LEARNING PATH ------------------------------------
 #----------------------------------------------------------------------------------------
+def validate_learning_path(response):
+    try:
+        # Find the first "[" and the last "]" in response
+        response = response[response.find("["):response.rfind("]")+1]
+        print(response)
+        response = json.loads(response)
+        print(response)
+        return response         
+    except:
+        return "Invalid"
+
 
 def extract_skills(response):
     skill_list = []
@@ -1466,7 +1477,7 @@ def extract_skills(response):
     return skill_list
 
 @csrf_exempt
-def get_learning_path(request):
+def generate_learning_path_idea(request):
     data = json.loads(request.body.decode('utf-8'))
     answer = data['answer']
     idea = data['idea']
@@ -1488,3 +1499,28 @@ def get_learning_path(request):
     response = "[" + response + "]"
     print(response)
     return JsonResponse({'response':response})
+
+
+@csrf_exempt
+def generate_learning_path(request):
+    data = json.loads(request.body.decode('utf-8'))   
+    userid = data['userid'] 
+    ideaid = data['ideaid']    
+    
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)   
+    
+    
+    prompt = generate_learning_path_prompt(idea)
+    print(prompt)
+           
+    response = llm(prompt)
+    print(response)
+    response=validate_learning_path(response)
+    
+            
+        
+        
+    return JsonResponse({'response':response})
+    
+    
+    
