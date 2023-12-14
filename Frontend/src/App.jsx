@@ -58,7 +58,7 @@ export default function App() {
                 <Route path="/market-insight/:ideaid" element={<ProtectedRoute><MarketInsight /></ProtectedRoute>} />
                 <Route path="/vision-doc/:ideaid" element={<ProtectedRoute><VisionDoc /></ProtectedRoute>} />
                 <Route path="/people/:ideaid" element={<ProtectedRoute><People /></ProtectedRoute>} />
-                <Route path="/learning-path-generator/:ideaid" element={<LearningPathQuestions />} />
+                <Route path="/learning-path-generator/:ideaid" element={<ProtectedRoute><LearningPathQuestions /></ProtectedRoute>} />
                 
                 <Route path="/test-path" element={<TestPath />} />
                 
