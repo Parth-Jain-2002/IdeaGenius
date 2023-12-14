@@ -1285,7 +1285,6 @@ def find_users_based_on_tags(input_tags, user_profiles, tag_embeddings, threshol
 def get_input_tags(topicid):
     try:
         topic=Topic.objects.get(topicid=topicid)
-        load_dummy_data()
 
         if(len(topic.keywords)==0 or 'people_search_keywords' not in topic.keywords or len(topic.keywords['people_search_keywords'])==0):
             generate_keywords(topicid)
@@ -1504,23 +1503,23 @@ def generate_learning_path_idea(request):
 
 @csrf_exempt
 def generate_learning_path(request):
-    data = json.loads(request.body.decode('utf-8'))   
-    userid = data['userid'] 
-    ideaid = data['ideaid']    
-    
-    idea = Topic.objects.get(userid=userid, topicid=ideaid)   
-    
-    
-    prompt = generate_learning_path_prompt(idea)
-    print(prompt)
-           
-    response = llm(prompt)
-    print(response)
-    response=validate_learning_path(response)
-    
+    try:
+        data = json.loads(request.body.decode('utf-8'))   
+        userid = data['userid'] 
+        ideaid = data['ideaid']    
+        
+        idea = Topic.objects.get(userid=userid, topicid=ideaid)   
+        usr=UserDoc.objects.get(userid=userid)
+        exp=usr.student_experience
+        
+        prompt = generate_learning_path_prompt(idea)
+        print(prompt)
             
-        
-        
-    return JsonResponse({'response':response})
-    
+        response = llm(prompt)
+        print(response)
+        # response=validate_learning_path(response)
+        return JsonResponse({'response':response})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'response':'Error'}, status=500)
     

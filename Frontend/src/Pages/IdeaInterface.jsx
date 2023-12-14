@@ -68,6 +68,7 @@ export default function IdeaInterface() {
         idea: ideaid,
         title: title,
         description: description,
+        skills: null
       })
       .then(
         (response) => {
@@ -138,7 +139,6 @@ export default function IdeaInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [chats]);
-  
   return (
     <section>
       <main className="flex flex-col">
