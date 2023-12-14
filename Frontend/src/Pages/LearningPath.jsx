@@ -155,7 +155,10 @@ export default function LearningPath() {
             .then(
                 (response) => {
                     //console.log("response:", response.data);
-           
+                    const generated = response.data.generated;
+                    if (generated) {
+                    getLearningPath();
+                      }
                   
                     setTopicDetails(response.data);
                 },
@@ -174,6 +177,7 @@ export default function LearningPath() {
         .then(
             (response) => {
                 console.log(response.data);
+                
                 setlearningPath(JSON.parse(response.data));
             },
             (error) => {
@@ -181,9 +185,7 @@ export default function LearningPath() {
             }
         );
       }
-    function handleIdeaGeneration() {
-        navigate(`../idea/${topicid}`);
-    }
+
     useEffect(() => {
         getTopicDetails();
         getLearningPath();
@@ -218,7 +220,7 @@ export default function LearningPath() {
                                     {capitalizeWords(topicDetails.description)}
                                 </p>
                             </div>
-                            <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-96 max-w-full justify-center">
+                            {/* <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-96 max-w-full justify-center">
                                 {" "}
                                 <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
                                 {topicDetails.generated ? (
@@ -242,15 +244,18 @@ export default function LearningPath() {
 
                                 )}
 
-                            </div>
+                            </div> */}
                             
                         </div>
                     </div>
 
-
-                    <div style={{ width: '100vw', height: '100vh' }}>
+{topicDetails.generated ? (<div style={{ width: '100vw', height: '100vh' }}>
                         <ReactFlow nodes={nodes} edges={edges} />
-                    </div>
+                    </div>) : (<div className="flex w-full mt-16 flex-col-reverse md:flex-row">
+              <img src={data_img} className="w-full md:w-1/2"></img>
+              <h1 className="text-2xl leading-10 text-slate-500 items-center h-2/3 my-auto content-center text-center md:text-left flex-1">Generate Problem Statement to access Learning Path for the Idea</h1>
+            </div>)}
+                    
                 </div>
 
             </main>
