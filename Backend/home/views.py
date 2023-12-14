@@ -1489,7 +1489,7 @@ def generate_learning_path_idea(request):
     print(idea)
     print(userid)
     prompt= student_idea_generation(answer, "")
-    prompt+= "Title should be of max 10-15 words. Description should be of max 20-30 words. You must return a JSON object array of the following format: [{\"title\": \"Title of the idea 1\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"} , {\"title\": \"Title of the idea 2\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"}], dont just return a paragraph. Remember, it has to be a JSON object."
+    prompt+= "Title should be of max 10-15 words. Description should be of max 20-30 words. You must return a JSON object array of the following format: [{\"title\": \"Title of the idea 1\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"} , {\"title\": \"Title of the idea 2\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"}], dont just return a paragraph. Remember, it has to be a JSON object. Also, make sure no bracket is left unclosed"
     while True:
         response = llm(prompt)
         # Check if there is a array in the response or not with four elements of title and description
