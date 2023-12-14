@@ -5,13 +5,15 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Navbar from "../components/Layout/Navbar";
 
-export default function LearningPathGenerator() {
+export default function LearningPathQuestions() {
   const { ideaid } = useParams();
+  const topicid = ideaid;
   const containerRef = useRef();
   const message = useRef();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const [learningpath, setlearningpath] = useState()
+//console.log(topicid);
   const question = [
     "1. Current challenge or pain point?",
     "2. Desired positive change?",
@@ -24,7 +26,12 @@ export default function LearningPathGenerator() {
   const [chats, setChats] = useState([]);
   const [initialIdeas, setInitialIdeas] = useState([]);
 
+  useEffect(() => {
+    // Perform asynchronous operations here based on ideaid
+    console.log(ideaid);
+  }, [ideaid]); 
   function formatResponse(text, containerRef) {
+    //console.log("ideaid", ideaid);
     const result = [];
     let count = 0;
     const maxCount = containerRef.current
@@ -59,7 +66,35 @@ export default function LearningPathGenerator() {
     return result.join("");
   };
 
-  function handleNavigate(title, description) {
+  function handleNavigate(title, description, skills) {
+    axios
+    .post(`http://localhost:8000/select_idea`, {
+      userid: localStorage.getItem("ideagen_user_id"),
+      idea: ideaid,
+      title: title,
+      description: description,
+      skills:skills,
+    })
+    .then(
+        axios
+        .post(`http://localhost:8000/generate_learning_path`, {
+            userid: localStorage.getItem("ideagen_user_id"),
+            ideaid: ideaid,
+        })
+        .then(
+            (response) => {
+                console.log(response.data);
+                setlearningpath(JSON.parse(response.data))
+            },
+            (error) => {
+                console.log(error);
+            }
+        ),
+      (error) => {
+        console.log(error);
+      }
+    );
+
     
   };
 
@@ -198,11 +233,16 @@ export default function LearningPathGenerator() {
                                 <p className="text-gray-600 p-2">
                                   {problem.description}
                                 </p>
+                                <p className="text-lg p-2 font-semibold mb-4">Skills Required</p>
+                                <p className="text-gray-600 p-2">
+                                  {problem.skills}
+                                </p>
                                 <button
                                   onClick={() =>
                                     handleNavigate(
                                       problem.title,
-                                      problem.description
+                                      problem.description,
+                                      problem.skills
                                     )
                                   }
                                   className="px-4 py-2 rounded-md mt-2 hover:bg-green-400 bg-green-300 text-black"

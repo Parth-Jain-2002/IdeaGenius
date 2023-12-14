@@ -7,6 +7,8 @@ import Navbar from "../components/Layout/Navbar";
 
 export default function IdeaInterface() {
   const { ideaid } = useParams();
+  const topicid = ideaid;
+ 
   const containerRef = useRef();
   const message = useRef();
   const [loading, setLoading] = useState(false);

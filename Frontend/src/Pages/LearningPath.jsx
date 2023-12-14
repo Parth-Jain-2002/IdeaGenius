@@ -22,4 +22,9 @@ export default function LearningPath() {
             );
     }, [ideaid]);
 
+
+    return (
+        <div></div>
+    )
+
 }

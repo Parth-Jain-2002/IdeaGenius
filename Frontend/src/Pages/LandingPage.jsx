@@ -62,6 +62,7 @@ export default function LandingPage() {
           <Link to="/login" className="text-center p-3 border-4 rounded-2xl bg-[#fecb57] ">
             Login
           </Link>
+        
         </div>
       </div>
 

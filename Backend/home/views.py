@@ -673,14 +673,15 @@ def select_idea(request):
     userid = data['userid']
     idea = data['idea']
     title = data['title']
+    skills = data['skills'] or ""
     description = data['description']
-
     print(idea)
 
     # Get the Idea from the database
     topic = Topic.objects.get(userid=userid, topicid=idea)
     topic.title = title
     topic.description = description
+    topic.skills = skills
     topic.generated = True
     topic.save()
 
@@ -1488,7 +1489,7 @@ def generate_learning_path_idea(request):
     print(idea)
     print(userid)
     prompt= student_idea_generation(answer, "")
-    prompt+= "Title should be of max 10-15 words. Description should be of max 20-30 words. MAKE SURE to RETURN a JSON object array of the following format: [{\"title\": \"Title of the idea 1\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"} , {\"title\": \"Title of the idea 2\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"}], dont just return a paragraph"
+    prompt+= "Title should be of max 10-15 words. Description should be of max 20-30 words. You must return a JSON object array of the following format: [{\"title\": \"Title of the idea 1\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"} , {\"title\": \"Title of the idea 2\", \"description\": \"Description of the idea\", \"skills\": \" A list of space separated skills \"}], dont just return a paragraph. Remember, it has to be a JSON object."
     while True:
         response = llm(prompt)
         # Check if there is a array in the response or not with four elements of title and description
@@ -1521,6 +1522,5 @@ def generate_learning_path(request):
         
         
     return JsonResponse({'response':response})
-    
     
     

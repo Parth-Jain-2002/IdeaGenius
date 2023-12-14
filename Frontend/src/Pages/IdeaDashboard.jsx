@@ -7,6 +7,7 @@ import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-re
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import data_img from "../assets/images/Data-amico.png"
 import { Line, Bar, Pie } from "react-chartjs-2";
+import { Link } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -47,7 +48,6 @@ export default function IdeaDashboard() {
   const [peopleData, setPeopleData] = useState([{}]);
   const { ideaid } = useParams();
   const topicid = ideaid;
-
 
   const [competitors, setCompetitors] = useState([]);
   const [tables, setTables] = useState([]);
@@ -294,8 +294,12 @@ export default function IdeaDashboard() {
                       >
                         Generate Idea
                       </button>
+                      
+
                     )}
+                    
               </div>
+              <Link to={`../learning-path-generator/${ideaid}`}>GET Learning Path</Link>
             </div>
           </div>
           {topicDetails.generated ? (
