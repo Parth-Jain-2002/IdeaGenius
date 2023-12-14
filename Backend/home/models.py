@@ -53,7 +53,7 @@ class Topic(models.Model):
     visiondoctext = models.TextField(default="", blank=True, null=True)
     market_insights = models.JSONField(blank=True, null=True, default=dict)
     similar_insights = models.TextField(default="", blank=True, null=True)
-    
+    skills = models.TextField(default="", blank=True, null=True)
 
     class Meta:
         unique_together = ('userid', 'topicid',)

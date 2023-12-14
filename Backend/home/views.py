@@ -487,7 +487,7 @@ def new_topic(request):
     userid = data['userid']
     topic = data['ideaid']
     description = data['description']
-
+    
     # Create a new topic in the database
     user = UserDoc.objects.get(userid=userid)
     topics = user.topics

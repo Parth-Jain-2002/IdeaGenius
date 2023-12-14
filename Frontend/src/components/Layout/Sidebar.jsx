@@ -191,6 +191,16 @@ export default function Sidebar() {
                         Idea Dashboard
                       </div>
                     </Link>
+                    <Link to={`/learning-path/${topic}`}>
+                      <div className="flex justify-start flex-row rounded-lg p-2 text-sm hover:bg-gray-200">
+                        <img
+                          src={researchIcon}
+                          alt="Idea Dashboard icon"
+                          className="h-4 w-4 mr-2"
+                        />
+                        Learning Path
+                      </div>
+                    </Link>
                   </>
                 )}
               </AccordionItemPanel>

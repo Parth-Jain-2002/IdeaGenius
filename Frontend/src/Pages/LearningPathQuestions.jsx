@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -13,7 +13,7 @@ export default function LearningPathQuestions() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [learningpath, setlearningpath] = useState()
-//console.log(topicid);
+console.log(topicid);
   const question = [
     "1. Current challenge or pain point?",
     "2. Desired positive change?",
@@ -26,10 +26,10 @@ export default function LearningPathQuestions() {
   const [chats, setChats] = useState([]);
   const [initialIdeas, setInitialIdeas] = useState([]);
 
-  useEffect(() => {
-    // Perform asynchronous operations here based on ideaid
-    console.log(ideaid);
-  }, [ideaid]); 
+//   useEffect(() => {
+//     // Perform asynchronous operations here based on ideaid
+//     console.log(ideaid);
+//   }, [ideaid]); 
   function formatResponse(text, containerRef) {
     //console.log("ideaid", ideaid);
     const result = [];
