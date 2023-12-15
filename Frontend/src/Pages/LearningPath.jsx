@@ -13,6 +13,8 @@ export default function LearningPath() {
   const { ideaid } = useParams();
   const [learningPath, setlearningPath] = useState([]);
   const [topicDetails, setTopicDetails] = useState([]);
+  const [newnodes, setNodes] = useState();
+  const [newedges, setedges] = useState();
   const topicid = ideaid;
   const milestones = [
     {
@@ -61,11 +63,11 @@ export default function LearningPath() {
 
 
   const navigate = useNavigate();
-  const generateNodesAndEdges = (learningPath) => {
+  function generateNodesAndEdges (data) {
     let nodes = [];
     let edges = [];
 
-    learningPath.forEach((milestone, milestoneIndex) => {
+    data.forEach((milestone, milestoneIndex) => {
       // Add milestone node
       nodes.push({
         id: `milestone-${milestoneIndex}`,
@@ -90,7 +92,7 @@ export default function LearningPath() {
               <div className="flex flex-col w-full itmes-center my-auto py-20 justify-center">
                 <p className="text-2xl font-semibold pb-2">{task.task_name}</p>
                 <p className="text-lg font-medium">Description: {task.description}</p>
-                <p className="text-lg font-medium">Resources: {task.resources.join(', ')}</p>
+                {/* <p className="text-lg font-medium">Resources: {task.resources.join(', ')}</p> */}
                 <p className="text-lg font-medium">Estimated Time: {task.estimated_time}</p>
                 <p className="text-lg font-medium">Difficulty: {task.difficulty}</p>
               </div>
@@ -128,7 +130,7 @@ export default function LearningPath() {
         }
 
         // Connect the last task of the milestone to the next milestone
-        if (taskIndex === milestone.tasks.length - 1 && milestoneIndex < learningPath.length - 1) {
+        if (taskIndex === milestone.tasks.length - 1 && milestoneIndex < data.length - 1) {
           edges.push({
             id: `edge-between-${milestoneIndex}-${milestoneIndex + 1}`,
             source: `task-${milestoneIndex}-${taskIndex}`,
@@ -138,10 +140,12 @@ export default function LearningPath() {
         }
       });
     });
-
+    setNodes(nodes);
+    console.log(newnodes);
+    setedges(edges);
     return { nodes, edges };
   };
-  const { nodes, edges } = generateNodesAndEdges(milestones);
+
 
 
   function getTopicDetails() {
@@ -158,6 +162,8 @@ export default function LearningPath() {
           const generated = response.data.generated;
           if (generated) {
             getLearningPath();
+            
+            
           }
 
           setTopicDetails(response.data);
@@ -178,7 +184,11 @@ export default function LearningPath() {
         (response) => {
           console.log(response.data);
 
-          setlearningPath(JSON.parse(response.data));
+          setlearningPath(response.data);
+          //console.log(learningPath);
+          generateNodesAndEdges(learningPath);
+          
+          
         },
         (error) => {
           console.log(error);
@@ -188,7 +198,7 @@ export default function LearningPath() {
 
   useEffect(() => {
     getTopicDetails();
-    getLearningPath();
+    //getLearningPath();
   }, [topicid]);
 
 
@@ -249,7 +259,7 @@ export default function LearningPath() {
 
           {topicDetails.generated ? (
             <div className="w-full h-full mt-4">
-              <ReactFlow nodes={nodes} edges={edges} />
+              <ReactFlow nodes={newnodes} edges={newedges} />
             </div>
           ) : (
             <div className="flex w-full mt-16 flex-col-reverse md:flex-row">
