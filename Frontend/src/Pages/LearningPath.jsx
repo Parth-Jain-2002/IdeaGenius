@@ -192,9 +192,7 @@ export default function LearningPath() {
   }, [topicid]);
 
 
-  useEffect(() => {
-
-  }, [ideaid]);
+  
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);

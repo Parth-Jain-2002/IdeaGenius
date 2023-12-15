@@ -1458,15 +1458,21 @@ def add_random_users(request):
 #----------------------------------------------------------------------------------------
 #----------------------------- STUDENT LEARNING PATH ------------------------------------
 #----------------------------------------------------------------------------------------
-def validate_learning_path(response):
-    try:
-        # Find the first "[" and the last "]" in response
-        response = response[response.find("["):response.rfind("]")+1]
-        print(response)
-        response = json.loads(response)
-        print(response)
-        return response         
-    except:
+def validate_learning_path(response):    
+    
+    start_index = response.find('[')
+    end_index = response.rfind(']')
+
+    if start_index != -1 and end_index != -1 and start_index < end_index:
+        json_string = response[start_index + 1:end_index]  
+        json_string = "["+json_string+"]"      
+        print(1,json_string)
+        try:
+            json_data = json.loads(json_string)            
+            return json_data
+        except json.JSONDecodeError as e:            
+            return "Invalid"
+    else:
         return "Invalid"
 
 
@@ -1501,25 +1507,41 @@ def generate_learning_path_idea(request):
     return JsonResponse({'response':response})
 
 
+
 @csrf_exempt
 def generate_learning_path(request):
-    try:
-        data = json.loads(request.body.decode('utf-8'))   
-        userid = data['userid'] 
-        ideaid = data['ideaid']    
+    
+    data = json.loads(request.body.decode('utf-8'))   
+    userid = data['userid'] 
+    ideaid = data['ideaid']    
+    
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)   
+    usr=UserDoc.objects.get(userid=userid)
+    exp=usr.student_experience
+    
+    prompt = generate_learning_path_prompt(idea)
+    print(prompt)
         
-        idea = Topic.objects.get(userid=userid, topicid=ideaid)   
-        usr=UserDoc.objects.get(userid=userid)
-        exp=usr.student_experience
+    response = llm(prompt)    
+    print(response)
+    validate = validate_learning_path(response)
+    if validate != "Invalid":
+        # idea.learning_path = validate
+        # idea.save()
+        return JsonResponse({'milestones':validate})
+    else:    
         
-        prompt = generate_learning_path_prompt(idea)
-        print(prompt)
-            
-        response = llm(prompt)
+        new_prompt = f"""Give a json object array from the following response only consisting of milestones with all their detailed information which are complete in format in the response and trimming the last milestone if it is incomplete. If the last milestone has one of more tasks that are completely defined in the response, include the last milestone but only with tasks which are complete in format in the response and also complete the json format appropriately of that last milestone. Here is the response "{response}"."""
+        
+        response = llm(new_prompt)
         print(response)
-        # response=validate_learning_path(response)
-        return JsonResponse({'response':response})
-    except Exception as e:
-        print(e)
-        return JsonResponse({'response':'Error'}, status=500)
+        validate = validate_learning_path(response)
+        return JsonResponse({'milestones':validate})
+    
+    
+            
+          
+                
+            
+        
     
