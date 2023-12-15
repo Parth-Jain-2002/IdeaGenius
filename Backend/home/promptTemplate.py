@@ -182,7 +182,7 @@ def generate_learning_path_prompt(idea):
     
     prompt+="""
     Give a JSON object array in the following format:
-    '[{
+    [{
         "milestone": "Milestone 1",
         "tasks": [
             {
@@ -196,12 +196,9 @@ def generate_learning_path_prompt(idea):
             { Task 2 }                      
         ]
     },
-    {
-        "milestone": {Milestone 2},
-        "tasks": [
-            {Task 1 }      
-        ]
-    }]'. Don't just return a paragraph.    
+    { Milestone 2 },
+    { Milestone 3 }        
+    ]. Don't just return a paragraph.    
     """
 
     
