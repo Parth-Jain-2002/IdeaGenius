@@ -14,58 +14,58 @@ export default function LearningPath() {
     const [learningPath, setlearningPath] = useState([]);
     const [topicDetails, setTopicDetails] = useState([]);
     const topicid = ideaid;
-    // const milestones = [
-    //     {
-    //         "milestone": "Foundations of Good Education",
-    //         "tasks": [
-    //             {
-    //                 "task_name": "Understand the importance of education",
-    //                 "description": "Learn about the significance of education in personal and professional development.",
-    //                 "resources": ["The Importance of Education by John Dewey", "Why Education Matters by Sir Ken Robinson"],
-    //                 "estimated_time": "4 hours",
-    //                 "difficulty": "easy",
-    //                 "prerequisites": []
-    //             },
-    //             {
-    //                 "task_name": "Identify effective teaching methods",
-    //                 "description": "Research and analyze various teaching methodologies and their effectiveness in promoting student engagement and understanding.",
-    //                 "resources": ["The Art of Teaching by Jay Parini", "Teaching Strategies That Work by Jane Bluestein"],
-    //                 "estimated_time": "6 hours",
-    //                 "difficulty": "moderate",
-    //                 "prerequisites": ["Understand the importance of education"]
-    //             }
-    //         ]
-    //     },
-    //     {
-    //         "milestone": "Implementing Effective Teaching Methods",
-    //         "tasks": [
-    //             {
-    //                 "task_name": "Design an engaging lesson plan",
-    //                 "description": "Create a lesson plan incorporating effective teaching strategies and technologies to promote student engagement and understanding.",
-    //                 "resources": ["Lesson Planning: A Guide for Teachers by Robert J. Marzano", "Using Technology in the Classroom by Alan November"],
-    //                 "estimated_time": "8 hours",
-    //                 "difficulty": "challenging",
-    //                 "prerequisites": ["Identify effective teaching methods"]
-    //             },
-    //             {
-    //                 "task_name": "Implement formative assessments",
-    //                 "description": "Develop and implement formative assessments to measure student progress and adjust instruction accordingly.",
-    //                 "resources": ["Formative Assessment: A Guide for Teachers by Margaret Heritage", "Assessment for Learning by Grant Wiggins and Amy Sh Barry"],
-    //                 "estimated_time": "6 hours",
-    //                 "difficulty": "moderate",
-    //                 "prerequisites": ["Design an engaging lesson plan"]
-    //             }
-    //         ]
-    //     }
-    // ]
+    const milestones = [
+        {
+            "milestone": "Foundations of Good Education",
+            "tasks": [
+                {
+                    "task_name": "Understand the importance of education",
+                    "description": "Learn about the significance of education in personal and professional development.",
+                    "resources": ["The Importance of Education by John Dewey", "Why Education Matters by Sir Ken Robinson"],
+                    "estimated_time": "4 hours",
+                    "difficulty": "easy",
+                    "prerequisites": []
+                },
+                {
+                    "task_name": "Identify effective teaching methods",
+                    "description": "Research and analyze various teaching methodologies and their effectiveness in promoting student engagement and understanding.",
+                    "resources": ["The Art of Teaching by Jay Parini", "Teaching Strategies That Work by Jane Bluestein"],
+                    "estimated_time": "6 hours",
+                    "difficulty": "moderate",
+                    "prerequisites": ["Understand the importance of education"]
+                }
+            ]
+        },
+        {
+            "milestone": "Implementing Effective Teaching Methods",
+            "tasks": [
+                {
+                    "task_name": "Design an engaging lesson plan",
+                    "description": "Create a lesson plan incorporating effective teaching strategies and technologies to promote student engagement and understanding.",
+                    "resources": ["Lesson Planning: A Guide for Teachers by Robert J. Marzano", "Using Technology in the Classroom by Alan November"],
+                    "estimated_time": "8 hours",
+                    "difficulty": "challenging",
+                    "prerequisites": ["Identify effective teaching methods"]
+                },
+                {
+                    "task_name": "Implement formative assessments",
+                    "description": "Develop and implement formative assessments to measure student progress and adjust instruction accordingly.",
+                    "resources": ["Formative Assessment: A Guide for Teachers by Margaret Heritage", "Assessment for Learning by Grant Wiggins and Amy Sh Barry"],
+                    "estimated_time": "6 hours",
+                    "difficulty": "moderate",
+                    "prerequisites": ["Design an engaging lesson plan"]
+                }
+            ]
+        }
+    ]
 
 
     const navigate = useNavigate();
-    const generateNodesAndEdges = (learningPath) => {
+    const generateNodesAndEdges = (milestones) => {
         let nodes = [];
         let edges = [];
         
-        learningPath.forEach((milestone, milestoneIndex) => {
+        milestones.forEach((milestone, milestoneIndex) => {
           // Add milestone node
           nodes.push({
             id: `milestone-${milestoneIndex}`,
@@ -96,10 +96,10 @@ export default function LearningPath() {
                   </div>
                 ),
               },
-              position: { x: milestoneIndex * 700, y: (taskIndex + 1) * 600 },
+              position: { x: milestoneIndex * 700, y: (taskIndex + 1) * 450 },
               style: {
-                width: 600,
-                height: 400,
+                width: 500,
+                height: 380,
                 background: '#ecf0f1', // Light gray color
                 borderRadius: '8px',
                 padding: '16px', // Increased padding
@@ -128,7 +128,7 @@ export default function LearningPath() {
             }
       
             // Connect the last task of the milestone to the next milestone
-            if (taskIndex === milestone.tasks.length - 1 && milestoneIndex < learningPath.length - 1) {
+            if (taskIndex === milestone.tasks.length - 1 && milestoneIndex < milestones.length - 1) {
               edges.push({
                 id: `edge-between-${milestoneIndex}-${milestoneIndex + 1}`,
                 source: `task-${milestoneIndex}-${taskIndex}`,
@@ -141,7 +141,7 @@ export default function LearningPath() {
       
         return { nodes, edges };
       };
-    const { nodes, edges } = generateNodesAndEdges(learningPath);
+    const { nodes, edges } = generateNodesAndEdges(milestones);
 
 
     function getTopicDetails() {
