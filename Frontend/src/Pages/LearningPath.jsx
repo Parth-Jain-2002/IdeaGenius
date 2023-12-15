@@ -8,10 +8,12 @@ import data_img from "../assets/images/Data-amico.png"
 import { Link } from "react-router-dom";
 import { useCallback } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from 'reactflow';
+import Flowchart from '../components/Flowchart';
 import 'reactflow/dist/style.css';
 export default function LearningPath() {
   const { ideaid } = useParams();
-  const [learningPath, setlearningPath] = useState([]);
+  const [learningPathGenerated, setLearningPathGenerated] = useState(false);
+  const [learningPath, setLearningPath] = useState([]);
   const [topicDetails, setTopicDetails] = useState([]);
   const [newnodes, setNodes] = useState();
   const [newedges, setedges] = useState();
@@ -36,7 +38,8 @@ export default function LearningPath() {
           "difficulty": "moderate",
           "prerequisites": ["Understand the importance of education"]
         }
-      ]
+      ],
+      completed: true
     },
     {
       "milestone": "Implementing Effective Teaching Methods",
@@ -57,8 +60,53 @@ export default function LearningPath() {
           "difficulty": "moderate",
           "prerequisites": ["Design an engaging lesson plan"]
         }
-      ]
-    }
+      ],
+      completed: false
+    },
+    {
+      "milestone": "Implementing Effective Teaching Methods",
+      "tasks": [
+        {
+          "task_name": "Design an engaging lesson plan",
+          "description": "Create a lesson plan incorporating effective teaching strategies and technologies to promote student engagement and understanding.",
+          "resources": ["Lesson Planning: A Guide for Teachers by Robert J. Marzano", "Using Technology in the Classroom by Alan November"],
+          "estimated_time": "8 hours",
+          "difficulty": "challenging",
+          "prerequisites": ["Identify effective teaching methods"]
+        },
+        {
+          "task_name": "Implement formative assessments",
+          "description": "Develop and implement formative assessments to measure student progress and adjust instruction accordingly.",
+          "resources": ["Formative Assessment: A Guide for Teachers by Margaret Heritage", "Assessment for Learning by Grant Wiggins and Amy Sh Barry"],
+          "estimated_time": "6 hours",
+          "difficulty": "moderate",
+          "prerequisites": ["Design an engaging lesson plan"]
+        }
+      ],
+      completed: false
+    },
+    // {
+    //   "milestone": "Implementing Effective Teaching Methods",
+    //   "tasks": [
+    //     {
+    //       "task_name": "Design an engaging lesson plan",
+    //       "description": "Create a lesson plan incorporating effective teaching strategies and technologies to promote student engagement and understanding.",
+    //       "resources": ["Lesson Planning: A Guide for Teachers by Robert J. Marzano", "Using Technology in the Classroom by Alan November"],
+    //       "estimated_time": "8 hours",
+    //       "difficulty": "challenging",
+    //       "prerequisites": ["Identify effective teaching methods"]
+    //     },
+    //     {
+    //       "task_name": "Implement formative assessments",
+    //       "description": "Develop and implement formative assessments to measure student progress and adjust instruction accordingly.",
+    //       "resources": ["Formative Assessment: A Guide for Teachers by Margaret Heritage", "Assessment for Learning by Grant Wiggins and Amy Sh Barry"],
+    //       "estimated_time": "6 hours",
+    //       "difficulty": "moderate",
+    //       "prerequisites": ["Design an engaging lesson plan"]
+    //     }
+    //   ],
+    //   completed: false
+    // }
   ]
 
 
@@ -66,7 +114,7 @@ export default function LearningPath() {
   function generateNodesAndEdges (data) {
     let nodes = [];
     let edges = [];
-
+    console.log(data)
     data.forEach((milestone, milestoneIndex) => {
       // Add milestone node
       nodes.push({
@@ -184,9 +232,14 @@ export default function LearningPath() {
         (response) => {
           console.log(response.data);
 
-          setlearningPath(response.data);
+          setLearningPathGenerated(true);
           //console.log(learningPath);
-          generateNodesAndEdges(learningPath);
+
+          // Interchange the comments here and where 
+          // Reactflow/Flowchart component has been placed
+          
+          // generateNodesAndEdges(response.data.milestones);
+          setLearningPath(response.data.milestones);
           
           
         },
@@ -215,11 +268,11 @@ export default function LearningPath() {
   };
 
   return (
-    <section className="grid h-screen text-black xl:grid-cols-5 grid-cols-4">
+    <section className="grid h-screen text-black xl:grid-cols-5 grid-cols-4 overflow-y-scroll">
       <Sidebar />
-      <main className="flex h-screen flex-col w-full bg-white col-span-4">
+      <main className="flex h-full flex-col w-full bg-white col-span-4">
         <Navbar />
-        <div className="w-full h-screen p-8 flex flex-col">
+        <div className="w-full h-full p-8 flex flex-col">
           <div className="flex items-center justify-between px-10 py-4 rounded-3xl border-2 border-sky-200 shadow-lg bg-blue-100">
             <div className="flex flex-col justify-between w-full items-center md:flex-row">
               <div className="flex flex-col w-full">
@@ -229,37 +282,37 @@ export default function LearningPath() {
                 </p>
               </div>
               {/* <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-96 max-w-full justify-center">
-                                {" "}
-                                <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
-                                {topicDetails.generated ? (
-                                    <button
-                                        onClick={() => {
-                                            handleIdeaRefinement();
-                                        }}
-                                        className="px-2 py-1 font-semibold text-black"
-                                    >
-                                        Generate Learning Path
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => {
-                                            handleIdeaGeneration();
-                                        }}
-                                        className="px-2 py-2 font-bold text-gray-700 rounded-lg"
-                                    >
-                                        Generate Idea First
-                                    </button>
+                {" "}
+                <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
+                {topicDetails.generated ? (
+                  <button
+                    onClick={() => {
+                      handleIdeaRefinement();
+                    }}
+                    className="px-2 py-1 font-semibold text-black"
+                  >
+                    Generate Learning Path
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      handleIdeaGeneration();
+                    }}
+                    className="px-2 py-2 font-bold text-gray-700 rounded-lg"
+                  >
+                    Generate Idea First
+                  </button>
+                )}
 
-                                )}
-
-                            </div> */}
+              </div> */}
 
             </div>
           </div>
 
-          {topicDetails.generated ? (
+          {learningPathGenerated ? (
             <div className="w-full h-full mt-4">
-              <ReactFlow nodes={newnodes} edges={newedges} />
+              {/* <ReactFlow nodes={newnodes} edges={newedges} /> */}
+              <Flowchart milestones={learningPath} />
             </div>
           ) : (
             <div className="flex w-full mt-16 flex-col-reverse md:flex-row">
