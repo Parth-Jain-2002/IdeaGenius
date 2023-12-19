@@ -250,6 +250,7 @@ export default function LearningPath() {
   }
 
   useEffect(() => {
+    setLearningPathGenerated(false);
     getTopicDetails();
     //getLearningPath();
   }, [topicid]);

@@ -21,6 +21,7 @@ export default function VisionDoc() {
   const messageContainerRef = useRef();
   const visionContainerRef = useRef();
   const message = useRef();
+  const customTextRef = useRef();
 
   // Function to get the chat info
   function getIdeaInfo() {
@@ -191,7 +192,7 @@ export default function VisionDoc() {
   };
 
   function AddBlock() {
-    setBlock(block + "\n ");
+    setBlock(customTextRef.current.innerText + "\n ");
   };
 
   function SaveData() {
@@ -554,6 +555,7 @@ export default function VisionDoc() {
                     setIdeaInfo(ideaInfo);
                   }
                 }}
+                ref={customTextRef}
               >
                 <pre style={{ fontFamily: "Poppins, sans-serif" }}>
                   {formatResponse(block, visionContainerRef)}
@@ -621,7 +623,7 @@ export default function VisionDoc() {
                           <button
                             className="bg-gray-100 hover:bg-white border-2 border-gray-300 rounded-full px-3 py-1 flex flex-row justify-center items-center"
                             onClick={() => {
-                              setBlock(block + "\n" + chat.response);
+                              setBlock(customTextRef.current.innerText + "\n" + chat.response);
                               setShowVisionX(false);
                             }}
                           >
