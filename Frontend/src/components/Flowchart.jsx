@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import curve from '../assets/images/curve.svg';
+import curveLg from '../assets/images/curveLg.svg';
+import curve from '../assets/images/curve.svg'
 
 function Milestone({ milestone, index }) {
   const [completed, setCompleted] = useState(milestone.completed);
@@ -30,7 +31,7 @@ function Milestone({ milestone, index }) {
   }
 
   return (
-    <div className={`col-span-2 rounded-lg shadow-xl flex flex-col justify-center items-center border-black border-[3px] p-4 bg-white ${completed ? 'border-green-500':''}`}>
+    <div className={`z-20 col-span-5 md:col-span-3 lg:col-span-2 rounded-lg shadow-xl flex flex-col justify-center items-center border-black border-[3px] p-4 bg-white my-6 lg:my-0 ${completed ? 'border-green-500':''}`}>
       <div className="rounded-full flex justify-center items-center text-center mb-4">
         <span className="text-xl font-bold">{milestone.milestone}</span>
       </div>
@@ -74,8 +75,9 @@ function Track({ flip, hidden }){
   // Use a random hue transform for each track
   style.filter = `hue-rotate(${Math.floor(Math.random() * 360)}deg)`;
   return (
-    <div className="col-span-3 flex flex-col justify-center items-center m-0 h-full">
-      <img src={curve} alt="" className="w-full h-full drop-shadow-lg object-cover" style={style} />
+    <div className="hidden col-span-5 md:col-span-2 lg:col-span-3 md:flex flex-col justify-center items-center m-0 h-[110%] lg:h-full">
+      <img src={curveLg} alt="" className="w-full h-full drop-shadow-lg object-cover hidden lg:block" style={style} />
+      <img src={curve} alt="" className="w-full h-full drop-shadow-lg object-cover lg:hidden" style={style} />
     </div>
   );
 }
@@ -127,7 +129,7 @@ export default function Milestones({ milestones }) {
   }, []);
   
   return (
-    <div className="w-full p-2 grid grid-cols-5">
+    <div className="w-full md:p-2 grid grid-cols-5">
       {comps}
     </div>
   )
