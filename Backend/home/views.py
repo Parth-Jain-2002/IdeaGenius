@@ -1510,38 +1510,42 @@ def generate_learning_path_idea(request):
 
 @csrf_exempt
 def generate_learning_path(request):
+    data = json.loads(request.body.decode('utf-8')) 
+    userid = data['userid']
+    ideaid = data['ideaid']
     
-    data = json.loads(request.body.decode('utf-8'))   
-    userid = data['userid'] 
-    ideaid = data['ideaid']    
-    
-    idea = Topic.objects.get(userid=userid, topicid=ideaid)   
-    usr=UserDoc.objects.get(userid=userid)
-    exp=usr.student_experience
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+
+    if idea.learning_path_generated == True:
+        return JsonResponse({'milestones':idea.learning_path})
     
     prompt = generate_learning_path_prompt(idea)
     print(prompt)
         
     response = llm(prompt)    
     print(response)
-    validate = validate_learning_path(response)
-    if validate != "Invalid":
-        # idea.learning_path = validate
-        # idea.save()
-        return JsonResponse({'milestones':validate})
-    else:    
-        
+    valid = validate_learning_path(response)
+    while valid == "Invalid":
         new_prompt = f"""Give a json object array from the following response only consisting of milestones with all their detailed information which are complete in format in the response and trimming the last milestone if it is incomplete. If the last milestone has one of more tasks that are completely defined in the response, include the last milestone but only with tasks which are complete in format in the response and also complete the json format appropriately of that last milestone. Here is the response "{response}"."""
         
         response = llm(new_prompt)
         print(response)
-        validate = validate_learning_path(response)
-        return JsonResponse({'milestones':validate})
+        valid = validate_learning_path(response)
     
+    idea.learning_path = valid
+    idea.learning_path_generated = True
+    idea.save()
+    return JsonResponse({'milestones':valid})
     
-            
-          
-                
-            
-        
-    
+@csrf_exempt
+def complete_milestone(request):
+    userid = request.GET['userid']
+    ideaid = request.GET['ideaid']
+    milestone = int(request.GET['milestone'])
+
+    idea = Topic.objects.get(userid=userid, topicid=ideaid)
+    learning_path = idea.learning_path
+    learning_path[milestone]['completed'] = True
+    idea.learning_path = learning_path
+    idea.save()
+    return JsonResponse({'response':'Success'})

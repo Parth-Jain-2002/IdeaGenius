@@ -40,5 +40,5 @@ urlpatterns = [
 
     path('generate_learning_path_idea', views.generate_learning_path_idea, name='generate_learning_path_idea'),
     path('generate_learning_path', views.generate_learning_path, name='generate_learning_path'),
-    
+    path('complete_milestone', views.complete_milestone, name='complete_milestone'),
 ]

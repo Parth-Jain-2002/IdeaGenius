@@ -1,19 +1,43 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import curve from '../assets/images/curve.svg';
 
-function Milestone({ milestone }) {
+function Milestone({ milestone, index }) {
   const [completed, setCompleted] = useState(milestone.completed);
+  const [loading, setLoading] = useState(false);
+  const { ideaid } = useParams();
+
+  function complete(){
+    setLoading(true);
+    axios
+      .get(`http://localhost:8000/complete_milestone`, {
+        params: {
+          userid: localStorage.getItem("ideagen_user_id"),
+          ideaid: ideaid,
+          milestone: index
+        },
+      })
+      .then(
+        (response) => {
+          setLoading(false);
+          setCompleted(true);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }
+
   return (
-    <div className={`col-span-2 rounded-lg shadow-xl flex flex-col justify-center items-center p-4 ${completed ? 'bg-green-200':'bg-white'}`}>
-      <div className="rounded-full flex justify-center items-center text-center">
+    <div className={`col-span-2 rounded-lg shadow-xl flex flex-col justify-center items-center border-black border-[3px] p-4 bg-white ${completed ? 'border-green-500':''}`}>
+      <div className="rounded-full flex justify-center items-center text-center mb-4">
         <span className="text-xl font-bold">{milestone.milestone}</span>
       </div>
       {milestone.tasks.map((task, i) => (
-        <div key={i} className="flex flex-col justify-center items-center rounded-lg border border-gray-300 p-2 my-2 w-full">
-          <div>
-            <span className="text-lg font-bold underline">
-              {task.task_name} 
-            </span>
+        <div key={i} className={`flex flex-col justify-center items-center rounded-lg border border-black p-2 my-2 w-full ${completed ? ' border-[3px] border-green-500' : 'shadow-[inset_0_0_50px_-12px_rgb(0_0_0/0.25)]'}`}>
+          <div className="text-lg font-bold underline text-center w-full">
+            {task.task_name} 
           </div>
           <div className="w-full opacity-50 font-thin flex justify-center items-center">
             <span className="text-sm font-semibold mr-2">{task.estimated_time}</span>|
@@ -31,8 +55,8 @@ function Milestone({ milestone }) {
       ))}
       {
         !completed ?
-        <button className='w-full rounded-full bg-black text-white p-4 hover:bg-gray-800' onClick={()=>setCompleted(true)}>
-          Mark as complete
+        <button className={`w-full rounded-full bg-black text-white p-4 hover:bg-gray-800 ${loading?'bg-gray-500 hover:bg-gray-500':''}`} onClick={complete} disabled={loading}>
+          Mark as complete {loading ? <span className="animate-pulse">...</span> : null}
         </button> : null
       }
     </div>
@@ -82,10 +106,12 @@ export default function Milestones({ milestones }) {
   useEffect(()=>{
     var components = []
     var ms = Array.from(milestones.slice().reverse());
+    var j = 0;
     for (var i = 0; ms.length > 0; i++) {
       // console.log(i, i%4);
       if(i%4==0 || i%4==3) {
-        components.push(<Milestone key={i} milestone={ms.pop()} />);
+        components.push(<Milestone key={i} milestone={ms.pop()} index={j} />);
+        j++;
       } else if (i%4==1){
         components.push(<Track key={i} flip={false}/>);
       } else if (i%4==2){

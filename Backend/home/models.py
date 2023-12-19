@@ -54,6 +54,8 @@ class Topic(models.Model):
     market_insights = models.JSONField(blank=True, null=True, default=dict)
     similar_insights = models.TextField(default="", blank=True, null=True)
     skills = models.TextField(default="", blank=True, null=True)
+    learning_path = models.JSONField(blank=True, null=True, default=dict)
+    learning_path_generated = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('userid', 'topicid',)

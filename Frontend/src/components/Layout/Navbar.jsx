@@ -1,19 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNav } from "../../contexts/NavContext";
-import usericon from "../../assets/images/user.png";
 
 
 /**
  * This is the common navbar for all of the pages (except the home page)
- * @param {{link: string, noBurger: string}} props Properties for Navbar
+ * @param {{link: string, noBurger: boolean}} props Properties for Navbar
  * @returns {React.Component} Navbar
  */
 export default function Navbar(props) {
   const navigate = useNavigate();
   const { showSidebar, setShowSidebar } = useNav();
   const { logout } = useAuth();
+
+  const [user, setUser] = useState({});
+
+  useEffect(()=>{
+    axios
+      .get(`http://localhost:8000/get_user`, {
+        params: {
+          userid: localStorage.getItem("ideagen_user_id"),
+        },
+      })
+      .then(
+        (response) => {
+          let newUser = response.data;
+          newUser.loggedIn = true;
+          setUser(newUser);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }, []);
 
   return (
     <section className="flex items-center justify-center sticky top-0 bg-white z-30 p-4 shadow-sm">
@@ -57,14 +78,11 @@ export default function Navbar(props) {
       <div className="flex-1"></div>
       <div className="flex items-center space-x-2 group relative">
         <span className="text-lg">
-          {localStorage.getItem("ideagen_logged_in")
-            ? localStorage.getItem("ideagen_user_name")
+          {user.loggedIn
+            ? user.name
             : ""}
         </span>
-        <>
-          {localStorage.getItem("ideagen_user_pic") ? (<img className="w-8 h-8 rounded-full" src={localStorage.getItem("ideagen_user_pic")} />)
-            : (<img className="w-8 h-8 rounded-full" src={usericon} />)}
-        </>
+        <img className="w-8 h-8 rounded-full" src={user.profilePic} />
 
         <div className="group-hover:flex hidden flex-col absolute right-0 top-7 bg-white text-center rounded-lg shadow-lg z-50">
           <Link to="/my-profile" className="p-4 hover:bg-gray-200 rounded-lg">
