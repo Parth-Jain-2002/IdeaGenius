@@ -341,6 +341,7 @@ def get_chats(request):
 # Function for getting a chat from the database
 @csrf_exempt
 def get_chat(request):
+    print(request.GET, 'chat')
     chatid = request.GET['chat_id']
     chats = Chat.objects.filter(chatid=chatid)
     
@@ -354,6 +355,7 @@ def get_chat(request):
 # Function for getting the thread from the database
 @csrf_exempt
 def get_thread(request):
+    print(request.GET)
     chatid = request.GET['chat_id']
     thread = Thread.objects.get(chatid=chatid)
     

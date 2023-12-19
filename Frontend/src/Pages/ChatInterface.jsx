@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Layout/Navbar";
 import Sidebar from "../components/Layout/Sidebar";
@@ -97,6 +97,7 @@ export default function ChatInterface() {
   }, [chats]);
 
   useEffect(() => {
+    console.log(chatid);
     setChats([
       {
         message: "Hello",
