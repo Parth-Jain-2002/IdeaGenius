@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import chatIcon from "../assets/images/chat_icon.png";
+import brainIcon from '../assets/images/brain.svg';
 import { useNavigate, useParams } from "react-router-dom";
 import PeopleCard from "../components/PeopleCard";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
@@ -273,33 +274,39 @@ export default function IdeaDashboard() {
                   {capitalizeWords(topicDetails.description)}
                 </p>
               </div>
-              <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-96 max-w-full justify-center">
-                    {" "}
-                    <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
-                    {topicDetails.generated ? (
-                      <button
-                        onClick={() => {
-                          handleIdeaRefinement();
-                        }}
-                        className="px-2 py-1 font-semibold text-black"
-                      >
-                        Refine Idea
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          handleIdeaGeneration();
-                        }}
-                        className="px-2 py-2 font-bold text-gray-700 rounded-lg"
-                      >
-                        Generate Idea
-                      </button>
-                      
+              <div>
+                <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-64 max-w-full justify-center">
+                      {" "}
+                      <img src={chatIcon} alt="chat icon" className="h-4 w-4 ml-2 " />
+                      {topicDetails.generated ? (
+                        <button
+                          onClick={() => {
+                            handleIdeaRefinement();
+                          }}
+                          className="px-2 py-1 font-semibold text-black"
+                        >
+                          Refine Idea
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            handleIdeaGeneration();
+                          }}
+                          className="px-2 py-2 font-bold text-gray-700 rounded-lg"
+                        >
+                          Generate Idea
+                        </button>
+                        
 
-                    )}
-                    
+                      )}
+                      
+                </div>
+                <div className="items-center hover:bg-blue-300 flex flex-row bg-white px-2 rounded-lg w-64 max-w-full justify-center mt-2">
+                  {" "}
+                  <img src={brainIcon} alt="learning icon" className="h-4 w-4 ml-2 " />            
+                  <Link className="px-2 py-1 font-semibold text-black" to={`../learning-path-generator/${ideaid}`}>Get Learning Path</Link>    
+                </div>
               </div>
-              <Link to={`../learning-path-generator/${ideaid}`}>GET Learning Path</Link>
             </div>
           </div>
           {topicDetails.generated ? (
