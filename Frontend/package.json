@@ -31,6 +31,9 @@
     "react-tooltip": "^5.25.0",
     "reactflow": "^11.10.1"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.6.1"
+  },
   "devDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
